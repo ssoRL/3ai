@@ -1,0 +1,14 @@
+{
+  "name": "3ai",
+  "version": "1.0.0",
+  "description": "Three Visions of Artificial Apocalypse",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "highvoltageclouds",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^3.8.3"
+  }
+}
