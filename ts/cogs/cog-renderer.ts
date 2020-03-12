@@ -22,8 +22,9 @@ class CogRenderer {
         this.inner_radius = this.GAP_WIDTH * spur_count / Math.PI;
         // Then the outer radius is easy
         this.outer_radius = this.inner_radius + this.SPUR_LENGTH;
+        console.log(`For ${spur_count}: ${this.inner_radius}-${this.outer_radius}`);
         // Set the offsets
-        this.spur_offset = Math.PI/(this.spur_count*12);
+        this.spur_offset = Math.PI/(this.spur_count*this.spur_count);
         this.arc_offset = Math.PI/(this.spur_count*4);
         // Create the draw path
         this.draw_path = this.generateDrawPath();
@@ -45,8 +46,8 @@ class CogRenderer {
             path.arc(0, 0, this.inner_radius, inner_srt, inner_srt + this.arc_offset);
             path.arc(0, 0, this.inner_radius, inner_end - this.arc_offset, inner_end);
             // Then do the same for the outer cog part
-            let outer_srt = theta_0 + Math.PI/this.spur_count + this.spur_offset;
-            let outer_end = theta_0 + 2*Math.PI/this.spur_count - this.spur_offset
+            let outer_srt = theta_0 + Math.PI/this.spur_count + 1.5*this.spur_offset;
+            let outer_end = theta_0 + 2*Math.PI/this.spur_count - 1.5*this.spur_offset
             path.arc(0, 0, this.outer_radius, outer_srt, outer_srt + this.arc_offset);
             path.arc(0, 0, this.outer_radius, outer_end - this.arc_offset, outer_end);
         }
