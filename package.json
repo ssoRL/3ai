@@ -9,6 +9,7 @@
   "author": "highvoltageclouds",
   "license": "ISC",
   "dependencies": {
+    "http-server": "^0.12.1",
     "typescript": "^3.8.3"
   }
 }

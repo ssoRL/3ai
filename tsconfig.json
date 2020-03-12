@@ -1,0 +1,18 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "system",
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outFile": "./out/3ai.js"
+    },
+    "include": [
+        "./ts/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
