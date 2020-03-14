@@ -17,7 +17,7 @@ class Cog {
         this.x = x;
         this.y = y;
         this.spur_count = spur_count;
-        this.renderer = new InvoluteCogRenderer(spur_count);
+        this.renderer = CogRendererProvider.getRenderer(spur_count);
         // Set the starting position of the cog
         this.base_rotate = skew ? 
             this.renderer.getBaseCenterArc() : 

@@ -2,7 +2,7 @@ let cog12: Cog, cog6: Cog;
 
 function init(){
     cog12 = new Cog(200, 200, 12, true);
-    cog6 = new Cog(200 + 153 + 76, 200, 6, false);
+    cog6 = new Cog(200 + 153 + 153/*76*/, 200,12, false);
     let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
