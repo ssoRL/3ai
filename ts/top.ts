@@ -1,8 +1,10 @@
-let cog12: Cog, cog6: Cog;
+let cog12: Cog;// cog6: Cog;
 
 function init(){
     cog12 = new Cog(200, 200, 12, true);
-    cog6 = new Cog(200 + 153 + 153/*76*/, 200,12, false);
+    //cog6 = new Cog(200 + 153 + 153/*76*/, 200,12, false);
+    let cog7 = cog12.addDrivenCog(2, 7);
+    cog7.addDrivenCog(1, 3);
     let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
@@ -14,7 +16,7 @@ function init(){
 function causeTick(){
     let time = new Date().getTime();
     cog12.startTick(time);
-    cog6.startTick(time);
+    //cog6.startTick(time);
     window.setTimeout(causeTick, 1300);
 }
 
@@ -23,7 +25,7 @@ function draw(ctx: CanvasRenderingContext2D) {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, 600, 500)
     cog12.draw(ctx, time);
-    cog6.draw(ctx, time);
+    //cog6.draw(ctx, time);
     window.requestAnimationFrame(draw.bind(this, ctx));
 }
 

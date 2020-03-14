@@ -5,16 +5,16 @@ class InvoluteCogRenderer {
 
     /** The radius of the pitch circle */
     public pitch_radius: number;
-    /** The radius of the inner cicle (the wheel of the cog) */
-    private inner_radius: number;
     /** The radius of the outer circle where the teeth end */
     private outer_radius: number;
+    /** The radius of the inner cicle (the wheel of the cog) */
+    private inner_radius: number;
     /** The angle to the point where the involute intersects the outer circle */
     private outer_intersect_arc: number;
     /** The distance from the control point to the center of the circle */
     private control_point_radius: number;
     /** The angle taken up by one section (tooth and adjacent wheel) */
-    private section_arc: number;
+    public section_arc: number;
     // The part of the section taken up by the base (wheel)
     private base_arc: number;
     // The part taken up by the top of the tooth
@@ -65,22 +65,6 @@ class InvoluteCogRenderer {
 
     public draw(ctx: CanvasRenderingContext2D){
         ctx.stroke(this.draw_path);
-    }
-
-    /**
-     * @returns The angle that the cog should be rotated to get the center of the
-     * tooth to 0rad
-     */
-    public getToothCenterArc(){
-        return this.outer_intersect_arc + this.tooth_top_arc / 2;
-    }
-
-    /**
-     * @returns The angle that the cog should be rotated to get the center of the
-     * base part of the cog to 0rad
-     */
-    public getBaseCenterArc(){
-        return -this.base_arc / 2;
     }
 
     /**
@@ -150,32 +134,35 @@ class InvoluteCogRenderer {
         let path = new Path2D();
         path.moveTo(0, 0);
         path.lineTo(this.inner_radius, 0)
+        // First draw half an inner arc so the tooth-gap is centered on 0rad
+        path.arc(0, 0, this.inner_radius, 0, this.base_arc/2);
         let i =0;
         for(let i=0; i< this.spur_count; i++) {
-            // The angle that this section of spur starts on
-            let theta_0 = i * this.section_arc;
-            // First draw the inner cog
-            let base_end_arc = theta_0 + this.base_arc;
-            path.arc(0, 0, this.inner_radius, theta_0, base_end_arc);
+            // The angle that this section of the cog
+            let theta_0 = i * this.section_arc + this.base_arc/2;
 
-            // Then draw one of the involutes
+            // Start with an involute going up to the outer
             // calculate the control point
-            let cp = this.getPoint(this.control_point_radius, base_end_arc);
+            let cp = this.getPoint(this.control_point_radius, theta_0);
             // calculate the addendum intersect point
-            let intersect_arc = base_end_arc + this.outer_intersect_arc;
-            let intersect = this.getPoint(this.outer_radius, intersect_arc);
+            let near_outer_intersect_arc = theta_0 + this.outer_intersect_arc;
+            let intersect = this.getPoint(this.outer_radius, near_outer_intersect_arc);
             // draw the involute
             path.quadraticCurveTo(cp.x, cp.y, intersect.x, intersect.y);
 
             // Draw the top of the tooth
-            let far_intersect_arc = intersect_arc + this.tooth_top_arc;
-            path.arc(0, 0, this.outer_radius, intersect_arc, far_intersect_arc);
+            let far_outer_intersect_arc = near_outer_intersect_arc + this.tooth_top_arc;
+            path.arc(0, 0, this.outer_radius, near_outer_intersect_arc, far_outer_intersect_arc);
 
-            // Draw the concluding involute
-            let end_arc = theta_0 + this.section_arc;
-            let end_intersect = this.getPoint(this.inner_radius, end_arc);
-            let end_cp = this.getPoint(this.control_point_radius, end_arc);
+            // Draw the involute back to base
+            let inner_intersect_arc = far_outer_intersect_arc + this.outer_intersect_arc;
+            let end_intersect = this.getPoint(this.inner_radius, inner_intersect_arc);
+            let end_cp = this.getPoint(this.control_point_radius, inner_intersect_arc);
             path.quadraticCurveTo(end_cp.x, end_cp.y, end_intersect.x, end_intersect.y);
+
+            // Finally, draw the tooth gap (base) part
+            let end_arc = inner_intersect_arc + this.base_arc;
+            path.arc(0, 0, this.inner_radius, inner_intersect_arc, end_arc);
         }
         //path.closePath();
         return path;
