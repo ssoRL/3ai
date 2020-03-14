@@ -46,9 +46,16 @@ class InvoluteCogRenderer {
         // Then, need to find the arc portion of the upper and lower involute
         // so that the arc parts of the base and tooth end arcs can be properly
         // apportioned. Start by finding the center point of the involute.
-        let involute_center_x = (this.inner_radius + 2*this.control_point_radius + outer_intersect_point_x) / 4;
-        let involute_center_y = outer_intersect_point_y / 4;
-        let lower_involute_arc = Math.atan(involute_center_y / involute_center_x);
+        // let involute_center_x = (this.inner_radius + 2*this.control_point_radius + outer_intersect_point_x) / 4;
+        // let involute_center_y = outer_intersect_point_y / 4;
+        let pitch_point = this.convergeBezierToPitchRadius(
+            this.pitch_radius,
+            this.inner_radius,
+            this.control_point_radius,
+            outer_intersect_point_x,
+            outer_intersect_point_y
+        );
+        let lower_involute_arc = Math.atan(pitch_point.y / pitch_point.x);
         let upper_involute_arc = this.outer_intersect_arc - lower_involute_arc;
         this.base_arc = this.section_arc / 2 - lower_involute_arc * 2;
         this.tooth_top_arc = this.section_arc / 2 - upper_involute_arc * 2;
@@ -86,6 +93,57 @@ class InvoluteCogRenderer {
         let x = r * Math.cos(a);
         let y = r * Math.sin(a);
         return {x: x, y: y};
+    }
+
+    /**
+     * A function to calculate the point where the bezier intersects the pitch circle
+     * @param pitch_radius 
+     * @param inner_radius
+     * @param cp_radius Radius of the control point
+     * @param outer_x 
+     * @param outer_y 
+     */
+    private convergeBezierToPitchRadius(
+        pitch_radius: number,
+        inner_radius: number,
+        cp_radius: number,
+        outer_x: number,
+        outer_y: number
+    ){
+        // The Bezier function, returns the point at t
+        let B = (t: number) => {
+            // inverse of t 
+            let it = 1 - t;
+            let x = it*it*inner_radius + 2 * it * t * cp_radius + t * t * outer_x;
+            let y = t * t * outer_y;
+            return {x: x, y: y};
+        };
+
+        // Helper function to calculate the length from (0, 0) of a point
+        let l = (p: {x: number, y: number}) => {
+            return Math.sqrt(p.x*p.x + p.y*p.y);
+        }
+
+        let target_diff = 0.1;
+        let curr_diff = 1;
+        let t = 0.6;
+        let delta_t = 0.1;
+        while (curr_diff > target_diff || curr_diff < -target_diff) {
+            if(curr_diff > target_diff) {
+                // then t needs to be smaller
+                t -= delta_t;
+            } else {
+                t += delta_t;
+            }
+            // now make delta smaller so this converges
+            delta_t /= 2;
+            // find the current bezier point and see what it's diff from pitch is
+            let bezier_point = B(t);
+            curr_diff = l(bezier_point) - pitch_radius;
+        }
+
+        // return the point found that is close enough
+        return B(t);
     }
 
     private generateDrawPath(): Path2D {
