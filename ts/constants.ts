@@ -6,3 +6,6 @@ const TOOTH_LENGTH = 25;
 
 /** The amount of space between the teeth at the pitch circle */
 const GAP_WIDTH = 40;
+
+/** Show graphics that are helpful for debugging, but not in final */
+const SHOW_HELP_GRAPICS = true;

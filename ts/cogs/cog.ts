@@ -1,4 +1,7 @@
 class Cog {
+    private static current_serial_number = 0;
+    private static cog_directory: Map<number, Cog> = new Map();
+    public serial_number: number;
     private x: number;
     private y: number;
     private spur_count: number;
@@ -20,8 +23,17 @@ class Cog {
         y: number,
         spur_count: number,
         spins_counter_clockwise: boolean,
-        base_rotate = 0
+        base_rotate = 0,
+        serial_number?: number
     ) {
+        if(serial_number){
+            if(serial_number < Cog.current_serial_number){
+                throw "3AI Error: Serial Number Decrement";
+            }
+            Cog.current_serial_number = serial_number;
+        }
+        this.serial_number = Cog.current_serial_number++;
+        Cog.cog_directory.set(this.serial_number, this);
         this.x = x;
         this.y = y;
         this.spur_count = spur_count;
@@ -32,8 +44,30 @@ class Cog {
         this.spins_cc = spins_counter_clockwise;
     }
 
+    public static getCogTerminalPoint(ct: CogTerminal): Point {
+        let cog = Cog.cog_directory.get(ct.cogSerialNumber);
+        if(!cog){
+            throw `3AI Error: No cog with serial number ${ct.cogSerialNumber}`;
+        }
+        if(ct.index >= cog.spur_count){
+            throw `3AI Error: Index out of bounds ${ct.index} must be less than ${cog.spur_count}`;
+        }
+
+        let section_arc = cog.renderer.section_arc;
+        let outer_arc_diff = ct.isOuter ? section_arc/2 : 0;
+        let arc = cog.base_rotate + ct.index * section_arc + outer_arc_diff;
+        let radius = ct.isOuter ? cog.renderer.outer_radius : cog.renderer.inner_radius;
+        let untransformed_p = cog.renderer.getPoint(radius, arc);
+        return {
+            x: untransformed_p.x + cog.x, 
+            y: untransformed_p.y + cog.y
+        }
+    }
+
     public draw(ctx: CanvasRenderingContext2D, time: number) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.fillStyle = "silver";
+        ctx.strokeStyle = "slateGray";
         ctx.translate(this.x, this.y);
         // calculate the rotation
         let tick_angle = (2 * Math.PI) / this.spur_count * (this.spins_cc ? 1 : -1);
@@ -43,6 +77,10 @@ class Cog {
         let animation_progress = animation_progress_t / TICK_LENGTH;
         let animate_delta = animation_progress * tick_angle;
         ctx.rotate(last_rest_angle + animate_delta);
+        if(SHOW_HELP_GRAPICS){
+            // only show the serial number with dev flag
+            ctx.fillText(`#${this.serialNumber}`, 0, 10);
+        }
         // Use the renderer to draw the cog
         this.renderer.draw(ctx);
         // Draw it's driven cogs

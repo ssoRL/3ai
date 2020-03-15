@@ -6,9 +6,9 @@ class InvoluteCogRenderer {
     /** The radius of the pitch circle */
     public pitch_radius: number;
     /** The radius of the outer circle where the teeth end */
-    private outer_radius: number;
+    public outer_radius: number;
     /** The radius of the inner cicle (the wheel of the cog) */
-    private inner_radius: number;
+    public inner_radius: number;
     /** The angle to the point where the involute intersects the outer circle */
     private outer_intersect_arc: number;
     /** The distance from the control point to the center of the circle */
@@ -64,6 +64,7 @@ class InvoluteCogRenderer {
     }
 
     public draw(ctx: CanvasRenderingContext2D){
+        //ctx.fill(this.draw_path);
         ctx.stroke(this.draw_path);
     }
 
@@ -73,7 +74,7 @@ class InvoluteCogRenderer {
      * @param a The angle of this point from 0rad
      * @returns A tuple of the point 
      */
-    private getPoint(r: number, a: number): {x: number, y:number}{
+    public getPoint(r: number, a: number): Point{
         let x = r * Math.cos(a);
         let y = r * Math.sin(a);
         return {x: x, y: y};
@@ -104,7 +105,7 @@ class InvoluteCogRenderer {
         };
 
         // Helper function to calculate the length from (0, 0) of a point
-        let l = (p: {x: number, y: number}) => {
+        let l = (p: Point) => {
             return Math.sqrt(p.x*p.x + p.y*p.y);
         }
 
@@ -132,8 +133,11 @@ class InvoluteCogRenderer {
 
     private generateDrawPath(): Path2D {
         let path = new Path2D();
-        path.moveTo(0, 0);
-        path.lineTo(this.inner_radius, 0)
+        if(SHOW_HELP_GRAPICS){
+            // only show the 0rad line for dev work
+            path.moveTo(0, 0);
+            path.lineTo(this.inner_radius, 0)
+        }
         // First draw half an inner arc so the tooth-gap is centered on 0rad
         path.arc(0, 0, this.inner_radius, 0, this.base_arc/2);
         let i =0;
