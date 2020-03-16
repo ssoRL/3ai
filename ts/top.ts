@@ -17,11 +17,18 @@ function init(){
     }
     wire1.addChildToTerminal("horz", ct1)
 
+    const ct2: CogTerminal = {
+        cogSerialNumber: 1000,
+        index: 1,
+        isOuter: false
+    };
+    Cog.addWireToCog(ct1, ct2);
+
     let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
         window.requestAnimationFrame(draw.bind(this, ctx));
-        causeTick();
+        //causeTick();
     }
 }
 

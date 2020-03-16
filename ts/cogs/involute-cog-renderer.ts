@@ -64,20 +64,8 @@ class InvoluteCogRenderer {
     }
 
     public draw(ctx: CanvasRenderingContext2D){
-        //ctx.fill(this.draw_path);
+        ctx.fill(this.draw_path);
         ctx.stroke(this.draw_path);
-    }
-
-    /**
-     * 
-     * @param r The distance of this point from (0, 0)
-     * @param a The angle of this point from 0rad
-     * @returns A tuple of the point 
-     */
-    public getPoint(r: number, a: number): Point{
-        let x = r * Math.cos(a);
-        let y = r * Math.sin(a);
-        return {x: x, y: y};
     }
 
     /**
@@ -147,10 +135,10 @@ class InvoluteCogRenderer {
 
             // Start with an involute going up to the outer
             // calculate the control point
-            let cp = this.getPoint(this.control_point_radius, theta_0);
+            let cp = getPoint(this.control_point_radius, theta_0);
             // calculate the addendum intersect point
             let near_outer_intersect_arc = theta_0 + this.outer_intersect_arc;
-            let intersect = this.getPoint(this.outer_radius, near_outer_intersect_arc);
+            let intersect = getPoint(this.outer_radius, near_outer_intersect_arc);
             // draw the involute
             path.quadraticCurveTo(cp.x, cp.y, intersect.x, intersect.y);
 
@@ -160,8 +148,8 @@ class InvoluteCogRenderer {
 
             // Draw the involute back to base
             let inner_intersect_arc = far_outer_intersect_arc + this.outer_intersect_arc;
-            let end_intersect = this.getPoint(this.inner_radius, inner_intersect_arc);
-            let end_cp = this.getPoint(this.control_point_radius, inner_intersect_arc);
+            let end_intersect = getPoint(this.inner_radius, inner_intersect_arc);
+            let end_cp = getPoint(this.control_point_radius, inner_intersect_arc);
             path.quadraticCurveTo(end_cp.x, end_cp.y, end_intersect.x, end_intersect.y);
 
             // Finally, draw the tooth gap (base) part

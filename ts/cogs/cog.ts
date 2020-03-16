@@ -16,6 +16,7 @@ class Cog {
     private spins_cc: boolean;
     /** The cogs that this cog drives */
     private driven_cogs: Cog[] = [];
+    private etched_wire: WireOnCog | null = null;
 
 
     constructor(
@@ -57,17 +58,39 @@ class Cog {
         let outer_arc_diff = ct.isOuter ? section_arc/2 : 0;
         let arc = cog.base_rotate + ct.index * section_arc + outer_arc_diff;
         let radius = ct.isOuter ? cog.renderer.outer_radius : cog.renderer.inner_radius;
-        let untransformed_p = cog.renderer.getPoint(radius, arc);
+        let untransformed_p = getPoint(radius, arc);
         return {
             x: untransformed_p.x + cog.x, 
             y: untransformed_p.y + cog.y
         }
     }
 
+    /**
+     * Adds a wire-on-cog to this cog
+     * @param enter The cog terminal where the wire starts
+     * @param exit The cog terminal where it leaves the cog
+     * @param dir Clockwise (cw) or counter-clockwise(cc)
+     */
+    public static addWireToCog(enter: CogTerminal, exit: CogTerminal): WireOnCog{
+        if(enter.cogSerialNumber !== exit.cogSerialNumber){
+            throw "3AI Error: The wire must start and end on the same cog";
+        }
+        const cog = Cog.cog_directory.get(enter.cogSerialNumber);
+        if(!cog){
+            throw `3AI Error: No cog with serial number ${enter.cogSerialNumber}`;
+        }
+        if(cog.etched_wire !== null) {
+            throw "3AI Error: A cog may not have more than one wire.";
+        }
+
+        const rnd = cog.renderer;
+        const wire = new WireOnCog(enter, exit, rnd.outer_radius, rnd.inner_radius, rnd.section_arc);
+        cog.etched_wire = wire;
+        return wire;
+    }
+
     public draw(ctx: CanvasRenderingContext2D, time: number) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.fillStyle = "silver";
-        ctx.strokeStyle = "slateGray";
         ctx.translate(this.x, this.y);
         // calculate the rotation
         let tick_angle = (2 * Math.PI) / this.spur_count * (this.spins_cc ? 1 : -1);
@@ -77,13 +100,20 @@ class Cog {
         let animation_progress = animation_progress_t / TICK_LENGTH;
         let animate_delta = animation_progress * tick_angle;
         ctx.rotate(last_rest_angle + animate_delta);
-        if(SHOW_HELP_GRAPICS){
-            // only show the serial number with dev flag
-            ctx.fillText(`#${this.serialNumber}`, 0, 10);
-        }
+        ctx.fillStyle = "silver";
+        ctx.strokeStyle = "slateGray";
         // Use the renderer to draw the cog
         this.renderer.draw(ctx);
-        // Draw it's driven cogs
+        if(SHOW_HELP_GRAPICS){
+            ctx.fillStyle = "slateGray";
+            // only show the serial number with dev flag
+            ctx.fillText(`#${this.serial_number}`, 0, 10);
+        }
+        // Draw it's wire if any
+        if(this.etched_wire){
+            this.etched_wire.draw(ctx, time);
+        }
+        // Draw its driven cogs
         for(let driven_cog of this.driven_cogs){
             driven_cog.draw(ctx, time);
         }
