@@ -1,4 +1,4 @@
-class WireOnCog implements Conductor{
+class WireOnCog implements TickWatcher {
     /** The cog terminal where this wire starts */
     private enter: CogTerminal;
     /** The point were the wire starts (in the cog's coordinate frame) */
@@ -12,6 +12,11 @@ class WireOnCog implements Conductor{
     private ex_p0: Point;
     private ex_p1: Point;
     private ex_arc: number;
+
+    /** The current tooth position of the underlying cog */
+    private cog_position: number = 0;
+
+    private is_on: boolean;
 
     /** The radius of the circle that the wire inscribes in the arc */
     private mid_r: number;
@@ -42,15 +47,35 @@ class WireOnCog implements Conductor{
         this.ex_p1 = getPoint(this.mid_r, this.ex_arc);
     }
 
-    powerUp(source?: Point | CogTerminal): void {
-        throw new Error("Method not implemented.");
+    startTick(new_current_tooth: number): void {
+        this.cog_position =  new_current_tooth;
     }
 
-    powerDn(source?: Point | CogTerminal): void {
-        throw new Error("Method not implemented.");
+    endTick(new_current_tooth: number): void {
+        // No need to take action here for the wire on the cog
+    }
+
+    power(on: boolean, from?: CogTerminal): void {
+        this.is_on = on;
+    }
+
+    private terminalConnectedWith(
+        terminal: CogTerminal,
+        end_point: CogTerminal
+    ): boolean {
+        if(terminal.isOuter !== end_point.isOuter) return false;
+        const real_endpoint_index = end_point.index + this.cog_position;
+        return real_endpoint_index === terminal.index;
+    }
+
+    public isConnectedWith(terminal: CogTerminal): boolean {
+        return this.terminalConnectedWith(terminal, this.enter) ||
+            this.terminalConnectedWith(terminal, this.exit);
     }
 
     draw(ctx: CanvasRenderingContext2D, time: number): void {
+        ctx.strokeStyle = this.is_on ? "red" : "black";
+        ctx.beginPath();
         ctx.moveTo(this.en_p0.x, this.en_p0.y);
         ctx.lineTo(this.en_p1.x, this.en_p1.y);
         ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
