@@ -1,4 +1,6 @@
-class WireOnCog implements TickWatcher {
+class WireOnCog {
+    /** The cog this wire is on */
+    private cog: Cog;
     /** The cog terminal where this wire starts */
     private enter: CogTerminal;
     /** The point were the wire starts (in the cog's coordinate frame) */
@@ -12,9 +14,7 @@ class WireOnCog implements TickWatcher {
     private ex_p0: Point;
     private ex_p1: Point;
     private ex_arc: number;
-
-    /** The current tooth position of the underlying cog */
-    private cog_position: number = 0;
+    public out_terminal: CogTerminalConnector | undefined;
 
     private is_on: boolean;
 
@@ -22,12 +22,14 @@ class WireOnCog implements TickWatcher {
     private mid_r: number;
 
     constructor(
+        cog_: Cog,
         enter_: CogTerminal, 
         exit_: CogTerminal, 
         outer_radius: number, 
         inner_radius: number,
         section_arc: number
     ) {
+        this.cog = cog_;
         this.enter = enter_;
         this.exit = exit_;
 
@@ -47,16 +49,9 @@ class WireOnCog implements TickWatcher {
         this.ex_p1 = getPoint(this.mid_r, this.ex_arc);
     }
 
-    startTick(new_current_tooth: number): void {
-        this.cog_position =  new_current_tooth;
-    }
-
-    endTick(new_current_tooth: number): void {
-        // No need to take action here for the wire on the cog
-    }
-
     power(on: boolean, from?: CogTerminal): void {
         this.is_on = on;
+        if(this.out_terminal) this.out_terminal.power(on);
     }
 
     private terminalConnectedWith(
@@ -64,8 +59,7 @@ class WireOnCog implements TickWatcher {
         end_point: CogTerminal
     ): boolean {
         if(terminal.isOuter !== end_point.isOuter) return false;
-        const real_endpoint_index = end_point.index + this.cog_position;
-        return real_endpoint_index === terminal.index;
+        return terminal.index === this.cog.getClockwiseIndexedToothPosition(end_point.index);
     }
 
     public isConnectedWith(terminal: CogTerminal): boolean {
@@ -81,5 +75,6 @@ class WireOnCog implements TickWatcher {
         ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
         ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
         ctx.stroke();
+        if(this.out_terminal) this.out_terminal.draw(ctx, time);
     }
 }

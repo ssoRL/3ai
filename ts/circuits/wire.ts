@@ -12,22 +12,31 @@ class Wire implements Conductor {
     }
 
     /**
-     * Creates a new child wire stretching away from p1
+     * Creates a new wire attached to this one
+     * @param p the point where the new wire will end
+     */
+    public addPoweredWireToPoint(p: Point): Wire {
+        let p0_ = this.p1;
+        let wire_ = new Wire(p0_, p);
+        this.powering.push(wire_);
+        return wire_;
+    }
+
+    /**
+     * Creates a new child wire stretching away from this one, choosing a point such
+     * that the lines will be horizonal or vertical
      * @param p The starting point of the wire
      * @param orientation Whether this is a horizontal or vertical wire
      * @param l The length of the wire
      */
     public addPoweredWire(orientation: "horz" | "vert", l: number): Wire {
-        let p0_ = this.p1;
-        let p1_ = orientation === "horz" ?
-            {x: p0_.x + l, y: p0_.y} :
-            {x: p0_.x, y: p0_.y + l};
-        let wire_ = new Wire(p0_, p1_);
-        this.powering.push(wire_);
-        return wire_;
+        let p = orientation === "horz" ?
+            {x: this.p1.x + l, y: this.p1.y} :
+            {x: this.p1.x, y: this.p1.y + l};
+        return this.addPoweredWireToPoint(p);
     }
 
-    public addPoweredWiresToTerminal(cog_sn: number, orientation: "horz" | "vert", terminal: CogTerminal): CogTerminalConnecor {
+    public addPoweredWiresToTerminal(cog_sn: number, orientation: "horz" | "vert", terminal: CogTerminal): CogTerminalConnector {
         const cog = Cog.getCogBySerialNumber(cog_sn);
         const terminal_p = cog.getCogTerminalPoint(terminal);
         const length_to_elbow = orientation === "horz" ?
@@ -42,8 +51,8 @@ class Wire implements Conductor {
         return wire_from_elbow.addTerminalConnectionToChildren(cog, terminal);
     }
 
-    public addTerminalConnectionToChildren(cog: Cog, terminal: CogTerminal): CogTerminalConnecor{
-        const terminal_connect = new CogTerminalConnecor(this, [cog, terminal]);
+    public addTerminalConnectionToChildren(cog: Cog, terminal: CogTerminal): CogTerminalConnector{
+        const terminal_connect = new CogTerminalConnector(this, [cog, terminal]);
         this.powering.push(terminal_connect);
         return terminal_connect;
     }

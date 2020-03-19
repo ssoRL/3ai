@@ -3,24 +3,30 @@ let wire0: Wire;
 
 function init(){
     // Draw a bunch of cogs
-    cog12 = new Cog(200, 200, 5, true, 0, 1000);
-    let cog7 = cog12.addDrivenCog(1, 7);
-    cog7.addDrivenCog(2, 5);
+    cog12 = new Cog(200, 200, 12, true, 0, 1000);
+    let cog6 = cog12.addDrivenCog(1, 6);
+    cog6.addDrivenCog(2, 5);
 
     // Draw some wires
     wire0 = new Wire({x: 490, y: 10}, {x: 400, y: 10});
     const wire1 = wire0.addPoweredWire("vert", 50);
     const ct1: CogTerminal = {
-        index: 4,
+        index: 10,
         isOuter: true
     }
     wire1.addPoweredWiresToTerminal(1000, "horz", ct1)
 
     const ct2: CogTerminal = {
         index: 1,
-        isOuter: false
+        isOuter: true
     };
     Cog.addWireToCog(1000, ct1, ct2);
+
+    Cog.addTerminalConnectionBetweenCogs(1000, 0);
+
+    Cog.addWireToCog(1001, {index: 0, isOuter: false}, {index: 4, isOuter: true});
+
+    Cog.leadWireAwayFromCogTerminal(1001, {index: 4, isOuter: true}, {x: 10, y: 900}, "horz");
 
     let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
@@ -46,7 +52,19 @@ function causeTick(){
 function draw(ctx: CanvasRenderingContext2D) {
     let time = new Date().getTime();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.clearRect(0, 0, 1000, 1000)
+    ctx.clearRect(0, 0, 1000, 1000);
+    // Draw a grid for dev stuff
+    if(SHOW_HELP_GRAPICS) {
+        ctx.strokeStyle = "lightBlue"
+        for(let i=100; i<1000; i+= 100) {
+            ctx.beginPath()
+            ctx.moveTo(0, i);
+            ctx.lineTo(1000, i);
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i, 1000);
+            ctx.stroke();
+        }
+    }
     cog12.draw(ctx, time);
     wire0.draw(ctx, time);
     window.requestAnimationFrame(draw.bind(this, ctx));

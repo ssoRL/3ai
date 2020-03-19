@@ -80,19 +80,71 @@ class Cog {
      * @param dir Clockwise (cw) or counter-clockwise(cc)
      */
     public static addWireToCog(cog_sn: number, enter: CogTerminal, exit: CogTerminal): WireOnCog{
-        const cog = Cog.cog_directory.get(cog_sn);
-        if(!cog){
-            throw `3AI Error: No cog with serial number ${cog_sn}`;
-        }
+        const cog = Cog.getCogBySerialNumber(cog_sn);
         if(cog.etched_wire) {
             throw "3AI Error: A cog may not have more than one wire.";
         }
 
         const rnd = cog.renderer;
-        const wire = new WireOnCog(enter, exit, rnd.outer_radius, rnd.inner_radius, rnd.section_arc);
+        const wire = new WireOnCog(cog, enter, exit, rnd.outer_radius, rnd.inner_radius, rnd.section_arc);
         cog.etched_wire = wire;
-        cog.addTickWatcher(wire);
         return wire;
+    }
+
+    public static addTerminalConnectionBetweenCogs(cog_sn: number, driven_index: number)/*: CogTerminalConnector*/ {
+        const cog1 = Cog.getCogBySerialNumber(cog_sn)
+
+        const cog2 = cog1.driven_cogs[driven_index];
+        if(!cog2){
+            throw `3AI Error: Cog with serial number ${cog_sn} does not have a driven cog ${driven_index}`
+        }
+
+        const terminal1: CogTerminal = {
+            index: cog2.parent_index,
+            isOuter: true
+        };
+        const terminal2: CogTerminal = {
+            index: 0,
+            isOuter: false
+        }
+
+        const terminal_connection = new CogTerminalConnector(
+            [cog1, terminal1],
+            [cog2, terminal2]
+        );
+
+        if(!cog1.etched_wire) {
+            throw "3AI Error: cog does not have an etched wire"
+        }
+        cog1.etched_wire.out_terminal = terminal_connection;
+        return terminal_connection;
+    }
+
+    public static leadWireAwayFromCogTerminal(
+        cog_sn: number,
+        terminal: CogTerminal,
+        end_point: Point,
+        ori: "horz" | "vert"
+    ): Wire {
+        const cog = Cog.getCogBySerialNumber(cog_sn);
+        const terminal_point = cog.getCogTerminalPoint(terminal);
+
+        // Create the wire running away from the cog
+        const wire_to_elbow_p1 : Point = {
+            x: ori === "horz" ? end_point.x : terminal_point.x,
+            y: ori === "vert" ? end_point.y : terminal_point.y
+        }
+        const wire_to_elbow = new Wire(terminal_point, wire_to_elbow_p1);
+
+        // connect that wire to the cog
+        const terminal_connect = new CogTerminalConnector([cog, terminal], wire_to_elbow);
+        if(!cog.etched_wire) {
+            throw "3AI Error: You may not attach a terminal out from a cog with no wire!"
+        }
+        cog.etched_wire.out_terminal = terminal_connect;
+
+        // Create the second part of the wire to the endpoint
+        return wire_to_elbow.addPoweredWireToPoint(end_point);
     }
 
     private tickStatus(time: number){
@@ -100,10 +152,9 @@ class Cog {
             if(time - this.tick_start > TICK_LENGTH){
                 // Then the current tick is over, have to notify watchers
                 this.is_ticking = false;
-                const clockwise_indexed_tooth =  this.getClockwiseIndexedToothPosition();
                 for(const watcher of this.tick_watchers) {
                     // Notify tick watchers that a tick has started
-                    watcher.endTick(clockwise_indexed_tooth);
+                    watcher.endTick();
                 }
             }
         }
@@ -119,7 +170,7 @@ class Cog {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.translate(this.x, this.y);
         // calculate the rotation
-        let tick_angle = (2 * Math.PI) / this.tooth_count * (this.spins_cc ? 1 : -1);
+        let tick_angle = (2 * Math.PI) / this.tooth_count * (this.spins_cc ? -1 : 1);
         let rest_delta = tick_angle * (this.current_tooth - 1);
         let last_rest_angle = this.base_rotate + rest_delta;
         let animation_progress_t = Math.min(time - this.tick_start, TICK_LENGTH);
@@ -141,11 +192,14 @@ class Cog {
         }
     }
 
-    // Gets the current tooth counting clockwise
-    private getClockwiseIndexedToothPosition(){
+    /**
+     * finds the current index position of a tooth shifted for the cog's spin
+     * @param tooth the index of the tooth to get the position of
+     */
+    public getClockwiseIndexedToothPosition(tooth: number){
         return this.spins_cc ?
-            (this.tooth_count - this.current_tooth) % this.tooth_count :
-            this.current_tooth;
+            (this.tooth_count - this.current_tooth + tooth) % this.tooth_count :
+            (this.current_tooth + tooth) % this.tooth_count;
     }
 
     // This will cause the cog to start a new movement cycle at the given time
@@ -157,10 +211,9 @@ class Cog {
         for(let driven_cog of this.driven_cogs){
             driven_cog.startTick(startTime);
         }
-        const clockwise_indexed_tooth = this.getClockwiseIndexedToothPosition();
         // Notify tick watchers that a tick has started
         for(const watcher of this.tick_watchers) {
-            watcher.startTick(clockwise_indexed_tooth);
+            watcher.startTick();
         }
     }
 

@@ -1,7 +1,8 @@
 type PowerSource = [Cog, CogTerminal] | Wire;
 
-class CogTerminalConnecor implements Conductor, TickWatcher {
+class CogTerminalConnector implements Conductor, TickWatcher {
     is_on: boolean;
+    private p: Point;
     /** The wire or cog that power comes from */
     private in_power: PowerSource;
     /** The wire that it goes to */
@@ -12,9 +13,9 @@ class CogTerminalConnecor implements Conductor, TickWatcher {
     /** Whether the connection is made with the output */
     private out_connected: boolean;
 
-    constructor(in_power_: PowerSource, out_connection_: PowerSource) {
+    constructor(in_power_: PowerSource, out_power_: PowerSource) {
         this.in_power = in_power_;
-        this.out_power = out_connection_;
+        this.out_power = out_power_;
         // Add self to watch ticks
         for(const source of [this.in_power, this.out_power]) {
             if(!(source instanceof Wire)) {
@@ -22,6 +23,17 @@ class CogTerminalConnecor implements Conductor, TickWatcher {
             }
         }
         this.endTick();
+        if(SHOW_HELP_GRAPICS) {
+            // calculate the position of this terminal
+            if(this.in_power instanceof Wire) {
+                if(this.out_power instanceof Wire) {
+                    throw "3AI Error: terminal should NOT be between two wires";
+                }
+                this.p = this.out_power[0].getCogTerminalPoint(this.out_power[1]);
+            } else {
+                this.p = this.in_power[0].getCogTerminalPoint(this.in_power[1]);
+            }
+        }
     }
 
     isConnected(source: PowerSource): boolean {
@@ -70,6 +82,40 @@ class CogTerminalConnecor implements Conductor, TickWatcher {
     }
     
     draw(ctx: CanvasRenderingContext2D, time: number): void {
-        // Don't draw anything
+        if(SHOW_HELP_GRAPICS){
+            // Only mark terminal locations with the dev flag on
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            // Draw a red circle if on
+            if(this.is_on){
+                ctx.strokeStyle = "red";
+                ctx.beginPath();
+                ctx.moveTo(this.p.x + 5, this.p.y);
+                ctx.arc(this.p.x, this.p.y, 5, 0, 2*Math.PI);
+                ctx.stroke();
+            }
+            // Chhange the collor of the smaller inner circle for connect info
+            if(this.in_connected) {
+                if(this.out_connected){
+                    // orange for both
+                    ctx.strokeStyle = "orange";
+                } else {
+                    // blue for in only
+                    ctx.strokeStyle = "blue";
+                }
+            } else {
+                if(this.out_connected){
+                    // green for out only
+                    ctx.strokeStyle = "green";
+                } else {
+                    // white for none
+                    ctx.strokeStyle = "white";
+                }
+            }
+            ctx.beginPath();
+            ctx.moveTo(this.p.x + 7, this.p.y);
+            ctx.arc(this.p.x, this.p.y, 7, 0, 2*Math.PI);
+            ctx.stroke();
+        }
+        if(this.out_power instanceof Wire) this.out_power.draw(ctx, time);
     }
 }
