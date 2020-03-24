@@ -1,7 +1,14 @@
 class Wire implements Conductor {
     private p0: Point;
     private p1: Point;
-    private isOn = false;
+    /** The unit vector from p0 to p1 */
+    private vec: {x: number, y: number};
+    /** The number of milliseconds it takes charge to pass thru this wire */
+    private wire_time: number;
+    /** Whether there is power running to this wire */
+    private is_on = false;
+    /** When power first got to this wire */
+    private time_on = 0;
 
     /** A list of the conductors this is powering */
     private powering: Conductor[] = [];
@@ -9,6 +16,10 @@ class Wire implements Conductor {
     constructor(p0_: Point, p1_: Point){
         this.p0 = p0_;
         this.p1 = p1_;
+        const length_and_vec = getLengthAndUnitVector(p0_, p1_);
+        this.vec = length_and_vec[1];
+        // wire time is the length of wire divided by speed of light
+        this.wire_time = length_and_vec[0] / SOL;
     }
 
     /**
@@ -58,20 +69,50 @@ class Wire implements Conductor {
     }
 
     power(on: boolean): void {
-        this.isOn = on;
-        for(let conductor of this.powering){
-            conductor.power(on);
+        this.is_on = on;
+        if(on){
+            this.time_on = new Date().getTime();
         }
+        window.setTimeout(
+            () => {
+                for(let conductor of this.powering){
+                    conductor.power(this.is_on);
+                }
+            },
+            this.wire_time
+        );
     }
 
     draw(ctx: CanvasRenderingContext2D, time: number) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        let color = this.isOn ? "red" : "black";
-        ctx.strokeStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(this.p0.x, this.p0.y);
-        ctx.lineTo(this.p1.x, this.p1.y);
-        ctx.stroke();
+            const time_powered = time - this.time_on;
+        if(this.is_on && time_powered < this.wire_time){
+            // If the wire is in the middle of being powered...
+            const p_half: Point = {
+                x: this.p0.x + this.vec.x * time_powered * SOL,
+                y: this.p0.y + this.vec.y * time_powered * SOL
+            }
+            // ...draw this wire in red as far as the power has gotten...
+            ctx.strokeStyle = "red";
+            ctx.beginPath();
+            ctx.moveTo(this.p0.x, this.p0.y);
+            ctx.lineTo(p_half.x, p_half.y);
+            ctx.stroke();
+            // ...then the rest in black
+            ctx.strokeStyle = "black";
+            ctx.beginPath();
+            ctx.moveTo(p_half.x, p_half.y);
+            ctx.lineTo(this.p1.x, this.p1.y);
+            ctx.stroke();
+        } else {
+            // If the wire is full on or off, draw with only one color
+            let color = this.is_on ? "red" : "black";
+            ctx.strokeStyle = color;
+            ctx.beginPath();
+            ctx.moveTo(this.p0.x, this.p0.y);
+            ctx.lineTo(this.p1.x, this.p1.y);
+            ctx.stroke();
+        }
         for(let conductor of this.powering){
             conductor.draw(ctx, time);
         }

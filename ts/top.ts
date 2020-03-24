@@ -3,7 +3,7 @@ let wire0: Wire;
 
 function init(){
     // Draw a bunch of cogs
-    cog12 = new Cog(200, 200, 12, true, 0, 1000);
+    cog12 = new Cog(200, 200, 6, true, 0, 1000);
     let cog6 = cog12.addDrivenCog(1, 6);
     cog6.addDrivenCog(2, 5);
 
@@ -11,7 +11,7 @@ function init(){
     wire0 = new Wire({x: 490, y: 10}, {x: 400, y: 10});
     const wire1 = wire0.addPoweredWire("vert", 50);
     const ct1: CogTerminal = {
-        index: 10,
+        index: 5,
         isOuter: true
     }
     wire1.addPoweredWiresToTerminal(1000, "horz", ct1)
@@ -26,7 +26,7 @@ function init(){
 
     Cog.addWireToCog(1001, {index: 0, isOuter: false}, {index: 4, isOuter: true});
 
-    Cog.leadWireAwayFromCogTerminal(1001, {index: 4, isOuter: true}, {x: 10, y: 900}, "horz");
+    Cog.leadWireAwayFromCogTerminal(1001, {index: 4, isOuter: true}, {x: 10, y: 425}, "horz");
 
     let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
@@ -46,7 +46,7 @@ function causeTick(){
     // }else{
     //     wire0.power(false);
     // }
-    window.setTimeout(causeTick, 1300);
+    window.setTimeout(causeTick, 3000);
 }
 
 function draw(ctx: CanvasRenderingContext2D) {

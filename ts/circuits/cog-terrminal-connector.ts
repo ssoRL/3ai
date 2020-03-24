@@ -71,7 +71,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
         if(this.out_power instanceof Wire) {
             this.out_power.power(false);
         }else{
-            this.out_power[0].etched_wire?.power(false);
+            this.out_power[0].etched_wire?.power(false, this.out_power[1]);
         }
     }
     

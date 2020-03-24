@@ -7,15 +7,32 @@ class WireOnCog {
     private en_p0: Point;
     /** The point in the middle of the cog that the wire runs towards after enter */
     private en_p1: Point;
+    /** The unit vector from en_p0 to en_p1 */
+    private en_vec: {x: number, y: number};
     /** The angle that the wire starts at */
     private en_arc: number;
+    /** The time in milliseconds it takes power to pass thru the enter wire */
+    private en_wire_time: number;
     /** The exit cog terminal. Everything uses a similar description as above */
     private exit: CogTerminal;
     private ex_p0: Point;
     private ex_p1: Point;
+    /** The unit vector from ex_p1 to ex_p0, i.e., going away from the center */
+    private ex_vec: {x: number, y: number};
     private ex_arc: number;
+    private ex_wire_time: number;
+    /** The time in milliseconds it takes for the power to move thru the arc part */
+    /** The length of the arc in radians */
+    private arc_length: number;
+    /** The tiem it takes the power to move thru the arc part of the wire */
+    private arc_wire_time: number;
     public out_terminal: CogTerminalConnector | undefined;
 
+
+    /** true if the power is from the enter, false if it's form the exit */
+    private power_from_en: boolean;
+    /** When power first got to this wire */
+    private time_on = 0;
     private is_on: boolean;
 
     /** The radius of the circle that the wire inscribes in the arc */
@@ -47,11 +64,37 @@ class WireOnCog {
         this.en_p1 = getPoint(this.mid_r, this.en_arc);
         this.ex_p0 = getPoint(ex_r, this.ex_arc);
         this.ex_p1 = getPoint(this.mid_r, this.ex_arc);
+
+        // Calculate the wire times and vectors
+        // Find the arc length, taking into account the en_arc might be bigger than ex_arc
+        this.arc_length = this.ex_arc - this.en_arc > 0 ?
+            this.ex_arc - this.en_arc :
+            this.ex_arc - this.en_arc + 2*Math.PI;
+        this.arc_wire_time = this.arc_length * this.mid_r / SOL;
+        const en_wire_info = getLengthAndUnitVector(this.en_p1, this.en_p0);
+        const ex_wire_info = getLengthAndUnitVector(this.ex_p0, this.ex_p1);
+        this.en_vec = en_wire_info[1];
+        this.ex_vec = ex_wire_info[1];
+        this.en_wire_time = en_wire_info[0]/SOL;
+        this.ex_wire_time = ex_wire_info[0]/SOL;
     }
 
-    power(on: boolean, from?: CogTerminal): void {
+    power(on: boolean, from: CogTerminal): void {
         this.is_on = on;
-        if(this.out_terminal) this.out_terminal.power(on);
+        if(on){
+            this.time_on = new Date().getTime();
+        }
+        // Check if the power is coming from the en or ex terminal
+        const current_en_index = this.cog.getClockwiseIndexedToothPosition(this.enter.index);
+        const indexes_match = from.index === current_en_index;
+        this.power_from_en = indexes_match && from.index === this.enter.index;
+        // Wait for as long as the chanrge needs to pass thru the wire, then power children
+        window.setTimeout(
+            () => {
+                if(this.out_terminal) this.out_terminal.power(this.is_on);
+            },
+            this.en_wire_time + this.arc_wire_time + this.ex_wire_time
+        )
     }
 
     private terminalConnectedWith(
@@ -68,13 +111,90 @@ class WireOnCog {
     }
 
     draw(ctx: CanvasRenderingContext2D, time: number): void {
-        ctx.strokeStyle = this.is_on ? "red" : "black";
-        ctx.beginPath();
-        ctx.moveTo(this.en_p0.x, this.en_p0.y);
-        ctx.lineTo(this.en_p1.x, this.en_p1.y);
-        ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
-        ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-        ctx.stroke();
+        const time_powered = time - this.time_on;
+        const total_wire_time = this.en_wire_time + this.arc_wire_time + this.ex_wire_time;
+        if(!this.is_on || time_powered > total_wire_time) {
+            // if the wire is off, or fully on
+            ctx.strokeStyle = this.is_on ? "red" : "black";
+            ctx.beginPath();
+            ctx.moveTo(this.en_p0.x, this.en_p0.y);
+            ctx.lineTo(this.en_p1.x, this.en_p1.y);
+            ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+            ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+            ctx.stroke();
+        } else {
+            // only going to draw some in the on color
+            // determine the color that is at the en and ex points
+            const en_color = this.power_from_en ? "red" : "black";
+            const ex_color = this.power_from_en ? "black" : "red";
+            // determine the powered time equivilant. this is just powered time
+            // if starting from the en, but from ex, it will be the inverse since
+            // the red line needs to move "backwards"
+            const pte = this.power_from_en ? time_powered : total_wire_time - time_powered;
+            if(pte < this.en_wire_time){
+                // The split happens on the en wire
+                const mid_p: Point = {
+                    x: this.en_p0.x - this.en_vec.x * pte * SOL,
+                    y: this.en_p0.y - this.en_vec.y * pte * SOL,
+                }
+                ctx.strokeStyle = en_color;
+                ctx.beginPath();
+                ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                ctx.lineTo(mid_p.x, mid_p.y);
+                ctx.stroke();
+                // Then draw the rest
+                ctx.strokeStyle = ex_color;
+                ctx.beginPath();
+                ctx.moveTo(mid_p.x, mid_p.y);
+                ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+                ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                ctx.stroke();
+            } else if (pte < this.en_wire_time + this.arc_wire_time) {
+                // split the arc
+                const arc_time = pte - this.en_wire_time;
+                // the portion of the arc passed thru
+                const arc_fraction = arc_time / this.arc_wire_time;
+                // Find the point where the power split happens
+                const arc_split = this.en_arc + this.arc_length * arc_fraction;
+                // Draw it
+                ctx.strokeStyle = en_color;
+                ctx.beginPath();
+                ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                ctx.arc(0, 0, this.mid_r, this.en_arc, arc_split);
+                ctx.stroke();
+                // Then draw the rest
+                // First find the point to start from
+                const start_p = getPoint(this.mid_r, arc_split);
+                ctx.strokeStyle = ex_color;
+                ctx.beginPath();
+                ctx.moveTo(start_p.x, start_p.y);
+                ctx.arc(0, 0, this.mid_r, arc_split, this.ex_arc);
+                ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                ctx.stroke();
+            } else {
+                // The split is in the exit wire
+                const wire_time = pte - this.en_wire_time - this.arc_wire_time;
+                const mid_p: Point = {
+                    x: this.ex_p1.x - this.ex_vec.x * wire_time * SOL,
+                    y: this.ex_p1.y - this.ex_vec.y * wire_time * SOL,
+                }
+                ctx.strokeStyle = en_color;
+                ctx.beginPath();
+                ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+                ctx.lineTo(mid_p.x, mid_p.y);
+                ctx.stroke();
+                // Then draw the rest
+                ctx.strokeStyle = ex_color;
+                ctx.beginPath();
+                ctx.moveTo(mid_p.x, mid_p.y);
+                ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                ctx.stroke();
+            }
+        }
         if(this.out_terminal) this.out_terminal.draw(ctx, time);
     }
 }
