@@ -1,3 +1,8 @@
+enum SpinDirection {
+    CLOCKWISE = 0,
+    COUNTER_CLOCKWISE
+}
+
 class Cog {
     private static current_serial_number = 0;
     private static cog_directory: Map<number, Cog> = new Map();
@@ -10,15 +15,17 @@ class Cog {
     private tick_start: number = 0;
     /** The starting position of this cog */
     private base_rotate: number;
-    /** The tooth that the the animation is moving towards */
+    /** The tooth that the cog is currently (or last) on */
     private current_tooth: number;
-    /** The direction this cog spins. True if counter-clockwise */
-    private spins_cc: boolean;
     /** The cogs that this cog drives */
     private driven_cogs: Cog[] = [];
     public etched_wire: WireOnCog | undefined = undefined;
-    public parent: Cog;
-    public parent_index: number;
+    /** 
+     * The force that determines the spin directin of this cog. Either another cog,
+     * or a spin direction if it's self-driven
+     */
+    private driver: Cog | SpinDirection;
+    private parent_index: number;
     private tick_watchers: TickWatcher[] = [];
     private is_ticking = false;
 
@@ -27,7 +34,7 @@ class Cog {
         x: number,
         y: number,
         tooth_count: number,
-        spins_counter_clockwise: boolean,
+        driver_: Cog | SpinDirection,
         base_rotate = 0,
         serial_number?: number
     ) {
@@ -46,7 +53,7 @@ class Cog {
         // Set the starting position of the cog
         this.base_rotate = base_rotate;
         this.current_tooth = 0;
-        this.spins_cc = spins_counter_clockwise;
+        this.driver = driver_;
     }
 
     public static getCogBySerialNumber(cog_sn: number): Cog {
@@ -147,10 +154,28 @@ class Cog {
         return wire_to_elbow.addPoweredWireToPoint(end_point);
     }
 
+    private getSpinDirection(): SpinDirection{
+        if (this.driver instanceof Cog) {
+            // Spin the opposite direction as the parent
+            if(this.driver.getSpinDirection() === SpinDirection.CLOCKWISE){
+                return SpinDirection.COUNTER_CLOCKWISE;
+            }else{
+                return SpinDirection.CLOCKWISE;
+            }
+        } else {
+            return this.driver;
+        }
+    }
+
     private tickStatus(time: number){
         if(this.is_ticking){
             if(time - this.tick_start > TICK_LENGTH){
-                // Then the current tick is over, have to notify watchers
+                // Then the current tick is over
+                // Update the current tooth, keeping it positive and inside the count
+                this.current_tooth = this.getSpinDirection() === SpinDirection.CLOCKWISE ?
+                    (this.current_tooth + 1) % this.tooth_count :
+                    (this.current_tooth + this.tooth_count - 1) % this.tooth_count;
+                // Notify all watchers that the tick is done
                 this.is_ticking = false;
                 for(const watcher of this.tick_watchers) {
                     // Notify tick watchers that a tick has started
@@ -170,13 +195,20 @@ class Cog {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.translate(this.x, this.y);
         // calculate the rotation
-        let tick_angle = (2 * Math.PI) / this.tooth_count * (this.spins_cc ? -1 : 1);
-        let rest_delta = tick_angle * (this.current_tooth - 1);
-        let last_rest_angle = this.base_rotate + rest_delta;
-        let animation_progress_t = Math.min(time - this.tick_start, TICK_LENGTH);
-        let animation_progress = animation_progress_t / TICK_LENGTH;
-        let animate_delta = animation_progress * tick_angle;
-        ctx.rotate(last_rest_angle + animate_delta);
+        let tick_angle = (2 * Math.PI) / this.tooth_count;
+        let rest_delta = tick_angle * this.current_tooth;
+        let rest_angle = this.base_rotate + rest_delta;
+        const animate_delta = this.is_ticking ? (() => {
+            const animation_progress_t = Math.min(time - this.tick_start, TICK_LENGTH);
+            const animation_progress = animation_progress_t / TICK_LENGTH;
+            const absolute_delta = animation_progress * tick_angle;
+            if(this.getSpinDirection() === SpinDirection.CLOCKWISE) {
+                return absolute_delta;
+            }else{
+                return -1*absolute_delta;
+            }
+        })() : 0;
+        ctx.rotate(rest_angle + animate_delta);
         ctx.fillStyle = "silver";
         ctx.strokeStyle = "slateGray";
         // Use the renderer to draw the cog
@@ -196,16 +228,13 @@ class Cog {
      * finds the current index position of a tooth shifted for the cog's spin
      * @param tooth the index of the tooth to get the position of
      */
-    public getClockwiseIndexedToothPosition(tooth: number){
-        return this.spins_cc ?
-            (this.tooth_count - this.current_tooth + tooth) % this.tooth_count :
-            (this.current_tooth + tooth) % this.tooth_count;
+    public getIndexOfTooth(tooth: number){
+        return (this.current_tooth + tooth) % this.tooth_count;
     }
 
     // This will cause the cog to start a new movement cycle at the given time
     public startTick(startTime: number){
         this.is_ticking = true;
-        this.current_tooth = (this.current_tooth + 1) % this.tooth_count;
         this.tick_start = startTime;
         // Tell driven cogs to start ticking then too
         for(let driven_cog of this.driven_cogs){
@@ -239,9 +268,8 @@ class Cog {
         let new_base_rotate = new_cog_arc + Math.PI;
 
         // Create the new cog and add it to the list of driven cogs
-        let new_cog = new Cog(new_cog_x, new_cog_y, tooth_count, !this.spins_cc, new_base_rotate);
+        let new_cog = new Cog(new_cog_x, new_cog_y, tooth_count, this, new_base_rotate);
         this.driven_cogs.push(new_cog);
-        new_cog.parent = this;
         new_cog.parent_index = at_index;
         return new_cog;
     }

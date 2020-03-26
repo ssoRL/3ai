@@ -85,7 +85,7 @@ class WireOnCog {
             this.time_on = new Date().getTime();
         }
         // Check if the power is coming from the en or ex terminal
-        const current_en_index = this.cog.getClockwiseIndexedToothPosition(this.enter.index);
+        const current_en_index = this.cog.getIndexOfTooth(this.enter.index);
         const indexes_match = from.index === current_en_index;
         this.power_from_en = indexes_match && from.index === this.enter.index;
         // Wait for as long as the chanrge needs to pass thru the wire, then power children
@@ -102,7 +102,7 @@ class WireOnCog {
         end_point: CogTerminal
     ): boolean {
         if(terminal.isOuter !== end_point.isOuter) return false;
-        return terminal.index === this.cog.getClockwiseIndexedToothPosition(end_point.index);
+        return terminal.index === this.cog.getIndexOfTooth(end_point.index);
     }
 
     public isConnectedWith(terminal: CogTerminal): boolean {

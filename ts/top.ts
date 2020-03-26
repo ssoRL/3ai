@@ -3,9 +3,10 @@ let wire0: Wire;
 
 function init(){
     // Draw a bunch of cogs
-    cog12 = new Cog(200, 200, 6, true, 0, 1000);
-    let cog6 = cog12.addDrivenCog(1, 6);
+    cog12 = new Cog(200, 200, 6, SpinDirection.CLOCKWISE, 0, 1000);
+    let cog6 = cog12.addDrivenCog(0, 6);
     cog6.addDrivenCog(2, 5);
+    cog12.addDrivenCog(4, 8);
 
     // Draw some wires
     wire0 = new Wire({x: 490, y: 10}, {x: 400, y: 10});
