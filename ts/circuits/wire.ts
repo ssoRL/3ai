@@ -7,8 +7,8 @@ class Wire implements Conductor {
     private wire_time: number;
     /** Whether there is power running to this wire */
     private is_on = false;
-    /** When power first got to this wire */
-    private time_on = 0;
+    /** When the last on/off signal arrived */
+    private time_switched = 0;
 
     /** A list of the conductors this is powering */
     private powering: Conductor[] = [];
@@ -47,6 +47,13 @@ class Wire implements Conductor {
         return this.addPoweredWireToPoint(p);
     }
 
+    /**
+     * Adds a provided conductor to be powered by this wire
+     */
+    public addPoweredConductor(conductor: Conductor) {
+        this.powering.push(conductor);
+    }
+
     public addPoweredWiresToTerminal(cog_sn: number, orientation: "horz" | "vert", terminal: CogTerminal): CogTerminalConnector {
         const cog = Cog.getCogBySerialNumber(cog_sn);
         const terminal_p = cog.getCogTerminalPoint(terminal);
@@ -69,10 +76,10 @@ class Wire implements Conductor {
     }
 
     power(on: boolean): void {
-        this.is_on = on;
-        if(on){
-            this.time_on = new Date().getTime();
+        if(this.is_on !== on) {
+            this.time_switched = new Date().getTime();
         }
+        this.is_on = on;
         window.setTimeout(
             () => {
                 for(let conductor of this.powering){
@@ -85,21 +92,24 @@ class Wire implements Conductor {
 
     draw(ctx: CanvasRenderingContext2D, time: number) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-            const time_powered = time - this.time_on;
-        if(this.is_on && time_powered < this.wire_time){
+            const time_powered = time - this.time_switched;
+        if(time_powered < this.wire_time){
+            // Determine whice color is new, and which old
+            const newColor = this.is_on ? "red" : "black";
+            const oldColor = !this.is_on ? "red" : "black";
             // If the wire is in the middle of being powered...
             const p_half: Point = {
                 x: this.p0.x + this.vec.x * time_powered * SOL,
                 y: this.p0.y + this.vec.y * time_powered * SOL
             }
             // ...draw this wire in red as far as the power has gotten...
-            ctx.strokeStyle = "red";
+            ctx.strokeStyle = newColor;
             ctx.beginPath();
             ctx.moveTo(this.p0.x, this.p0.y);
             ctx.lineTo(p_half.x, p_half.y);
             ctx.stroke();
             // ...then the rest in black
-            ctx.strokeStyle = "black";
+            ctx.strokeStyle = oldColor;
             ctx.beginPath();
             ctx.moveTo(p_half.x, p_half.y);
             ctx.lineTo(this.p1.x, this.p1.y);
