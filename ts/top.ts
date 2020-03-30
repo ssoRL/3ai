@@ -1,5 +1,6 @@
 let cog12: Cog;
 let wire0: Wire;
+let canvas_controller: CanvasController;
 
 function init(){
     // Draw a bunch of cogs
@@ -36,6 +37,7 @@ function init(){
     and_away0.addPoweredWire("vert", 30);
 
     let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
+    canvas_controller = new CanvasController(canvas);
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
         window.requestAnimationFrame(draw.bind(this, ctx));
@@ -71,6 +73,6 @@ function draw(ctx: CanvasRenderingContext2D) {
     window.requestAnimationFrame(draw.bind(this, ctx));
 }
 
-window.addEventListener("DOMContentLoaded", (event) => {
+window.addEventListener("DOMContentLoaded", () => {
     init();
 });
