@@ -15,8 +15,7 @@ function init(){
         index: 5,
         isOuter: true
     }
-    wire1.addPoweredWiresToTerminal(1000, "horz", ct1)
-    const wire2 = wire1.addPoweredWire("horz", 300).addPoweredWire("vert", 370);
+    wire1.addPoweredWiresToCogTerminal(1000, "horz", ct1)
 
     const ct2: CogTerminal = {
         index: 0,
@@ -28,12 +27,13 @@ function init(){
 
     Cog.addWireToCog(1001, {index: 0, isOuter: false}, {index: 4, isOuter: true});
 
-    const wire_away0 = Cog.leadWireAwayFromCogTerminal(1001, {index: 4, isOuter: true}, {x: 680, y: 400}, "vert");
-    const wire_away1 = wire_away0.addPoweredWire("vert", 20);
+    const wire_away0 = Cog.leadWireAwayFromCogTerminal(1001, {index: 4, isOuter: true}, {x: 300, y: 400}, "vert");
 
-    const and_gate = new AndGate(680, 420);
-    wire_away1.addPoweredConductor(and_gate.left_terminal);
-    wire2.addPoweredConductor(and_gate.right_terminal);
+    const and_gate = new AndGate(680, 420, "S");
+    wire_away0.addPoweredWiresToAndTerminal(and_gate.right_terminal, "horz");
+    wire1.addPoweredWiresToAndTerminal(and_gate.left_terminal, "horz");
+    const and_away0 = and_gate.addPoweringWire();
+    and_away0.addPoweredWire("vert", 30);
 
     let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
@@ -47,12 +47,6 @@ function init(){
 function causeTick(){
     let time = new Date().getTime();
     cog12.startTick(time);
-    // let rng = Math.random();
-    // if(rng < 0.5){
-    //     wire0.power(true);
-    // }else{
-    //     wire0.power(false);
-    // }
     window.setTimeout(causeTick, 3000);
 }
 

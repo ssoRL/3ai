@@ -1,3 +1,5 @@
+type WireOrientation = "horz" | "vert";
+
 class Wire implements Conductor {
     private p0: Point;
     private p1: Point;
@@ -40,33 +42,46 @@ class Wire implements Conductor {
      * @param orientation Whether this is a horizontal or vertical wire
      * @param l The length of the wire
      */
-    public addPoweredWire(orientation: "horz" | "vert", l: number): Wire {
+    public addPoweredWire(orientation: WireOrientation, l: number): Wire {
         let p = orientation === "horz" ?
             {x: this.p1.x + l, y: this.p1.y} :
             {x: this.p1.x, y: this.p1.y + l};
         return this.addPoweredWireToPoint(p);
     }
-
-    /**
-     * Adds a provided conductor to be powered by this wire
-     */
-    public addPoweredConductor(conductor: Conductor) {
-        this.powering.push(conductor);
+    
+    public addPoweredWiresToAndTerminal(terminal: AndTerminal, ori: WireOrientation): Wire {
+        const terminal_p = terminal.getPosition();
+        const wire = this.addWiresToPoint(terminal_p, ori);
+        wire.powering.push(terminal);
+        return wire;
     }
 
-    public addPoweredWiresToTerminal(cog_sn: number, orientation: "horz" | "vert", terminal: CogTerminal): CogTerminalConnector {
+    public addPoweredWiresToCogTerminal(cog_sn: number, ori: WireOrientation, terminal: CogTerminal): CogTerminalConnector {
         const cog = Cog.getCogBySerialNumber(cog_sn);
         const terminal_p = cog.getCogTerminalPoint(terminal);
-        const length_to_elbow = orientation === "horz" ?
+        const wire = this.addWiresToPoint(terminal_p, ori);
+        return wire.addTerminalConnectionToChildren(cog, terminal);
+    }
+
+    /**
+     * Creates two wires running at right angles from this wire's p1
+     * to a specified point, 
+     * @param terminal_p The point to end at
+     * @param ori Whether this wire should start running horrizonal or vertical
+     * @returns The second wire that was created to hook to as needed
+     */
+    private addWiresToPoint(terminal_p: Point, ori: WireOrientation): Wire {
+        // Draw the wire running to the elbow, in the direction specified by ori
+        const length_to_elbow = ori === "horz" ?
             terminal_p.x - this.p1.x :
             terminal_p.y - this.p1.y; 
-        const wire_to_elbow = this.addPoweredWire(orientation, length_to_elbow);
-        const length_to_terminal = orientation === "vert" ?
+        const wire_to_elbow = this.addPoweredWire(ori, length_to_elbow);
+        // Draw the other wire segment, running to the terminal
+        const length_to_terminal = ori === "vert" ?
             terminal_p.x - this.p1.x :
             terminal_p.y - this.p1.y;
-        const alt_orientation = orientation === "horz" ? "vert" : "horz";
-        const wire_from_elbow = wire_to_elbow.addPoweredWire(alt_orientation, length_to_terminal);
-        return wire_from_elbow.addTerminalConnectionToChildren(cog, terminal);
+        const alt_orientation = ori === "horz" ? "vert" : "horz";
+        return wire_to_elbow.addPoweredWire(alt_orientation, length_to_terminal);
     }
 
     public addTerminalConnectionToChildren(cog: Cog, terminal: CogTerminal): CogTerminalConnector{
