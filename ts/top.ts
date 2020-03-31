@@ -3,6 +3,9 @@ let wire0: Wire;
 let canvas_controller: CanvasController;
 
 function init(){
+    let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
+    canvas_controller = new CanvasController(canvas);
+    
     // Draw a bunch of cogs
     cog12 = new Cog(200, 200, 6, SpinDirection.CLOCKWISE, 0, 1000);
     let cog6 = cog12.addDrivenCog(0, 6);
@@ -36,8 +39,6 @@ function init(){
     const and_away0 = and_gate.addPoweringWire();
     and_away0.addPoweredWire("vert", 30);
 
-    let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
-    canvas_controller = new CanvasController(canvas);
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
         window.requestAnimationFrame(draw.bind(this, ctx));

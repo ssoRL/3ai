@@ -18,7 +18,15 @@ class CanvasController {
         this.updateScale();
 
         this.canvas.addEventListener('click', (me) => {
-            console.log(`[${me.x}, ${me.y}]`)
+            const clickPoint: Point = {
+                x: me.offsetX/this.scale,
+                y: me.offsetY/this.scale
+            }
+            for(const clickable of this.clickables) {
+                if(clickable.isClicked(clickPoint)){
+                    clickable.click();
+                }
+            }
         })
     }
 

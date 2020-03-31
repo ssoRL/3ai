@@ -3,7 +3,7 @@ enum SpinDirection {
     COUNTER_CLOCKWISE
 }
 
-class Cog {
+class Cog implements Clickable{
     private static current_serial_number = 0;
     private static cog_directory: Map<number, Cog> = new Map();
     public serial_number: number;
@@ -25,6 +25,8 @@ class Cog {
      * or a spin direction if it's self-driven
      */
     private driver: Cog | SpinDirection;
+    /** If set true, the cog will change direction for it's next tick */
+    private change_direction = false;
     private parent_index: number;
     private tick_watchers: TickWatcher[] = [];
     private is_ticking = false;
@@ -36,6 +38,7 @@ class Cog {
         tooth_count: number,
         driver_: Cog | SpinDirection,
         base_rotate = 0,
+        //controller: CanvasController,
         serial_number?: number
     ) {
         if(serial_number){
@@ -54,6 +57,9 @@ class Cog {
         this.base_rotate = base_rotate;
         this.current_tooth = 0;
         this.driver = driver_;
+        if(!(this.driver instanceof Cog)) {
+            canvas_controller.registerClicable(this);
+        }
     }
 
     public static getCogBySerialNumber(cog_sn: number): Cog {
@@ -218,6 +224,23 @@ class Cog {
             // only show the serial number with dev flag
             ctx.fillText(`#${this.serial_number}`, 0, 10);
         }
+        // Draw a circle in the middle, colored to represent the direction of travel
+        ctx.fillStyle = (() => {
+            if(this.driver instanceof Cog){
+                return "slateGray"
+            }
+            const will_spin_clockwise = 
+                (this.driver === SpinDirection.CLOCKWISE && !this.change_direction) ||
+                (this.driver === SpinDirection.COUNTER_CLOCKWISE && this.change_direction);
+
+            return will_spin_clockwise ? "orange" : "purple";
+        })();
+        this.driver === SpinDirection.CLOCKWISE ?
+        "orange" :
+        "purple";
+        ctx.beginPath();
+        ctx.arc(0, 0, 10, 0, 2*Math.PI);
+        ctx.fill();
         // Draw it's wire if any
         if(this.etched_wire){
             this.etched_wire.draw(ctx, time);
@@ -235,6 +258,15 @@ class Cog {
     // This will cause the cog to start a new movement cycle at the given time
     public startTick(startTime: number){
         this.is_ticking = true;
+        if(this.change_direction){
+            // remove the change direction flag and then flip the direction of travel
+            this.change_direction = false;
+            if(this.driver === SpinDirection.CLOCKWISE) {
+                this.driver = SpinDirection.COUNTER_CLOCKWISE;
+            } else if (this.driver == SpinDirection.COUNTER_CLOCKWISE) {
+                this.driver = SpinDirection.CLOCKWISE;
+            }
+        }
         this.tick_start = startTime;
         // Tell driven cogs to start ticking then too
         for(let driven_cog of this.driven_cogs){
@@ -253,7 +285,7 @@ class Cog {
      * indexing increments from there in a clockwise direction
      * @param toothCount the number of teeth in the new cog
      */
-    public addDrivenCog(at_index: number, tooth_count: number){
+    public addDrivenCog(at_index: number, tooth_count: number): Cog{
         // Get the new cog's renderer so info on it can be gleaned
         let new_cog_renderer = CogRendererProvider.getRenderer(tooth_count);
 
@@ -276,5 +308,16 @@ class Cog {
 
     public addTickWatcher(watcher: TickWatcher) {
         this.tick_watchers.push(watcher);
+    }
+    
+    isClicked(p: Point): boolean {
+        const x_diff = this.x - p.x;
+        const y_diff = this.y - p.y;
+        const distance = Math.sqrt(x_diff*x_diff + y_diff*y_diff);
+        return distance < this.renderer.inner_radius;
+    }
+
+    click(): void {
+        this.change_direction = true;
     }
 }
