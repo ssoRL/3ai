@@ -23,17 +23,31 @@ class CogTerminalConnector implements Conductor, TickWatcher {
             }
         }
         this.endTick();
-        if(SHOW_HELP_GRAPICS) {
-            // calculate the position of this terminal
-            if(this.in_power instanceof Wire) {
-                if(this.out_power instanceof Wire) {
-                    throw "3AI Error: terminal should NOT be between two wires";
-                }
-                this.p = this.out_power[0].getCogTerminalPoint(this.out_power[1]);
-            } else {
-                this.p = this.in_power[0].getCogTerminalPoint(this.in_power[1]);
+        if(this.in_power instanceof Wire) {
+            if(this.out_power instanceof Wire) {
+                throw "3AI Error: terminal should NOT be between two wires";
+            }
+            this.p = this.out_power[0].getCogTerminalPoint(this.out_power[1]);
+        } else {
+            this.p = this.in_power[0].getCogTerminalPoint(this.in_power[1]);
+        }
+
+        // Add this cog terminal connection to the etched wire's list if there is one
+        if(this.in_power instanceof Wire) {
+            this.in_power.addTerminalConnectionToChildren(this);
+        } else {
+            if(this.in_power[0].etched_wire){
+                this.in_power[0].etched_wire.out_terminals.push(this);
             }
         }
+    }
+
+    public getInTerminal(): CogTerminal {
+        if(this.in_power instanceof Wire){
+            throw "3AI Error: Wire's have no terminal definition"
+        }
+         return this.in_power[1];
+        
     }
 
     isConnected(source: PowerSource): boolean {
@@ -116,6 +130,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
             ctx.arc(this.p.x, this.p.y, 7, 0, 2*Math.PI);
             ctx.stroke();
         }
+        // only draw if wire. Cogs take care of their own drawing
         if(this.out_power instanceof Wire) this.out_power.draw(ctx, time);
     }
 }

@@ -26,7 +26,7 @@ class WireOnCog {
     private arc_length: number;
     /** The tiem it takes the power to move thru the arc part of the wire */
     private arc_wire_time: number;
-    public out_terminal: CogTerminalConnector | undefined;
+    public out_terminals: CogTerminalConnector[] = [];
 
 
     /** true if the power is from the enter, false if it's form the exit */
@@ -51,12 +51,12 @@ class WireOnCog {
         this.exit = exit_;
 
         // calculate the arcs
-        this.en_arc = section_arc * enter_.index + (enter_.isOuter ? section_arc/2 : 0);
-        this.ex_arc = section_arc * exit_.index + (exit_.isOuter ? section_arc/2 : 0);
+        this.en_arc = section_arc * enter_.index + (enter_.outer ? section_arc/2 : 0);
+        this.ex_arc = section_arc * exit_.index + (exit_.outer ? section_arc/2 : 0);
 
         // Get the distance that the various points will be from the center
-        const en_r = enter_.isOuter ? outer_radius : inner_radius;
-        const ex_r = exit_.isOuter ? outer_radius : inner_radius;
+        const en_r = enter_.outer ? outer_radius : inner_radius;
+        const ex_r = exit_.outer ? outer_radius : inner_radius;
         this.mid_r = inner_radius / 2;
 
         // calculate the points 
@@ -86,22 +86,31 @@ class WireOnCog {
         }
         // Check if the power is coming from the en or ex terminal
         const current_en_index = this.cog.getIndexOfTooth(this.enter.index);
-        const indexes_match = from.index === current_en_index;
-        this.power_from_en = indexes_match && from.index === this.enter.index;
+        this.power_from_en = from.index === current_en_index;
         // Wait for as long as the chanrge needs to pass thru the wire, then power children
         window.setTimeout(
             () => {
-                if(this.out_terminal) this.out_terminal.power(this.is_on);
+                const power_from = this.power_from_en ? this.exit : this.enter;
+                for(const out_terminal of this.out_terminals) {
+                    if(this.terminalConnectedWith(out_terminal.getInTerminal(), power_from)){
+                        out_terminal.power(this.is_on);
+                    }
+                }
             },
             this.en_wire_time + this.arc_wire_time + this.ex_wire_time
         )
     }
 
+    /**
+     * Checks if a given terminal touches the wire
+     * @param terminal The terminal in un-rotated tooth index
+     * @param end_point The endpoint of the wire to test
+     */
     private terminalConnectedWith(
         terminal: CogTerminal,
         end_point: CogTerminal
     ): boolean {
-        if(terminal.isOuter !== end_point.isOuter) return false;
+        if(terminal.outer !== end_point.outer) return false;
         return terminal.index === this.cog.getIndexOfTooth(end_point.index);
     }
 
@@ -195,6 +204,8 @@ class WireOnCog {
                 ctx.stroke();
             }
         }
-        if(this.out_terminal) this.out_terminal.draw(ctx, time);
+        for(const out_terminal of this.out_terminals){
+            out_terminal.draw(ctx, time);
+        }
     }
 }

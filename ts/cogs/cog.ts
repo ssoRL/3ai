@@ -76,9 +76,9 @@ class Cog implements Clickable{
         }
 
         let section_arc = this.renderer.section_arc;
-        let outer_arc_diff = ct.isOuter ? section_arc/2 : 0;
+        let outer_arc_diff = ct.outer ? section_arc/2 : 0;
         let arc = this.base_rotate + ct.index * section_arc + outer_arc_diff;
-        let radius = ct.isOuter ? this.renderer.outer_radius : this.renderer.inner_radius;
+        let radius = ct.outer ? this.renderer.outer_radius : this.renderer.inner_radius;
         let untransformed_p = getPoint(radius, arc);
         return {
             x: untransformed_p.x + this.x, 
@@ -104,32 +104,46 @@ class Cog implements Clickable{
         return wire;
     }
 
-    public static addTerminalConnectionBetweenCogs(cog_sn: number, driven_index: number)/*: CogTerminalConnector*/ {
-        const cog1 = Cog.getCogBySerialNumber(cog_sn)
+    public static addTerminalConnectionBetweenCogs(from_cog_sn: number, to_cog_sn: number): CogTerminalConnector {
+        const from_cog = Cog.getCogBySerialNumber(from_cog_sn)
 
-        const cog2 = cog1.driven_cogs[driven_index];
-        if(!cog2){
-            throw `3AI Error: Cog with serial number ${cog_sn} does not have a driven cog ${driven_index}`
-        }
+        let [driver_cog, driven_cog] = ((): [Cog, Cog] => {
+            if(from_cog.driver instanceof Cog && from_cog.driver.serial_number === to_cog_sn){
+                return [from_cog.driver, from_cog];
+            } else {
+                for(const cog of from_cog.driven_cogs) {
+                    if(cog.serial_number === to_cog_sn) return [from_cog, cog];
+                }
+            }
+            throw `3AI Error: Cog with serial number ${from_cog_sn} does not border cog with serial number ${to_cog_sn}`;
+        })();
 
-        const terminal1: CogTerminal = {
-            index: cog2.parent_index,
-            isOuter: true
+        const driver_terminal: CogTerminal = {
+            index: driven_cog.parent_index,
+            outer: true
         };
-        const terminal2: CogTerminal = {
+        const driven_terminal: CogTerminal = {
             index: 0,
-            isOuter: false
+            outer: false
         }
 
-        const terminal_connection = new CogTerminalConnector(
-            [cog1, terminal1],
-            [cog2, terminal2]
+        // determine what order the driver/driven are in
+        const terminal_connection = (
+            driver_cog.serial_number === from_cog.serial_number ?
+            new CogTerminalConnector(
+                [driver_cog, driver_terminal],
+                [driven_cog, driven_terminal]
+            ) :
+            new CogTerminalConnector(
+                [driven_cog, driven_terminal],
+                [driver_cog, driver_terminal]
+            )
         );
 
-        if(!cog1.etched_wire) {
-            throw "3AI Error: cog does not have an etched wire"
+
+        if(!from_cog.etched_wire) {
+            throw `3AI Error: cog ${driver_cog.serial_number} does not have an etched wire`;
         }
-        cog1.etched_wire.out_terminal = terminal_connection;
         return terminal_connection;
     }
 
@@ -154,10 +168,31 @@ class Cog implements Clickable{
         if(!cog.etched_wire) {
             throw "3AI Error: You may not attach a terminal out from a cog with no wire!"
         }
-        cog.etched_wire.out_terminal = terminal_connect;
 
         // Create the second part of the wire to the endpoint
         return wire_to_elbow.addPoweredWireToPoint(end_point);
+    }
+
+    public static leadWireBetweenCogTerminals(
+        from_cog_sn: number,
+        from_terminal: CogTerminal,
+        to_cog_sn: number,
+        to_terminal: CogTerminal,
+        ori: "horz" | "vert"
+    ) {
+        const from_cog = Cog.getCogBySerialNumber(from_cog_sn);
+        const to_cog = Cog.getCogBySerialNumber(to_cog_sn);
+        const from_point = from_cog.getCogTerminalPoint(from_terminal);
+        const to_point = to_cog.getCogTerminalPoint(to_terminal);
+        const midpoint: Point = (
+            ori === "horz" ?
+            {x: to_point.x, y: from_point.y} : 
+            {x: from_point.x, y: to_point.y}
+        );
+        const out_wire = new Wire(from_point, midpoint);
+        new CogTerminalConnector([from_cog, from_terminal], out_wire);
+        const in_wire = out_wire.addPoweredWireToPoint(to_point);
+        new CogTerminalConnector(in_wire, [to_cog, to_terminal]);
     }
 
     private getSpinDirection(): SpinDirection{
@@ -220,9 +255,9 @@ class Cog implements Clickable{
         // Use the renderer to draw the cog
         this.renderer.draw(ctx);
         if(SHOW_HELP_GRAPICS){
-            ctx.fillStyle = "slateGray";
+            ctx.fillStyle = "black";
             // only show the serial number with dev flag
-            ctx.fillText(`#${this.serial_number}`, 0, 10);
+            ctx.fillText(`#${this.serial_number}`, 10, 10);
         }
         // Draw a circle in the middle, colored to represent the direction of travel
         ctx.fillStyle = (() => {
@@ -257,7 +292,7 @@ class Cog implements Clickable{
 
     // This will cause the cog to start a new movement cycle at the given time
     public startTick(startTime: number){
-        this.is_ticking = true;
+        // If the cog is changing direction, don't tick this cycle
         if(this.change_direction){
             // remove the change direction flag and then flip the direction of travel
             this.change_direction = false;
@@ -266,15 +301,17 @@ class Cog implements Clickable{
             } else if (this.driver == SpinDirection.COUNTER_CLOCKWISE) {
                 this.driver = SpinDirection.CLOCKWISE;
             }
-        }
-        this.tick_start = startTime;
-        // Tell driven cogs to start ticking then too
-        for(let driven_cog of this.driven_cogs){
-            driven_cog.startTick(startTime);
-        }
-        // Notify tick watchers that a tick has started
-        for(const watcher of this.tick_watchers) {
-            watcher.startTick();
+        } else {
+            this.is_ticking = true;
+            this.tick_start = startTime;
+            // Tell driven cogs to start ticking then too
+            for(let driven_cog of this.driven_cogs){
+                driven_cog.startTick(startTime);
+            }
+            // Notify tick watchers that a tick has started
+            for(const watcher of this.tick_watchers) {
+                watcher.startTick();
+            }
         }
     }
 
@@ -318,6 +355,10 @@ class Cog implements Clickable{
     }
 
     click(): void {
-        this.change_direction = true;
+        if(TICKING){
+            this.change_direction = true;
+        } else {
+            this.startTick(new Date().getTime());
+        }
     }
 }

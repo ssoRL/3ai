@@ -56,11 +56,11 @@ class Wire implements Conductor {
         return wire;
     }
 
-    public addPoweredWiresToCogTerminal(cog_sn: number, ori: WireOrientation, terminal: CogTerminal): CogTerminalConnector {
+    public addPoweredWiresToCogTerminal(cog_sn: number, ori: WireOrientation, terminal: CogTerminal) {
         const cog = Cog.getCogBySerialNumber(cog_sn);
         const terminal_p = cog.getCogTerminalPoint(terminal);
         const wire = this.addWiresToPoint(terminal_p, ori);
-        return wire.addTerminalConnectionToChildren(cog, terminal);
+        return new CogTerminalConnector(this, [cog, terminal]);
     }
 
     /**
@@ -84,10 +84,8 @@ class Wire implements Conductor {
         return wire_to_elbow.addPoweredWire(alt_orientation, length_to_terminal);
     }
 
-    public addTerminalConnectionToChildren(cog: Cog, terminal: CogTerminal): CogTerminalConnector{
-        const terminal_connect = new CogTerminalConnector(this, [cog, terminal]);
-        this.powering.push(terminal_connect);
-        return terminal_connect;
+    public addTerminalConnectionToChildren(terminal: CogTerminalConnector): void{
+        this.powering.push(terminal);
     }
 
     power(on: boolean): void {

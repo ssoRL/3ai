@@ -1,4 +1,4 @@
 interface CogTerminal {
-    isOuter: boolean;
+    outer: boolean;
     index: number;
 }
