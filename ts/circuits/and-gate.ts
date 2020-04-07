@@ -49,16 +49,14 @@ class AndGate {
         this.left_terminal = new AndTerminal(this, true);
         this.right_terminal = new AndTerminal(this, false);
         this.p = {x: x_, y: y_};
+        this.addPoweringWire();
     }
 
     /**
      * Add a wire of no length at the end of the and gate
      * can run other wires away from it
      */
-    public addPoweringWire(): Wire {
-        if(this.powering) {
-            throw "3AI Error: An and gate may power only a single wire";
-        }
+    private addPoweringWire() {
         const point: Point = (() => {
             switch (this.ori) {
                 case "N":
@@ -71,7 +69,11 @@ class AndGate {
                     return {x: this.p.x - AND_RADIUS, y: this.p.y};
             }
         })()
-        return this.powering = new Wire(point, point);
+        this.powering = new Wire(point, point);
+    }
+
+    public getOutWire(){
+        return this.powering;
     }
 
     public getTerminalPosition(is_left: boolean): Point {

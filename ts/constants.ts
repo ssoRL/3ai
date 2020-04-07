@@ -14,4 +14,4 @@ const SHOW_HELP_GRAPICS = true;
 const SOL = 1;
 
 /** Weather to tick or not */
-const TICKING = true;
+const TICKING = false;

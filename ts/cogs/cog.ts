@@ -86,37 +86,35 @@ class Cog implements Clickable{
         }
     }
 
-    /**
-     * Adds a wire-on-cog to this cog
-     * @param enter The cog terminal where the wire starts
-     * @param exit The cog terminal where it leaves the cog
-     * @param dir Clockwise (cw) or counter-clockwise(cc)
-     */
-    public static addWireToCog(cog_sn: number, enter: CogTerminal, exit: CogTerminal): WireOnCog{
-        const cog = Cog.getCogBySerialNumber(cog_sn);
-        if(cog.etched_wire) {
-            throw "3AI Error: A cog may not have more than one wire.";
+    public getRenderInfo() {
+        return {
+            inner_radius: this.renderer.inner_radius,
+            outer_radius: this.renderer.outer_radius,
+            section_arc: this.renderer.section_arc
         }
-
-        const rnd = cog.renderer;
-        const wire = new WireOnCog(cog, enter, exit, rnd.outer_radius, rnd.inner_radius, rnd.section_arc);
-        cog.etched_wire = wire;
-        return wire;
     }
 
-    public static addTerminalConnectionBetweenCogs(from_cog_sn: number, to_cog_sn: number): CogTerminalConnector {
-        const from_cog = Cog.getCogBySerialNumber(from_cog_sn)
+    /** Sets terminal connections to all this cog's neighbors */
+    public setOutgoingConnections() {
+        if(this.driver instanceof Cog){
+            this.addTerminalConnectionTo(this.driver, true);
+        }
+        for(const cog of this.driven_cogs) {
+            this.addTerminalConnectionTo(cog);
+        }
+    }
 
-        let [driver_cog, driven_cog] = ((): [Cog, Cog] => {
-            if(from_cog.driver instanceof Cog && from_cog.driver.serial_number === to_cog_sn){
-                return [from_cog.driver, from_cog];
-            } else {
-                for(const cog of from_cog.driven_cogs) {
-                    if(cog.serial_number === to_cog_sn) return [from_cog, cog];
-                }
-            }
-            throw `3AI Error: Cog with serial number ${from_cog_sn} does not border cog with serial number ${to_cog_sn}`;
-        })();
+    /**
+     * Adds a terminal connection between two cogs
+     * @param to_cog_sn The serial number of the cog to connect to
+     * @param this_is_driven True if this cog is driven by to_cog
+     */
+    private addTerminalConnectionTo(to_cog: Cog, this_is_driven = false): CogTerminalConnector {
+        let [driver_cog, driven_cog]: [Cog, Cog] = (
+            this_is_driven ?
+            [to_cog, this] :
+            [this, to_cog]
+        )
 
         const driver_terminal: CogTerminal = {
             index: driven_cog.parent_index,
@@ -129,7 +127,7 @@ class Cog implements Clickable{
 
         // determine what order the driver/driven are in
         const terminal_connection = (
-            driver_cog.serial_number === from_cog.serial_number ?
+            driver_cog.serial_number === this.serial_number ?
             new CogTerminalConnector(
                 [driver_cog, driver_terminal],
                 [driven_cog, driven_terminal]
@@ -140,59 +138,7 @@ class Cog implements Clickable{
             )
         );
 
-
-        if(!from_cog.etched_wire) {
-            throw `3AI Error: cog ${driver_cog.serial_number} does not have an etched wire`;
-        }
         return terminal_connection;
-    }
-
-    public static leadWireAwayFromCogTerminal(
-        cog_sn: number,
-        terminal: CogTerminal,
-        end_point: Point,
-        ori: "horz" | "vert"
-    ): Wire {
-        const cog = Cog.getCogBySerialNumber(cog_sn);
-        const terminal_point = cog.getCogTerminalPoint(terminal);
-
-        // Create the wire running away from the cog
-        const wire_to_elbow_p1 : Point = {
-            x: ori === "horz" ? end_point.x : terminal_point.x,
-            y: ori === "vert" ? end_point.y : terminal_point.y
-        }
-        const wire_to_elbow = new Wire(terminal_point, wire_to_elbow_p1);
-
-        // connect that wire to the cog
-        const terminal_connect = new CogTerminalConnector([cog, terminal], wire_to_elbow);
-        if(!cog.etched_wire) {
-            throw "3AI Error: You may not attach a terminal out from a cog with no wire!"
-        }
-
-        // Create the second part of the wire to the endpoint
-        return wire_to_elbow.addPoweredWireToPoint(end_point);
-    }
-
-    public static leadWireBetweenCogTerminals(
-        from_cog_sn: number,
-        from_terminal: CogTerminal,
-        to_cog_sn: number,
-        to_terminal: CogTerminal,
-        ori: "horz" | "vert"
-    ) {
-        const from_cog = Cog.getCogBySerialNumber(from_cog_sn);
-        const to_cog = Cog.getCogBySerialNumber(to_cog_sn);
-        const from_point = from_cog.getCogTerminalPoint(from_terminal);
-        const to_point = to_cog.getCogTerminalPoint(to_terminal);
-        const midpoint: Point = (
-            ori === "horz" ?
-            {x: to_point.x, y: from_point.y} : 
-            {x: from_point.x, y: to_point.y}
-        );
-        const out_wire = new Wire(from_point, midpoint);
-        new CogTerminalConnector([from_cog, from_terminal], out_wire);
-        const in_wire = out_wire.addPoweredWireToPoint(to_point);
-        new CogTerminalConnector(in_wire, [to_cog, to_terminal]);
     }
 
     private getSpinDirection(): SpinDirection{
