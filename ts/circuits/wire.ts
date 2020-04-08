@@ -38,14 +38,26 @@ class Wire implements Conductor {
     /**
      * Creates a new child wire stretching away from this one, choosing a point such
      * that the lines will be horizonal or vertical
-     * @param p The starting point of the wire
      * @param orientation Whether this is a horizontal or vertical wire
-     * @param l The length of the wire
+     * @param l The length of the new wire
      */
-    public addPoweredWire(orientation: WireOrientation, l: number): Wire {
+    public addStraightWireFor(orientation: WireOrientation, l: number): Wire {
         let p = orientation === "horz" ?
             {x: this.p1.x + l, y: this.p1.y} :
             {x: this.p1.x, y: this.p1.y + l};
+        return this.addPoweredWireToPoint(p);
+    }
+
+    /**
+     * Creates a new child wire stretching away from this one, choosing a point such
+     * that the lines will be horizonal or vertical
+     * @param orientation Whether this is a horizontal or vertical wire
+     * @param target the x or y coord to end on
+     */
+    public addStraightWireTo(orientation: WireOrientation, target: number): Wire {
+        let p = orientation === "horz" ?
+            {x: target, y: this.p1.y} :
+            {x: this.p1.x, y: target};
         return this.addPoweredWireToPoint(p);
     }
     
@@ -75,13 +87,13 @@ class Wire implements Conductor {
         const length_to_elbow = ori === "horz" ?
             terminal_p.x - this.p1.x :
             terminal_p.y - this.p1.y; 
-        const wire_to_elbow = this.addPoweredWire(ori, length_to_elbow);
+        const wire_to_elbow = this.addStraightWireFor(ori, length_to_elbow);
         // Draw the other wire segment, running to the terminal
         const length_to_terminal = ori === "vert" ?
             terminal_p.x - this.p1.x :
             terminal_p.y - this.p1.y;
         const alt_orientation = ori === "horz" ? "vert" : "horz";
-        return wire_to_elbow.addPoweredWire(alt_orientation, length_to_terminal);
+        return wire_to_elbow.addStraightWireFor(alt_orientation, length_to_terminal);
     }
 
     public addTerminalConnectionToChildren(terminal: CogTerminalConnector): void{
