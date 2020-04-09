@@ -4,8 +4,6 @@ const AND_POWER_UP_TIME = 10;
 const AND_POWER_DOWN_TIME = 1000;
 /** The radius of the circle describing this AND gate */
 const AND_RADIUS = 20;
-/** The direction this gate points in cardinal direction */
-type AndGateOrientation = "N" | "E" | "S" | "W";
 
 class AndTerminal implements Conductor {
     public is_on = false;
@@ -40,11 +38,11 @@ class AndGate {
     private powering: Wire;
     /** The point centered between the two terminals */
     private p: Point;
-    private ori: AndGateOrientation;
+    private ori: CardinalOrientation;
     private time_switched = 0;
     private is_on = false;
 
-    constructor(x_: number, y_: number, ori_: AndGateOrientation){
+    constructor(x_: number, y_: number, ori_: CardinalOrientation){
         this.ori = ori_;
         this.left_terminal = new AndTerminal(this, true);
         this.right_terminal = new AndTerminal(this, false);

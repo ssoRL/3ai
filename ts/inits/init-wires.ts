@@ -43,14 +43,17 @@ function init_wires(): Wire {
     RunWire.betweenCogTerminals(2000, 0, 4001, 3, "horz");
     RunWire.addWireToCog(4001, {index: 3, outer: true}, {index: 1, outer: true});
 
-    // Run wires to an AND gate in the upper left
+    // Run wires to AND gate in the upper left
     const up_left_and_gate = new AndGate(125, 400, "N");
     const wire_out_of_1003 = RunWire.awayFromCogTerminal(1003, 2);
     const up_left_wire_out = wire_out_of_1003.addStraightWireFor("vert", 100);
     const  wire_out_of_2001 = RunWire.awayFromCogTerminal(2001, 1).addStraightWireFor("vert", 50);
     up_left_wire_out.addPoweredWiresToAndTerminal(up_left_and_gate.left_terminal, "horz");
     wire_out_of_2001.addPoweredWiresToAndTerminal(up_left_and_gate.right_terminal, "horz");
-    const up_left_out_of_and_wire = up_left_and_gate.getOutWire();
+    // Then on to the blue gem
+    const blue_gem = new Gem({x: 175, y: 325}, 20, "blue");
+    const blue_gem_terminal = blue_gem.addTerminal("W");
+    up_left_and_gate.getOutWire().addPoweredWiresToGemTerminal(blue_gem_terminal, "vert");
 
     // Run wires to the center right AND gate
     const center_right_and_gate = new AndGate(700, 350, "E");
