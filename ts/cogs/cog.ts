@@ -173,6 +173,10 @@ class Cog implements Clickable{
         }
     }
 
+    private easeTickAnimaiton(t: number): number{
+        return t<.5 ? 2*t*t : -1+(4-2*t)*t;
+    }
+
     public draw(ctx: CanvasRenderingContext2D, time: number) {
         // Check if this cog is still ticking or not
         this.tickStatus(time);
@@ -189,7 +193,7 @@ class Cog implements Clickable{
         const animate_delta = this.is_ticking ? (() => {
             const animation_progress_t = Math.min(time - this.tick_start, TICK_LENGTH);
             const animation_progress = animation_progress_t / TICK_LENGTH;
-            const absolute_delta = animation_progress * tick_angle;
+            const absolute_delta = this.easeTickAnimaiton(animation_progress) * tick_angle;
             if(this.getSpinDirection() === SpinDirection.CLOCKWISE) {
                 return absolute_delta;
             }else{

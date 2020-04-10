@@ -1,5 +1,5 @@
 /** Length of a tick in milliseconds */
-const TICK_LENGTH = 200;
+const TICK_LENGTH = 400;
 
 /** How often to call for a new tick */
 const TICK_EVERY = 1000
