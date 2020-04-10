@@ -29,11 +29,11 @@ class WireOnCog {
     public out_terminals: CogTerminalConnector[] = [];
 
 
-    /** true if the power is from the enter, false if it's form the exit */
-    private power_from_en: boolean;
+    /** where the power is coming from, or no if it's off */
+    private power_from: "en" | "ex" | "no";
     /** When power first got to this wire */
     private time_on = 0;
-    private is_on: boolean;
+    private is_on = false;
 
     /** The radius of the circle that the wire inscribes in the arc */
     private mid_r: number;
@@ -80,22 +80,33 @@ class WireOnCog {
     }
 
     power(on: boolean, from: CogTerminal): void {
-        this.is_on = on;
         if(on){
             this.time_on = new Date().getTime();
         }
         // Check if the power is coming from the en or ex terminal
         const current_en_index = this.cog.getIndexOfTooth(this.enter.index);
-        this.power_from_en = from.index === current_en_index;
+        const current_power_from = from.index === current_en_index ? "en" : "ex";
+        if(!on && this.power_from != current_power_from) {
+            // Prevent a cog wire from being shut down by a lack of power from the un-powered side
+            return;
+        } else {
+            this.is_on = on;
+            if(!on) {
+                this.power_from = "no";
+            } else {
+                this.power_from = current_power_from;
+            }
+        }
         // Wait for as long as the chanrge needs to pass thru the wire, then power children
         window.setTimeout(
             () => {
-                const power_from = this.power_from_en ? this.exit : this.enter;
+                const power_from = this.power_from === "en" ? this.exit : this.enter;
                 for(const out_terminal of this.out_terminals) {
                     if(this.terminalConnectedWith(out_terminal.getInTerminal(), power_from)){
                         out_terminal.power(this.is_on);
                     }
                 }
+                if(!this.is_on) this.power_from = "no";
             },
             this.en_wire_time + this.arc_wire_time + this.ex_wire_time
         )
@@ -134,12 +145,12 @@ class WireOnCog {
         } else {
             // only going to draw some in the on color
             // determine the color that is at the en and ex points
-            const en_color = this.power_from_en ? "red" : "black";
-            const ex_color = this.power_from_en ? "black" : "red";
+            const en_color = this.power_from === "en" ? "red" : "black";
+            const ex_color = this.power_from === "ex" ? "red" : "black";
             // determine the powered time equivilant. this is just powered time
             // if starting from the en, but from ex, it will be the inverse since
             // the red line needs to move "backwards"
-            const pte = this.power_from_en ? time_powered : total_wire_time - time_powered;
+            const pte = this.power_from === "en" ? time_powered : total_wire_time - time_powered;
             if(pte < this.en_wire_time){
                 // The split happens on the en wire
                 const mid_p: Point = {

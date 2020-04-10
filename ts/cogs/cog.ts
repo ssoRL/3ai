@@ -30,6 +30,7 @@ class Cog implements Clickable{
     private parent_index: number;
     private tick_watchers: TickWatcher[] = [];
     private is_ticking = false;
+    private stopped = false;
 
 
     constructor(
@@ -205,20 +206,27 @@ class Cog implements Clickable{
             // only show the serial number with dev flag
             ctx.fillText(`#${this.serial_number}`, 10, 10);
         }
-        // Draw a circle in the middle, colored to represent the direction of travel
-        ctx.fillStyle = (() => {
-            if(this.driver instanceof Cog){
-                return "slateGray"
-            }
-            const will_spin_clockwise = 
-                (this.driver === SpinDirection.CLOCKWISE && !this.change_direction) ||
-                (this.driver === SpinDirection.COUNTER_CLOCKWISE && this.change_direction);
-
-            return will_spin_clockwise ? "orange" : "purple";
-        })();
-        this.driver === SpinDirection.CLOCKWISE ?
-        "orange" :
-        "purple";
+        if(CLICK_ACTION === "change") {
+            // Draw a circle in the middle, colored to represent the direction of travel
+            ctx.fillStyle = (() => {
+                if(this.driver instanceof Cog){
+                    return "slateGray"
+                }
+                const will_spin_clockwise = 
+                    (this.driver === SpinDirection.CLOCKWISE && !this.change_direction) ||
+                    (this.driver === SpinDirection.COUNTER_CLOCKWISE && this.change_direction);
+    
+                return will_spin_clockwise ? "orange" : "purple";
+            })();
+        } else {
+            // Draw a circle in the middle , colored to represent stopped or going
+            ctx.fillStyle = (() => {
+                if(this.driver instanceof Cog){
+                    return "slateGray"
+                }
+                return this.stopped ? "red" : "green";
+            })();
+        }
         ctx.beginPath();
         ctx.arc(0, 0, 10, 0, 2*Math.PI);
         ctx.fill();
@@ -247,7 +255,7 @@ class Cog implements Clickable{
             } else if (this.driver == SpinDirection.COUNTER_CLOCKWISE) {
                 this.driver = SpinDirection.CLOCKWISE;
             }
-        } else {
+        } else if(!this.stopped) {
             this.is_ticking = true;
             this.tick_start = startTime;
             // Tell driven cogs to start ticking then too
@@ -302,7 +310,11 @@ class Cog implements Clickable{
 
     click(): void {
         if(TICKING){
-            this.change_direction = true;
+            if(CLICK_ACTION === "change") {
+                this.change_direction = true;
+            } else {
+                this.stopped = !this.stopped;
+            }
         } else {
             this.startTick(new Date().getTime());
         }

@@ -1,7 +1,7 @@
 type PowerSource = [Cog, CogTerminal] | Wire;
 
 class CogTerminalConnector implements Conductor, TickWatcher {
-    is_on: boolean;
+    is_on = false;
     private p: Point;
     /** The wire or cog that power comes from */
     private in_power: PowerSource;
@@ -63,17 +63,20 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     }
 
     private sendPowerIfConnected(){
-        if(this.is_on && this.in_connected && this.out_connected) {
+        if(this.in_connected && this.out_connected){
             if(this.out_power instanceof Wire) {
-                this.out_power.power(true);
+                this.out_power.power(this.is_on);
             } else {
                 const cog_wire = this.out_power[0].etched_wire;
-                cog_wire?.power(true, this.out_power[1]);
+                cog_wire?.power(this.is_on, this.out_power[1]);
             }
         }
     }
 
     public power(on: boolean): void {
+        if(this.in_power instanceof Wire) {
+            console.log(`power from wire ${on}`);
+        }
         this.is_on = on;
         this.sendPowerIfConnected();
     }
@@ -82,6 +85,9 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     startTick(): void {
         this.in_connected = false;
         this.out_connected = false;
+        if(!(this.in_power instanceof Wire)) {
+            this.is_on = false;
+        }
         if(this.out_power instanceof Wire) {
             this.out_power.power(false);
         }else{

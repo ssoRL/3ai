@@ -12,17 +12,18 @@ function init_cogs(): Cog[]{
     up_left_1001.addDrivenCog(1, 6);
 
     // The cluster in the center
-    const center_driver = new Cog(400, 700, 6, SpinDirection.CLOCKWISE, 0, 2000);
+    const center_driver = new Cog(400, 700, 6, SpinDirection.COUNTER_CLOCKWISE, 0, 2000);
     driver_cogs.push(center_driver);
     center_driver.addDrivenCog(3, 6).addDrivenCog(4, 8);
     center_driver.addDrivenCog(1, 6);
     
-    // Cogs in the lower right
-    const low_right_driver = new Cog(800, 650, 6, SpinDirection.CLOCKWISE, 0, 3000);
+    // Cogs in the middle right
+    const low_right_driver = new Cog(800, 650, 6, SpinDirection.COUNTER_CLOCKWISE, 0, 3000);
     driver_cogs.push(low_right_driver);
     low_right_driver.addDrivenCog(5, 8);
     low_right_driver.addDrivenCog(3, 6);
 
+    // Cogs in the lower right
     const low_driver = new Cog(800, 950, 12, SpinDirection.CLOCKWISE, 0.2, 4000);
     driver_cogs.push(low_driver);
     low_driver.addDrivenCog(6, 6);

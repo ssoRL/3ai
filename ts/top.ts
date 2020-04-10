@@ -20,7 +20,7 @@ function init(){
 
 function causeTick(){
     let time = new Date().getTime();
-    window.setTimeout(causeTick, 3000);
+    window.setTimeout(causeTick, TICK_EVERY);
     for(const cog of driver_cogs) {
         cog.startTick(time);
     }

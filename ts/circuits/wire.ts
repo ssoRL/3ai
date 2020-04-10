@@ -72,7 +72,8 @@ class Wire implements Conductor {
         const cog = Cog.getCogBySerialNumber(cog_sn);
         const terminal_p = cog.getCogTerminalPoint(terminal);
         const wire = this.addWiresToPoint(terminal_p, ori);
-        return new CogTerminalConnector(wire, [cog, terminal]);
+        const terminal_connector =  new CogTerminalConnector(wire, [cog, terminal]);
+        wire.powering.push(terminal_connector);
     }
 
     public addPoweredWiresToGemTerminal(terminal: GemTerminal, ori: WireOrientation) {

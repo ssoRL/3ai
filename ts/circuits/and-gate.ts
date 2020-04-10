@@ -1,7 +1,3 @@
-/** The number of milliseconds needed before this gate powers up  */
-const AND_POWER_UP_TIME = 10;
-/** How long it keeps providing power after a connection is cut */
-const AND_POWER_DOWN_TIME = 1000;
 /** The radius of the circle describing this AND gate */
 const AND_RADIUS = 20;
 
@@ -107,16 +103,26 @@ class AndGate {
 
         // check if is_on needs to be switched
         if(this.is_on !== will_be_on) {
+            if(this.p.x === 700){
+                if(will_be_on) {
+                    console.log(`powering up at ${new Date().getTime()}`);
+                } else {
+                    console.log(`powering down at ${new Date().getTime()}`);
+                }
+            }
             this.time_switched = new Date().getTime();
             this.is_on = will_be_on;
-        }
 
-        window.setTimeout(
-            () => {
-                this.powering.power(this.is_on);
-            },
-            this.is_on ? AND_POWER_UP_TIME : AND_POWER_DOWN_TIME
-        )
+            window.setTimeout(
+                () => {
+                    if(this.p.x === 700) {
+                        console.log(`switched ${this.is_on ? 'on' : 'off'} at ${new Date().getTime()}`);
+                    }
+                    this.powering.power(this.is_on);
+                },
+                this.is_on ? AND_POWER_UP_TIME : AND_POWER_DOWN_TIME
+            )
+        }
     }
 
     public draw(ctx: CanvasRenderingContext2D, time: number) {

@@ -87,5 +87,10 @@ function init_wires(): Wire {
     wire_out_of_low_right_and_gate.addPoweredWiresToAndTerminal(low_left_and_gate.left_terminal, "vert");
     wire_out_of_2001.addStraightWireTo("horz", 290).addPoweredWiresToAndTerminal(low_left_and_gate.right_terminal, "vert");
 
+    // Hook up the big gem
+    const big_gem = new Gem({x: 50, y: 650}, 40, "yellow");
+    wire_out_of_1003.addPoweredWiresToGemTerminal(big_gem.addTerminal("N"), "vert");
+    low_left_and_gate.getOutWire().addPoweredWiresToGemTerminal(big_gem.addTerminal("S"), "horz");
+
     return wire0;
 }
