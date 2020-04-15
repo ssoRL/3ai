@@ -6,11 +6,13 @@ const CANVAS_CANNONICAL_SIZE = 1000;
 
 class CanvasController {
     private readonly canvas: HTMLCanvasElement;
+    private readonly canvas_container: HTMLDivElement;
     private scale = 1;
     private clickables: Clickable[] = [];
 
-    constructor(canvas_: HTMLCanvasElement){
+    constructor(canvas_: HTMLCanvasElement, canvas_container_: HTMLDivElement){
         this.canvas = canvas_;
+        this.canvas_container = canvas_container_;
 
         window.addEventListener("resize", () => {
             this.updateScale();
@@ -35,8 +37,8 @@ class CanvasController {
         const h = document.documentElement.clientHeight;
         const canvas_size = Math.min(w, h) - 20;
         this.scale = canvas_size / CANVAS_CANNONICAL_SIZE;
-        this.canvas.style.width = `${canvas_size}px`;
-        this.canvas.style.height = `${canvas_size}px`;
+        this.canvas_container.style.width = `${canvas_size}px`;
+        this.canvas_container.style.height = `${canvas_size}px`;
     }
 
     public setTransform(ctx: CanvasRenderingContext2D){

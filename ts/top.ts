@@ -5,8 +5,9 @@ let wire0: Wire;
 let canvas_controller: CanvasController;
 
 function init(){
-    let canvas : HTMLCanvasElement | null = <HTMLCanvasElement>document.getElementById('canvas');
-    canvas_controller = new CanvasController(canvas);
+    const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+    const canvas_container = <HTMLDivElement>document.getElementById('container');
+    canvas_controller = new CanvasController(canvas, canvas_container);
     driver_cogs = init_cogs();
     wire0 = init_wires();
 
@@ -30,6 +31,7 @@ function draw(ctx: CanvasRenderingContext2D) {
     let time = new Date().getTime();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, 1000, 1000);
+    ctx.lineWidth = 3;
     // Draw a grid for dev stuff
     if(SHOW_HELP_GRAPICS) {
         ctx.strokeStyle = "lightBlue"
