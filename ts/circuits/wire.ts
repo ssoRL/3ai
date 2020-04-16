@@ -111,16 +111,16 @@ class Wire implements Conductor {
     power(on: boolean): void {
         if(this.is_on !== on) {
             this.time_switched = performance.now();
+            this.is_on = on;
+            window.setTimeout(
+                () => {
+                    for(let conductor of this.powering){
+                        conductor.power(this.is_on);
+                    }
+                },
+                this.wire_time
+            );
         }
-        this.is_on = on;
-        window.setTimeout(
-            () => {
-                for(let conductor of this.powering){
-                    conductor.power(this.is_on);
-                }
-            },
-            this.wire_time
-        );
     }
 
     draw(ctx: CanvasRenderingContext2D, time: number) {
