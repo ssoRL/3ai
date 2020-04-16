@@ -37,12 +37,12 @@ class CanvasController {
         const from = {x: this.offset.x, y: this.offset.y};
         const dx = x - from.x;
         const dy = y - from.y;
-        const animation_start_time = new Date().getTime();
+        const animation_start_time = performance.now();
         const easing = easing_in ? easing_in : (portion: number) => {return portion};
 
         const interval_handle = window.setInterval(
             () => {
-                const t = new Date().getTime();
+                const t = performance.now();
                 const fraction = (t - animation_start_time) / duration;
                 const ease_frac = easing(fraction);
                 this.offset = {

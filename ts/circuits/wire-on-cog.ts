@@ -81,7 +81,7 @@ class WireOnCog {
 
     power(on: boolean, from: CogTerminal): void {
         if(on){
-            this.time_on = new Date().getTime();
+            this.time_on = performance.now();
         }
         // Check if the power is coming from the en or ex terminal
         const current_en_index = this.cog.getIndexOfTooth(this.enter.index);

@@ -23,7 +23,7 @@ const SHOW_HELP_GRAPICS = true;
 const SOL = 3;
 
 /** Weather to tick or not */
-const TICKING = false;
+const TICKING = true;
 
 /** What effect click on a cog has */
 const CLICK_ACTION: "stop" | "change" = "stop"; 

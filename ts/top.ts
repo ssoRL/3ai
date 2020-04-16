@@ -30,7 +30,7 @@ function init(){
 }
 
 function causeTick(){
-    let time = new Date().getTime();
+    let time = performance.now();
     window.setTimeout(causeTick, TICK_EVERY);
     for(const cog of driver_cogs) {
         cog.startTick(time);
@@ -38,7 +38,7 @@ function causeTick(){
 }
 
 function draw(ctx: CanvasRenderingContext2D) {
-    let time = new Date().getTime();
+    let time = performance.now();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, 1000, 1000);
     ctx.lineWidth = 3;

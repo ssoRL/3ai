@@ -110,7 +110,7 @@ class Wire implements Conductor {
 
     power(on: boolean): void {
         if(this.is_on !== on) {
-            this.time_switched = new Date().getTime();
+            this.time_switched = performance.now();
         }
         this.is_on = on;
         window.setTimeout(

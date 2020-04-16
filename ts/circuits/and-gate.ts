@@ -105,18 +105,18 @@ class AndGate {
         if(this.is_on !== will_be_on) {
             if(this.p.x === 700){
                 if(will_be_on) {
-                    console.log(`powering up at ${new Date().getTime()}`);
+                    console.log(`powering up at ${performance.now()}`);
                 } else {
-                    console.log(`powering down at ${new Date().getTime()}`);
+                    console.log(`powering down at ${performance.now()}`);
                 }
             }
-            this.time_switched = new Date().getTime();
+            this.time_switched = performance.now();
             this.is_on = will_be_on;
 
             window.setTimeout(
                 () => {
                     if(this.p.x === 700) {
-                        console.log(`switched ${this.is_on ? 'on' : 'off'} at ${new Date().getTime()}`);
+                        console.log(`switched ${this.is_on ? 'on' : 'off'} at ${performance.now()}`);
                     }
                     this.powering.power(this.is_on);
                 },

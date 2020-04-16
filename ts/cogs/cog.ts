@@ -320,7 +320,7 @@ class Cog implements Clickable{
                 this.stopped = !this.stopped;
             }
         } else {
-            this.startTick(new Date().getTime());
+            this.startTick(performance.now());
         }
     }
 }
