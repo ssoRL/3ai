@@ -127,7 +127,7 @@ class AndGate {
 
     public draw(ctx: CanvasRenderingContext2D, time: number) {
         // Draw a DIN AND gate
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        canvas_controller.setTransform(ctx);
         ctx.translate(this.p.x, this.p.y);
         // orient it
         const rotation: number = (()=>{

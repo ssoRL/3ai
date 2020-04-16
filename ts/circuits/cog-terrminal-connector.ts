@@ -104,7 +104,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     draw(ctx: CanvasRenderingContext2D, time: number): void {
         if(SHOW_HELP_GRAPICS){
             // Only mark terminal locations with the dev flag on
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            canvas_controller.setTransform(ctx);
             // Draw a red circle if on
             if(this.is_on){
                 ctx.strokeStyle = "red";

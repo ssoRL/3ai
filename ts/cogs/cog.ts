@@ -184,7 +184,7 @@ class Cog implements Clickable{
         for(let driven_cog of this.driven_cogs){
             driven_cog.draw(ctx, time);
         }
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        canvas_controller.setTransform(ctx);
         ctx.translate(this.x, this.y);
         // calculate the rotation
         let tick_angle = (2 * Math.PI) / this.tooth_count;

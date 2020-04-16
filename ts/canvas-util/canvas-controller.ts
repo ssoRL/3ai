@@ -8,6 +8,7 @@ class CanvasController {
     private readonly canvas: HTMLCanvasElement;
     private readonly canvas_container: HTMLDivElement;
     private scale = 1;
+    private offset: Point = {x: 0, y: 0};
     private clickables: Clickable[] = [];
 
     constructor(canvas_: HTMLCanvasElement, canvas_container_: HTMLDivElement){
@@ -32,6 +33,35 @@ class CanvasController {
         })
     }
 
+    public animateTranslate(x: number, y: number, duration: number, easing_in?: (portion: number) => number) {
+        const from = {x: this.offset.x, y: this.offset.y};
+        const dx = x - from.x;
+        const dy = y - from.y;
+        const animation_start_time = new Date().getTime();
+        const easing = easing_in ? easing_in : (portion: number) => {return portion};
+
+        const interval_handle = window.setInterval(
+            () => {
+                const t = new Date().getTime();
+                const fraction = (t - animation_start_time) / duration;
+                const ease_frac = easing(fraction);
+                this.offset = {
+                    x: from.x + dx*ease_frac,
+                    y: from.y + dy*ease_frac
+                }
+            },
+            10
+        );
+
+        window.setTimeout(
+            () => {
+                window.clearInterval(interval_handle);
+                this.offset = {x: x, y: y};
+            },
+            duration
+        );
+    }
+
     public updateScale(){
         const w = document.documentElement.clientWidth;
         const h = document.documentElement.clientHeight;
@@ -43,7 +73,7 @@ class CanvasController {
 
     public setTransform(ctx: CanvasRenderingContext2D){
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(this.scale, this.scale);
+        ctx.translate(-this.offset.x, -this.offset.y);
     }
 
     public registerClicable(clickable: Clickable) {

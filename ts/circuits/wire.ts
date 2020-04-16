@@ -124,8 +124,8 @@ class Wire implements Conductor {
     }
 
     draw(ctx: CanvasRenderingContext2D, time: number) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-            const time_powered = time - this.time_switched;
+        canvas_controller.setTransform(ctx);
+        const time_powered = time - this.time_switched;
         if(time_powered < this.wire_time){
             // Determine whice color is new, and which old
             const newColor = this.is_on ? "red" : "black";

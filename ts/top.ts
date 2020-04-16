@@ -17,6 +17,16 @@ function init(){
         wire0.power(true);
         if(TICKING) causeTick();
     }
+
+    // Set the actions on the READ badges
+    const kudzu = document.getElementById("kudzu");
+    if(kudzu) {
+        kudzu.onclick = () => {
+            canvas_controller.animateTranslate(500, 0, 2000);
+        }
+    } else {
+        throw "3AI Error: There is no kudzu element"
+    }
 }
 
 function causeTick(){
