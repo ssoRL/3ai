@@ -19,10 +19,69 @@ html body {
 #kudzu {
     position: absolute;
     width: 40%;
-    height: 40%;
     top: 5%;
     right: 5%;
     z-index: 2;
-    background-color: white;
     border: 3px solid;
+    background-color: white;
+}
+
+.kudzu-transition {
+    transition: all 1s;
+}
+
+#kudzu.repositioned {
+    position: absolute;
+    width: 10%;
+    top: 7%;
+    right: 80%;
+}
+
+#kudzu-title-text {
+    position: absolute;
+    left: 25%;
+    top: 10%;
+}
+
+#kudzu-story-text {
+    position: absolute;
+    left: 15%;
+    top: 25%;
+    width: 70%;
+    height: 65%;
+}
+
+.kudzu-story-section {
+    margin: 20px 0;
+}
+
+.kudzu-story-paragraph {
+    margin: 0;
+}
+
+.kudzu-text {
+    color: goldenrod;
+}
+
+#kudzu img {
+    width: 100%;;
+}
+
+.title-section {
+    overflow: hidden;
+    text-align: center;
+}
+
+.no-height {
+    height: 0;
+}
+
+.read {
+    font-style: italic;
+    font-size: large;
+}
+
+.title {
+    font-weight: bold;
+    font-size: larger;
 }

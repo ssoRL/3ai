@@ -3,11 +3,13 @@ let driver_cogs: Cog[];
 /** The root wire */
 let wire0: Wire;
 let canvas_controller: CanvasController;
+let kudzu_story_controller: KudzuStoryController;
 
 function init(){
     const canvas = <HTMLCanvasElement>document.getElementById('canvas');
     const canvas_container = <HTMLDivElement>document.getElementById('container');
     canvas_controller = new CanvasController(canvas, canvas_container);
+    kudzu_story_controller = new KudzuStoryController();
     driver_cogs = init_cogs();
     wire0 = init_wires();
 
@@ -22,7 +24,7 @@ function init(){
     const kudzu = document.getElementById("kudzu");
     if(kudzu) {
         kudzu.onclick = () => {
-            canvas_controller.animateTranslate(500, 0, 2000);
+            kudzu_story_controller.start();
         }
     } else {
         throw "3AI Error: There is no kudzu element"
@@ -54,6 +56,7 @@ function draw(ctx: CanvasRenderingContext2D) {
             ctx.stroke();
         }
     }
+    kudzu_story_controller.draw(ctx, time);
     for(const cog of driver_cogs){
         cog.draw(ctx, time);
     }

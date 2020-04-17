@@ -33,7 +33,10 @@ class CanvasController {
         })
     }
 
-    public animateTranslate(x: number, y: number, duration: number, easing_in?: (portion: number) => number) {
+    public async animateTranslate(
+        x: number, y: number, duration: number,
+        easing_in?: (portion: number) => number
+    ) {
         const from = {x: this.offset.x, y: this.offset.y};
         const dx = x - from.x;
         const dy = y - from.y;
@@ -53,13 +56,16 @@ class CanvasController {
             10
         );
 
-        window.setTimeout(
-            () => {
-                window.clearInterval(interval_handle);
-                this.offset = {x: x, y: y};
-            },
-            duration
-        );
+        return new Promise((resolve) => {
+            window.setTimeout(
+                () => {
+                    window.clearInterval(interval_handle);
+                    this.offset = {x: x, y: y};
+                    resolve();
+                },
+                duration
+            );
+        })
     }
 
     public updateScale(){
