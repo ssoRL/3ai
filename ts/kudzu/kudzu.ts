@@ -131,6 +131,15 @@ class KudzuStoryController {
             to_section++;
         }
 
+        // finally, add the "Next" button
+        const next_button = document.createElement("a");
+        next_button.classList.add("kudzu-next");
+        next_button.innerText = "Next";
+        next_button.onclick = () => {
+            this.fillInStory(to_section);
+        }
+        story_section.appendChild(next_button);
+
         return to_section;
     }
 
