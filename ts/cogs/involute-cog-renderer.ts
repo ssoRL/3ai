@@ -124,10 +124,16 @@ class InvoluteCogRenderer {
         if(SHOW_HELP_GRAPICS){
             // only show the 0rad line for dev work
             path.moveTo(0, 0);
-            path.lineTo(this.inner_radius, 0)
+            path.lineTo(this.inner_radius, 0);
         }
         // First draw half an inner arc so the tooth-gap is centered on 0rad
         path.arc(0, 0, this.inner_radius, 0, this.base_arc/2);
+        //
+        //const start_p = getPoint(this.inner_radius, 0);
+        //console.log(`M ${start_p.x} ${start_p.y}`);
+        const move_to_p = getPoint(this.inner_radius, this.base_arc/2);
+        let svg_d = `t${this.spur_count}: M ${move_to_p.x} ${move_to_p.y}\n`;
+        //
         let i =0;
         for(let i=0; i< this.spur_count; i++) {
             // The angle that this section of the cog
@@ -142,9 +148,18 @@ class InvoluteCogRenderer {
             // draw the involute
             path.quadraticCurveTo(cp.x, cp.y, intersect.x, intersect.y);
 
+            //
+            svg_d += `Q ${cp.x} ${cp.y} ${intersect.x} ${intersect.y}\n`;
+            //
+
             // Draw the top of the tooth
             let far_outer_intersect_arc = near_outer_intersect_arc + this.tooth_top_arc;
             path.arc(0, 0, this.outer_radius, near_outer_intersect_arc, far_outer_intersect_arc);
+
+            //
+            const tooth_end_p = getPoint(this.outer_radius, far_outer_intersect_arc)
+            svg_d += `L ${tooth_end_p.x} ${tooth_end_p.y}\n`;
+            //
 
             // Draw the involute back to base
             let inner_intersect_arc = far_outer_intersect_arc + this.outer_intersect_arc;
@@ -152,10 +167,22 @@ class InvoluteCogRenderer {
             let end_cp = getPoint(this.control_point_radius, inner_intersect_arc);
             path.quadraticCurveTo(end_cp.x, end_cp.y, end_intersect.x, end_intersect.y);
 
+
+            //
+            svg_d += `Q ${end_cp.x} ${end_cp.y} ${end_intersect.x} ${end_intersect.y}\n`;
+            //
+
             // Finally, draw the tooth gap (base) part
             let end_arc = inner_intersect_arc + this.base_arc;
             path.arc(0, 0, this.inner_radius, inner_intersect_arc, end_arc);
+
+            //
+            const tooth_start_p = getPoint(this.inner_radius, end_arc)
+            svg_d += `L ${tooth_start_p.x} ${tooth_start_p.y}\n`;
+            //
         }
+        svg_d += "Z";
+        console.log(svg_d);
         //path.closePath();
         return path;
     }

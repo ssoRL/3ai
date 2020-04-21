@@ -7,6 +7,7 @@ html body {
     outline: blue 1px solid;
     box-sizing: border-box;
     position: relative;
+    overflow: hidden;
 }
 
 #canvas {
@@ -71,9 +72,21 @@ a.kudzu-next {
     color: goldenrod;
 }
 
-#kudzu img {
-    width: 100%;;
+
+#orth {
+    position: absolute;
+    width: 40%;
+    bottom: 5%;
+    left: 5%;
+    z-index: 2;
+    border: 3px solid;
+    background-color: white;
 }
+
+#orth.orth-sideline {
+    left: -150%;
+}
+
 
 .title-section {
     overflow: hidden;
@@ -92,4 +105,11 @@ a.kudzu-next {
 .title {
     font-weight: bold;
     font-size: larger;
+}
+
+.illustration {
+    margin: 5%;
+    width: 90%;
+    border: 2px solid;
+    box-sizing: border-box;
 }

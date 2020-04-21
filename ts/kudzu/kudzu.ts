@@ -16,10 +16,16 @@ class KudzuStoryController {
 
     public async start() {
         this.in_progress = true;
+
+        // Move the badges and canvas to be in position for the kudzu story
         const kudzu_badge = document.getElementById("kudzu");
         const kudzu_title = document.getElementById("kudzu-title-section");
+        const orth_badge = document.getElementById("orth");
+        kudzu_badge?.classList.add("kudzu-transition");
         kudzu_badge?.classList.add("repositioned");
         kudzu_title?.classList.add("no-height");
+        orth_badge?.classList.add("kudzu-transition");
+        orth_badge?.classList.add("orth-sideline");
         await canvas_controller.animateTranslate(3000, 0, 500);
 
         // After the movenment is complete, fill in the title
