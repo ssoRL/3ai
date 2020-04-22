@@ -173,8 +173,35 @@ class Cog implements Clickable{
         }
     }
 
-    private easeTickAnimaiton(t: number): number{
-        return t<.5 ? 2*t*t : -1+(4-2*t)*t;
+    public static easeTickAnimaiton(t: number): number{
+        // The highests vaule returned before "snapping back" to 1
+        const x_peak = 1.15;
+        const x_half_peak = x_peak/2;
+        const x_half_fall = (x_peak - 1)/2;
+        // The point (between 0 and 1) when the highest value is returned
+        const t_peak = 0.85;
+        const t_half_peak = t_peak/2;
+        const rise_factor = 1/t_half_peak;
+        const half_fall_duration = (1 - t_peak)/2;
+        const t_half_fall = t_peak + half_fall_duration;
+        const fall_factor = 1/half_fall_duration;
+
+        if(t < t_half_peak) {
+            // A t^2 going to x_peak/2 in t_peak/2
+            const t_from_0 = t * rise_factor;
+            return x_half_peak * t_from_0 * t_from_0;
+        } else if (t < t_peak) {
+            const t_to_peak = (t_peak - t) * rise_factor;
+            return x_peak - x_half_peak * t_to_peak * t_to_peak;
+        } else if (t < t_half_fall) {
+            const t_from_peak = (t - t_peak)*fall_factor;
+            return x_peak - x_half_fall * t_from_peak * t_from_peak;
+        } else if(t < 1) {
+            const t_to_end = (1 - t)*fall_factor;
+            return 1 + x_half_fall * t_to_end * t_to_end;
+        } else {
+            return 1;
+        }
     }
 
     public draw(ctx: CanvasRenderingContext2D, time: number) {
@@ -193,7 +220,7 @@ class Cog implements Clickable{
         const animate_delta = this.is_ticking ? (() => {
             const animation_progress_t = Math.min(time - this.tick_start, TICK_LENGTH);
             const animation_progress = animation_progress_t / TICK_LENGTH;
-            const absolute_delta = this.easeTickAnimaiton(animation_progress) * tick_angle;
+            const absolute_delta = Cog.easeTickAnimaiton(animation_progress) * tick_angle;
             if(this.getSpinDirection() === SpinDirection.CLOCKWISE) {
                 return absolute_delta;
             }else{
