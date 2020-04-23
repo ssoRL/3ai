@@ -5,6 +5,8 @@ class OrthStoryController {
     private done = false;
     private in_progress = false;
     private driver_cogs: Cog[];
+    /** A number between 0 and 1 that represents the fraction of the story passed */
+    private scroll = 0;
 
     constructor(){
         this.driver_cogs = init_cogs_orth();
@@ -19,16 +21,27 @@ class OrthStoryController {
         const orth_title = getDocumentElementById("orth-title-section");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
+        const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
         // Add the css transition
         const orth_transition = `all ${SHIFT_TO_ORTH_TIME}ms`;
         kudzu_badge.style.transition = orth_transition;
         orth_badge.style.transition = orth_transition;
         story_container.style.transition = orth_transition;
+        next_button.style.transition = orth_transition;
         // and then execute the transitions
         kudzu_badge?.classList.add("sidelined");
         orth_title?.classList.add("no-height");
         orth_badge?.classList.add("repositioned");
         story_container.style.top = "10%";
+        next_button.classList.add("repositioned");
+
+        // Set the next button behavior
+        next_button.onclick = (async () => {
+            next_button.disabled = true;
+            await this.scrollStory();
+            next_button.disabled = false;
+        })
+
         // tick all of the cogs once
         const now = performance.now();
         for(const cog of driver_cogs) {
@@ -39,20 +52,12 @@ class OrthStoryController {
         }
 
         // Move the story into view
-        const animate_translate = canvas_controller.animateTranslate(0, 1000, SHIFT_TO_ORTH_TIME);
-
-        // After the movenment is complete, fill in the title
-        // const head_title = document.getElementById("kudzu-title-text");
-        // if(!head_title) throw "3AI Error: There is no kudzu-title-text eleement";
-        // await this.fillInString(head_title, "Vines of Kudzu");
-
-        // const next_section = await this.fillInStory(0);
-        // console.log(`The next section will be ${next_section}`);
+        await canvas_controller.animateTranslate(0, 1000, SHIFT_TO_ORTH_TIME);
     }
 
     private async initializeContent() {
             try{
-                let contentFetch = await fetch('story/orth-story.html', {
+                let contentFetch = await fetch('story/orth.html', {
                     method: 'get'
                 });
                 let text = await contentFetch.text();
@@ -88,6 +93,36 @@ class OrthStoryController {
                 a[j] = temp;
             }
         }
+    }
+
+    private async scrollStory(hold_position = false) {
+        const main_container = getDocumentElementById("container");
+        const story_container = getDocumentElementById("orth-story-container");
+
+        const story_h = story_container.clientHeight;
+        const main_h = main_container.clientHeight;
+
+        if(!hold_position) {
+            // scroll the story down by 80% of the main height
+            const scroll_h = 0.8*main_h;
+            this.scroll = Math.min(1, this.scroll + scroll_h/story_h);
+            // Start ticking the cogs
+            const now = performance.now();
+            for(const cog of this.driver_cogs) {
+                cog.startTick(now);
+            }
+        }
+
+        // The amount needed to put the story in position
+        const top_offset = -1*this.scroll*story_h;
+        // The amount needed to add a buffer of 10% that shifts from the top to the bottom
+        // as the user scrolls
+        const top_buffer = (0.1 - 0.2*this.scroll)*main_h;
+        story_container.style.top = `${top_offset + top_buffer}px`
+        return new Promise((resolve) => {
+            story_container.ontransitionend = resolve;
+        })
+        
     }
 
     private async fillInStory(from_section: number): Promise<number> {

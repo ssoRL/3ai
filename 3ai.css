@@ -107,6 +107,24 @@ a.kudzu-next {
     padding: 20px;
 }
 
+#orth-next {
+    position: absolute;
+    top: 101%;
+    color: white;
+    background-color: black;
+    --width: 70px;
+    width: var(--width);
+    left: calc(50% - var(--width)/2);
+    text-align: center;
+    padding: 10px 0;
+    font-size: 20px;
+    border: 0;
+}
+
+#orth-next.repositioned {
+    top: 90%;
+}
+
 
 .title-section {
     overflow: hidden;
