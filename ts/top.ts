@@ -5,6 +5,7 @@ let wire0: Wire;
 let canvas_controller: CanvasController;
 let kudzu_story_controller: KudzuStoryController;
 let orth_story_controller: OrthStoryController;
+let tick_easer: TickEaser;
 
 function init(){
     const canvas = <HTMLCanvasElement>document.getElementById('canvas');
@@ -14,6 +15,7 @@ function init(){
     wire0 = init_wires();
     kudzu_story_controller = new KudzuStoryController();
     orth_story_controller = new OrthStoryController();
+    tick_easer = new TickEaser(1.15, 0.85);
 
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
