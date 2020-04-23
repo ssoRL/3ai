@@ -130,7 +130,6 @@ class InvoluteCogRenderer {
         path.arc(0, 0, this.inner_radius, 0, this.base_arc/2);
         //
         //const start_p = getPoint(this.inner_radius, 0);
-        //console.log(`M ${start_p.x} ${start_p.y}`);
         const move_to_p = getPoint(this.inner_radius, this.base_arc/2);
         let svg_d = `t${this.spur_count}: M ${move_to_p.x} ${move_to_p.y}\n`;
         //
@@ -182,7 +181,7 @@ class InvoluteCogRenderer {
             //
         }
         svg_d += "Z";
-        console.log(svg_d);
+        //console.log(svg_d);
         //path.closePath();
         return path;
     }

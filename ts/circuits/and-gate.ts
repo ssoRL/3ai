@@ -105,9 +105,9 @@ class AndGate {
         if(this.is_on !== will_be_on) {
             if(this.p.x === 700){
                 if(will_be_on) {
-                    console.log(`powering up at ${performance.now()}`);
+                    //console.log(`powering up at ${performance.now()}`);
                 } else {
-                    console.log(`powering down at ${performance.now()}`);
+                    //console.log(`powering down at ${performance.now()}`);
                 }
             }
             this.time_switched = performance.now();
@@ -116,7 +116,7 @@ class AndGate {
             window.setTimeout(
                 () => {
                     if(this.p.x === 700) {
-                        console.log(`switched ${this.is_on ? 'on' : 'off'} at ${performance.now()}`);
+                        //console.log(`switched ${this.is_on ? 'on' : 'off'} at ${performance.now()}`);
                     }
                     this.powering.power(this.is_on);
                 },

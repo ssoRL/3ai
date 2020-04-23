@@ -1,71 +1,71 @@
 /** The time taken to shift from the main screen to the kudzu story screen */
-const SHIFT_TO_KUDZU_TIME = 1000;
-/** The speed at which text is filled in. Measures in ms per letter */
-const TYPING_SPEED = 15;
-/** The number of letters that fits in a standard 1x1 area */
-const LETTERS_PER_PIXEL = 0.008;
+const SHIFT_TO_ORTH_TIME = 700;
 
-class KudzuStoryController {
+class OrthStoryController {
     private done = false;
     private in_progress = false;
-    private wire0: Wire;
+    private driver_cogs: Cog[];
 
-    constructor() {
-        this.wire0 = init_kudzu_wires();
+    constructor(){
+        this.driver_cogs = init_cogs_orth();
+        this.initializeContent();
     }
 
     public async start() {
         this.in_progress = true;
 
         // Move the badges and canvas to be in position for the kudzu story
-        const kudzu_badge = document.getElementById("kudzu");
-        const kudzu_title = document.getElementById("kudzu-title-section");
-        const orth_badge = document.getElementById("orth");
-        kudzu_badge?.classList.add("kudzu-transition");
-        kudzu_badge?.classList.add("repositioned");
-        kudzu_title?.classList.add("no-height");
-        orth_badge?.classList.add("kudzu-transition");
-        orth_badge?.classList.add("sidelined");
-        await canvas_controller.animateTranslate(3000, 0, SHIFT_TO_KUDZU_TIME);
+        const orth_badge = getDocumentElementById("orth");
+        const orth_title = getDocumentElementById("orth-title-section");
+        const kudzu_badge = getDocumentElementById("kudzu");
+        const story_container = getDocumentElementById("orth-story-container");
+        // Add the css transition
+        const orth_transition = `all ${SHIFT_TO_ORTH_TIME}ms`;
+        kudzu_badge.style.transition = orth_transition;
+        orth_badge.style.transition = orth_transition;
+        story_container.style.transition = orth_transition;
+        // and then execute the transitions
+        kudzu_badge?.classList.add("sidelined");
+        orth_title?.classList.add("no-height");
+        orth_badge?.classList.add("repositioned");
+        story_container.style.top = "10%";
+        // tick all of the cogs once
+        const now = performance.now();
+        for(const cog of driver_cogs) {
+            cog.startTick(now);
+        }
+        for(const cog of this.driver_cogs) {
+            cog.startTick(now);
+        }
+
+        // Move the story into view
+        const animate_translate = canvas_controller.animateTranslate(0, 1000, SHIFT_TO_ORTH_TIME);
 
         // After the movenment is complete, fill in the title
-        const head_title = document.getElementById("kudzu-title-text");
-        if(!head_title) throw "3AI Error: There is no kudzu-title-text eleement";
-        await this.fillInString(head_title, "Vines of Kudzu");
+        // const head_title = document.getElementById("kudzu-title-text");
+        // if(!head_title) throw "3AI Error: There is no kudzu-title-text eleement";
+        // await this.fillInString(head_title, "Vines of Kudzu");
 
-        const next_section = await this.fillInStory(0);
-        console.log(`The next section will be ${next_section}`);
+        // const next_section = await this.fillInStory(0);
+        // console.log(`The next section will be ${next_section}`);
     }
 
+    private async initializeContent() {
+            try{
+                let contentFetch = await fetch('story/orth-story.html', {
+                    method: 'get'
+                });
+                let text = await contentFetch.text();
+                getDocumentElementById("orth-story").innerHTML = text;
+            } catch {
+                throw "3AI Error: Could not load orth/orth-story.html";
+            }
+      }
+
     public draw(ctx: CanvasRenderingContext2D, time: number) {
-        canvas_controller.setTransform(ctx);
-        if (this.in_progress && !this.done) {
-            // If the reader is seeing this story currently
-            const gradient = ctx.createRadialGradient(3500, -500, 1200, 3500, -500, 2500);
-            gradient.addColorStop(0, "darkgreen");
-            gradient.addColorStop(0.1, "darkgreen");
-            gradient.addColorStop(1, "white");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(1000, 0, 3000, 1000);
-            this.wire0.draw(ctx, time);
-        }else if(this.done && this.in_progress) {
-            // If the reader has finished and is returning to the main page
-            const gradient = ctx.createLinearGradient(0, 0, 0, 2000);
-            gradient.addColorStop(0, "darkgreen");
-            gradient.addColorStop(0.5, "darkgreen");
-            gradient.addColorStop(1, "white");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 3000, 2000);
-        } else if (this.done) {
-            // if the reader is totally done with kudzu
-            const gradient = ctx.createLinearGradient(1000, 0, 3000, 0);
-            gradient.addColorStop(0, "white");
-            gradient.addColorStop(0.5, "darkgreen");
-            gradient.addColorStop(1, "darkgreen");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(1000, 0, 2000, 1000);
+        for(const cog of this.driver_cogs) {
+            cog.draw(ctx, time);
         }
-        // else draw nothing
     }
 
     /**

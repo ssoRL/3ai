@@ -22,7 +22,7 @@ class CogRenderer {
         this.inner_radius = this.GAP_WIDTH * spur_count / Math.PI;
         // Then the outer radius is easy
         this.outer_radius = this.inner_radius + this.SPUR_LENGTH;
-        console.log(`For ${spur_count}: ${this.inner_radius}-${this.outer_radius}`);
+        //console.log(`For ${spur_count}: ${this.inner_radius}-${this.outer_radius}`);
         // Set the offsets
         this.spur_offset = Math.PI/(this.spur_count*this.spur_count);
         this.arc_offset = Math.PI/(this.spur_count*4);

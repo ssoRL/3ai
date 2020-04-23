@@ -27,15 +27,18 @@ html body {
     background-color: white;
 }
 
-.kudzu-transition {
-    transition: all 1s;
-}
-
 #kudzu.repositioned {
-    position: absolute;
     width: 10%;
     top: 7%;
     right: 80%;
+}
+
+#kudzu.sidelined {
+    top: -150%;
+}
+
+.kudzu-transition {
+    transition: all 1s;
 }
 
 #kudzu-title-text {
@@ -83,8 +86,25 @@ a.kudzu-next {
     background-color: white;
 }
 
-#orth.orth-sideline {
+#orth.repositioned {
+    width: 10%;
+    bottom: 87%;
+    left: 6%;
+}
+
+#orth.sidelined {
     left: -150%;
+}
+
+#orth-story-container {
+    position: absolute;
+    top: 101%;
+    width: 80%;
+    right: 10%;
+    border: 2px solid;
+    box-sizing: border-box;
+    background: white;
+    padding: 20px;
 }
 
 

@@ -4,14 +4,16 @@ let driver_cogs: Cog[];
 let wire0: Wire;
 let canvas_controller: CanvasController;
 let kudzu_story_controller: KudzuStoryController;
+let orth_story_controller: OrthStoryController;
 
 function init(){
     const canvas = <HTMLCanvasElement>document.getElementById('canvas');
     const canvas_container = <HTMLDivElement>document.getElementById('container');
     canvas_controller = new CanvasController(canvas, canvas_container);
-    kudzu_story_controller = new KudzuStoryController();
     driver_cogs = init_cogs();
     wire0 = init_wires();
+    kudzu_story_controller = new KudzuStoryController();
+    orth_story_controller = new OrthStoryController();
 
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
@@ -21,14 +23,10 @@ function init(){
     }
 
     // Set the actions on the READ badges
-    const kudzu = document.getElementById("kudzu");
-    if(kudzu) {
-        kudzu.onclick = () => {
-            kudzu_story_controller.start();
-        }
-    } else {
-        throw "3AI Error: There is no kudzu element"
-    }
+    const kudzu = getDocumentElementById("kudzu");
+    kudzu.onclick = () => {kudzu_story_controller.start()};
+    const orth = getDocumentElementById("orth");
+    orth.onclick = () => {orth_story_controller.start()};
 }
 
 function causeTick(){
@@ -57,6 +55,7 @@ function draw(ctx: CanvasRenderingContext2D) {
         }
     }
     kudzu_story_controller.draw(ctx, time);
+    orth_story_controller.draw(ctx, time);
     for(const cog of driver_cogs){
         cog.draw(ctx, time);
     }

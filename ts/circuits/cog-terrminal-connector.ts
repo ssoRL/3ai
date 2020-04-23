@@ -75,7 +75,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
 
     public power(on: boolean): void {
         if(this.in_power instanceof Wire) {
-            console.log(`power from wire ${on}`);
+            //console.log(`power from wire ${on}`);
         }
         this.is_on = on;
         this.sendPowerIfConnected();
