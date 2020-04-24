@@ -45,25 +45,32 @@ class TickEaser {
         //First check if the current t is the same as the last computed
         const diff = t - this.last_t;
         if(diff < this.allow_diff && diff > -this.allow_diff) {
+            //console.log("hit");
             return this.last_x;
         }
+        //console.log(`miss ${diff}`);
 
+        const x = (() => {
+            if(t < this.t_half_peak) {
+                // A t^2 going to x_peak/2 in t_peak/2
+                const t_from_0 = t * this.rise_factor;
+                return this.x_half_peak * t_from_0 * t_from_0;
+            } else if (t < this.t_peak) {
+                const t_to_peak = (this.t_peak - t) * this.rise_factor;
+                return this.x_peak - this.x_half_peak * t_to_peak * t_to_peak;
+            } else if (t < this.t_half_fall) {
+                const t_from_peak = (t - this.t_peak)*this.fall_factor;
+                return this.x_peak - this.x_half_fall * t_from_peak * t_from_peak;
+            } else if(t < 1) {
+                const t_to_end = (1 - t)*this.fall_factor;
+                return 1 + this.x_half_fall * t_to_end * t_to_end;
+            } else {
+                return 1;
+            }
+        })();
 
-        if(t < this.t_half_peak) {
-            // A t^2 going to x_peak/2 in t_peak/2
-            const t_from_0 = t * this.rise_factor;
-            return this.x_half_peak * t_from_0 * t_from_0;
-        } else if (t < this.t_peak) {
-            const t_to_peak = (this.t_peak - t) * this.rise_factor;
-            return this.x_peak - this.x_half_peak * t_to_peak * t_to_peak;
-        } else if (t < this.t_half_fall) {
-            const t_from_peak = (t - this.t_peak)*this.fall_factor;
-            return this.x_peak - this.x_half_fall * t_from_peak * t_from_peak;
-        } else if(t < 1) {
-            const t_to_end = (1 - t)*this.fall_factor;
-            return 1 + this.x_half_fall * t_to_end * t_to_end;
-        } else {
-            return 1;
-        }
+        this.last_t = t;
+        this.last_x = x;
+        return x;
     }
 }
