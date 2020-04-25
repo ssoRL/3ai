@@ -20,8 +20,8 @@ function init(){
     let ctx = canvas.getContext('2d');
     if(ctx !== null){
         window.requestAnimationFrame(draw.bind(this, ctx));
-        wire0.power(true);
-        if(TICKING) causeTick();
+        //wire0.power(true);
+        if(TICKING) orth_story_controller.tick();
     }
 
     // Set the actions on the READ badges
@@ -29,14 +29,6 @@ function init(){
     kudzu.onclick = () => {kudzu_story_controller.start()};
     const orth = getDocumentElementById("orth");
     orth.onclick = () => {orth_story_controller.start()};
-}
-
-function causeTick(){
-    let time = performance.now();
-    window.setTimeout(causeTick, TICK_EVERY);
-    for(const cog of driver_cogs) {
-        cog.startTick(time);
-    }
 }
 
 function draw(ctx: CanvasRenderingContext2D) {
@@ -58,8 +50,9 @@ function draw(ctx: CanvasRenderingContext2D) {
     }
     kudzu_story_controller.draw(ctx, time);
     orth_story_controller.draw(ctx, time);
+    const swatch = orth_story_controller.getCogSwatch();
     for(const cog of driver_cogs){
-        cog.draw(ctx, time);
+        cog.draw(ctx, time, swatch);
     }
     wire0.draw(ctx, time);
     window.requestAnimationFrame(draw.bind(this, ctx));

@@ -173,12 +173,12 @@ class Cog implements Clickable{
         }
     }
 
-    public draw(ctx: CanvasRenderingContext2D, time: number) {
+    public draw(ctx: CanvasRenderingContext2D, time: number, swatch: CogSwatch) {
         // Check if this cog is still ticking or not
         this.tickStatus(time);
         // First draw its driven cogs
         for(let driven_cog of this.driven_cogs){
-            driven_cog.draw(ctx, time);
+            driven_cog.draw(ctx, time, swatch);
         }
         canvas_controller.setTransform(ctx);
         ctx.translate(this.x, this.y);
@@ -197,13 +197,13 @@ class Cog implements Clickable{
             }
         })() : 0;
         ctx.rotate(rest_angle + animate_delta);
-        ctx.fillStyle = "silver";
-        ctx.strokeStyle = "slateGray";
+        ctx.fillStyle = swatch.inner_fill;
+        ctx.strokeStyle = swatch.outer_outline;
         // Use the renderer to draw the cog
         this.renderer.draw(ctx);
         if(SHOW_HELP_GRAPICS){
-            ctx.fillStyle = "black";
             // only show the serial number with dev flag
+            ctx.fillStyle = "black";
             ctx.fillText(`#${this.serial_number}`, 10, 10);
         }
         if(CLICK_ACTION === "change") {
@@ -220,16 +220,18 @@ class Cog implements Clickable{
             })();
         } else {
             // Draw a circle in the middle , colored to represent stopped or going
+            ctx.strokeStyle = swatch.screw_outline;
             ctx.fillStyle = (() => {
                 if(this.driver instanceof Cog){
-                    return "slateGray"
+                    return swatch.screw_fill
                 }
-                return this.stopped ? "red" : "green";
+                return this.stopped ? swatch.driver_stopped : swatch.driver_going;
             })();
         }
         ctx.beginPath();
         ctx.arc(0, 0, 10, 0, 2*Math.PI);
         ctx.fill();
+        ctx.stroke();
         // Draw it's wire if any
         if(this.etched_wire){
             this.etched_wire.draw(ctx, time);

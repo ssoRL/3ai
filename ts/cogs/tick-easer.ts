@@ -45,10 +45,8 @@ class TickEaser {
         //First check if the current t is the same as the last computed
         const diff = t - this.last_t;
         if(diff < this.allow_diff && diff > -this.allow_diff) {
-            //console.log("hit");
             return this.last_x;
         }
-        //console.log(`miss ${diff}`);
 
         const x = (() => {
             if(t < this.t_half_peak) {

@@ -27,6 +27,8 @@ function init_cogs(): Cog[]{
     const low_driver = new Cog(800, 950, 12, SpinDirection.CLOCKWISE, 0.2, 4000);
     driver_cogs.push(low_driver);
     low_driver.addDrivenCog(6, 6);
+    const out_of_sight = low_driver.addDrivenCog(4, 6).addDrivenCog(3, 6);
+    out_of_sight.addDrivenCog(1, 8).addDrivenCog(6, 6).addDrivenCog(3, 10);
 
     return driver_cogs;
 }
