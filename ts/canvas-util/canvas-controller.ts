@@ -35,13 +35,12 @@ class CanvasController {
 
     public async animateTranslate(
         x: number, y: number, duration: number,
-        easing_in?: (portion: number) => number
+        easing = (t: number) => t
     ) {
         const from = {x: this.offset.x, y: this.offset.y};
         const dx = x - from.x;
         const dy = y - from.y;
         const animation_start_time = performance.now();
-        const easing = easing_in ? easing_in : (portion: number) => {return portion};
 
         const interval_handle = window.setInterval(
             () => {

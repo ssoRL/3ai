@@ -27,8 +27,6 @@ function init(){
     // Set the actions on the READ badges
     const kudzu = getDocumentElementById("kudzu");
     kudzu.onclick = () => {kudzu_story_controller.start()};
-    const orth = getDocumentElementById("orth");
-    orth.onclick = () => {orth_story_controller.start()};
 }
 
 function draw(ctx: CanvasRenderingContext2D) {

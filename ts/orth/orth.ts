@@ -29,6 +29,8 @@ class OrthStoryController {
     constructor(){
         this.driver_cogs = init_cogs_orth();
         this.initializeContent();
+        const orth_badge = getDocumentElementById("orth");
+        orth_badge.onclick = this.start.bind(this);
     }
 
     public async start() {
@@ -70,6 +72,7 @@ class OrthStoryController {
         const scroll_transition_time = TICK_EVERY + TICK_LENGTH;
         const orth_scroll_transition = `all ${scroll_transition_time}ms ease-in-out`;
         story_container.style.transition = orth_scroll_transition;
+        orth_badge.onclick = () => {};
     }
 
     private async initializeContent() {
