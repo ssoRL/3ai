@@ -20,9 +20,9 @@ class AndTerminal implements Conductor {
         this.to.power(on, this.is_left_terminal);
     }
 
-    public draw(ctx: CanvasRenderingContext2D, time: number): void {
+    public draw(): void {
         if(this.is_left_terminal){
-            this.to.draw(ctx, time);
+            this.to.draw();
         }
     }
 
@@ -125,10 +125,10 @@ class AndGate {
         }
     }
 
-    public draw(ctx: CanvasRenderingContext2D, time: number) {
+    public draw() {
         // Draw a DIN AND gate
-        canvas_controller.setTransform(ctx);
-        ctx.translate(this.p.x, this.p.y);
+        glb.canvas_controller.setTransform();
+        glb.ctx.translate(this.p.x, this.p.y);
         // orient it
         const rotation: number = (()=>{
             switch(this.ori){
@@ -142,23 +142,23 @@ class AndGate {
                     return -Math.PI/2;
             }
         })();
-        ctx.rotate(rotation);
+        glb.ctx.rotate(rotation);
         // Draw the left side base
-        ctx.strokeStyle = this.left_terminal.is_on ? "red" : "black";
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(-AND_RADIUS, 0);
-        ctx.stroke();
+        glb.ctx.strokeStyle = this.left_terminal.is_on ? "red" : "black";
+        glb.ctx.beginPath();
+        glb.ctx.moveTo(0, 0);
+        glb.ctx.lineTo(-AND_RADIUS, 0);
+        glb.ctx.stroke();
         // Draw the right side base
-        ctx.strokeStyle = this.right_terminal.is_on ? "red" : "black";
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(AND_RADIUS, 0);
-        ctx.stroke();
+        glb.ctx.strokeStyle = this.right_terminal.is_on ? "red" : "black";
+        glb.ctx.beginPath();
+        glb.ctx.moveTo(0, 0);
+        glb.ctx.lineTo(AND_RADIUS, 0);
+        glb.ctx.stroke();
         // Draw the semi-circle top
         // Calculate the ratio of the time that's passed of the power cycle
         const power_ratio = (()=>{
-            const power_time = time - this.time_switched;
+            const power_time = glb.time - this.time_switched;
             if(this.is_on) {
                 return power_time / AND_POWER_UP_TIME;
             } else {
@@ -167,27 +167,27 @@ class AndGate {
         })();
         if(power_ratio > 1){
             // Then just draw the arc in one sweep
-            ctx.strokeStyle = this.is_on ? "red" : "black";
-            ctx.beginPath();
-            ctx.moveTo(-AND_RADIUS, 0);
-            ctx.arc(0, 0, AND_RADIUS, Math.PI, 2*Math.PI);
-            ctx.stroke();
+            glb.ctx.strokeStyle = this.is_on ? "red" : "black";
+            glb.ctx.beginPath();
+            glb.ctx.moveTo(-AND_RADIUS, 0);
+            glb.ctx.arc(0, 0, AND_RADIUS, Math.PI, 2*Math.PI);
+            glb.ctx.stroke();
         } else {
             const power_arc = power_ratio * Math.PI / 2;
             // Draw the base of the semi-circle
-            ctx.strokeStyle = this.is_on ? "red" : "black";
-            ctx.beginPath();
-            ctx.arc(0, 0, AND_RADIUS, 2*Math.PI - power_arc, 2*Math.PI);
-            ctx.moveTo(-AND_RADIUS, 0);
-            ctx.arc(0, 0, AND_RADIUS, Math.PI, Math.PI + power_arc);
-            ctx.stroke();
+            glb.ctx.strokeStyle = this.is_on ? "red" : "black";
+            glb.ctx.beginPath();
+            glb.ctx.arc(0, 0, AND_RADIUS, 2*Math.PI - power_arc, 2*Math.PI);
+            glb.ctx.moveTo(-AND_RADIUS, 0);
+            glb.ctx.arc(0, 0, AND_RADIUS, Math.PI, Math.PI + power_arc);
+            glb.ctx.stroke();
             // Draw the tip
-            ctx.strokeStyle = this.is_on ? "black" : "red";
-            ctx.beginPath();
-            ctx.arc(0, 0, AND_RADIUS, Math.PI + power_arc, 2*Math.PI - power_arc);
-            ctx.stroke();
+            glb.ctx.strokeStyle = this.is_on ? "black" : "red";
+            glb.ctx.beginPath();
+            glb.ctx.arc(0, 0, AND_RADIUS, Math.PI + power_arc, 2*Math.PI - power_arc);
+            glb.ctx.stroke();
         }
 
-        this.powering.draw(ctx, time);
+        this.powering.draw();
     }  
 }

@@ -44,7 +44,7 @@ class CanvasController {
 
         const interval_handle = window.setInterval(
             () => {
-                const t = performance.now();
+                const t = glb.time;
                 const fraction = (t - animation_start_time) / duration;
                 const ease_frac = easing(fraction);
                 this.offset = {
@@ -68,6 +68,7 @@ class CanvasController {
     }
 
     public updateScale(){
+        console.log("call");
         const w = document.documentElement.clientWidth;
         const h = document.documentElement.clientHeight;
         const canvas_size = Math.min(w, h) - 20;
@@ -76,9 +77,9 @@ class CanvasController {
         this.canvas_container.style.height = `${canvas_size}px`;
     }
 
-    public setTransform(ctx: CanvasRenderingContext2D){
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.translate(-this.offset.x, -this.offset.y);
+    public setTransform(){
+        glb.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        glb.ctx.translate(-this.offset.x, -this.offset.y);
     }
 
     public registerClicable(clickable: Clickable) {

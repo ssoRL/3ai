@@ -39,8 +39,7 @@ class Cog implements Clickable{
         tooth_count: number,
         driver_: Cog | SpinDirection,
         base_rotate = 0,
-        //controller: CanvasController,
-        serial_number?: number
+        serial_number?: number,
     ) {
         if(serial_number){
             if(serial_number < Cog.current_serial_number){
@@ -59,7 +58,7 @@ class Cog implements Clickable{
         this.current_tooth = 0;
         this.driver = driver_;
         if(!(this.driver instanceof Cog)) {
-            canvas_controller.registerClicable(this);
+            glb.canvas_controller.registerClicable(this);
         }
     }
 
@@ -173,42 +172,42 @@ class Cog implements Clickable{
         }
     }
 
-    public draw(ctx: CanvasRenderingContext2D, time: number, swatch: CogSwatch) {
+    public draw() {
         // Check if this cog is still ticking or not
-        this.tickStatus(time);
+        this.tickStatus(glb.time);
         // First draw its driven cogs
-        for(let driven_cog of this.driven_cogs){
-            driven_cog.draw(ctx, time, swatch);
+        for(let i=0; i<this.driven_cogs.length; i++){
+            this.driven_cogs[i].draw();
         }
-        canvas_controller.setTransform(ctx);
-        ctx.translate(this.x, this.y);
+        glb.canvas_controller.setTransform();
+        glb.ctx.translate(this.x, this.y);
         // calculate the rotation
         let tick_angle = (2 * Math.PI) / this.tooth_count;
         let rest_delta = tick_angle * this.current_tooth;
         let rest_angle = this.base_rotate + rest_delta;
         const animate_delta = this.is_ticking ? (() => {
-            const animation_progress_t = Math.min(time - this.tick_start, TICK_LENGTH);
+            const animation_progress_t = Math.min(glb.time - this.tick_start, TICK_LENGTH);
             const animation_progress = animation_progress_t / TICK_LENGTH;
-            const absolute_delta = tick_easer.easeTickAnimaiton(animation_progress) * tick_angle;
+            const absolute_delta = glb.tick_easer.easeTickAnimaiton(animation_progress) * tick_angle;
             if(this.getSpinDirection() === SpinDirection.CLOCKWISE) {
                 return absolute_delta;
             }else{
                 return -1*absolute_delta;
             }
         })() : 0;
-        ctx.rotate(rest_angle + animate_delta);
-        ctx.fillStyle = swatch.inner_fill;
-        ctx.strokeStyle = swatch.outer_outline;
+        glb.ctx.rotate(rest_angle + animate_delta);
+        glb.ctx.fillStyle = glb.cog_swatch.inner_fill;
+        glb.ctx.strokeStyle = glb.cog_swatch.outer_outline;
         // Use the renderer to draw the cog
-        this.renderer.draw(ctx);
+        this.renderer.draw(glb.ctx);
         if(SHOW_HELP_GRAPICS){
             // only show the serial number with dev flag
-            ctx.fillStyle = "black";
-            ctx.fillText(`#${this.serial_number}`, 10, 10);
+            glb.ctx.fillStyle = "black";
+            glb.ctx.fillText(`#${this.serial_number}`, 10, 10);
         }
         if(CLICK_ACTION === "change") {
             // Draw a circle in the middle, colored to represent the direction of travel
-            ctx.fillStyle = (() => {
+            glb.ctx.fillStyle = (() => {
                 if(this.driver instanceof Cog){
                     return "slateGray"
                 }
@@ -220,21 +219,21 @@ class Cog implements Clickable{
             })();
         } else {
             // Draw a circle in the middle , colored to represent stopped or going
-            ctx.strokeStyle = swatch.screw_outline;
-            ctx.fillStyle = (() => {
+            glb.ctx.strokeStyle = glb.cog_swatch.screw_outline;
+            glb.ctx.fillStyle = (() => {
                 if(this.driver instanceof Cog){
-                    return swatch.screw_fill
+                    return glb.cog_swatch.screw_fill
                 }
-                return this.stopped ? swatch.driver_stopped : swatch.driver_going;
+                return this.stopped ? glb.cog_swatch.driver_stopped : glb.cog_swatch.driver_going;
             })();
         }
-        ctx.beginPath();
-        ctx.arc(0, 0, 10, 0, 2*Math.PI);
-        ctx.fill();
-        ctx.stroke();
+        glb.ctx.beginPath();
+        glb.ctx.arc(0, 0, 10, 0, 2*Math.PI);
+        glb.ctx.fill();
+        glb.ctx.stroke();
         // Draw it's wire if any
         if(this.etched_wire){
-            this.etched_wire.draw(ctx, time);
+            this.etched_wire.draw();
         }
     }
 

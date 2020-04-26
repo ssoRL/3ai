@@ -123,9 +123,9 @@ class Wire implements Conductor {
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, time: number) {
-        canvas_controller.setTransform(ctx);
-        const time_powered = time - this.time_switched;
+    draw() {
+        glb.canvas_controller.setTransform();
+        const time_powered = glb.time - this.time_switched;
         if(time_powered < this.wire_time){
             // Determine whice color is new, and which old
             const newColor = this.is_on ? "red" : "black";
@@ -136,28 +136,28 @@ class Wire implements Conductor {
                 y: this.p0.y + this.vec.y * time_powered * SOL
             }
             // ...draw this wire in red as far as the power has gotten...
-            ctx.strokeStyle = newColor;
-            ctx.beginPath();
-            ctx.moveTo(this.p0.x, this.p0.y);
-            ctx.lineTo(p_half.x, p_half.y);
-            ctx.stroke();
+            glb.ctx.strokeStyle = newColor;
+            glb.ctx.beginPath();
+            glb.ctx.moveTo(this.p0.x, this.p0.y);
+            glb.ctx.lineTo(p_half.x, p_half.y);
+            glb.ctx.stroke();
             // ...then the rest in black
-            ctx.strokeStyle = oldColor;
-            ctx.beginPath();
-            ctx.moveTo(p_half.x, p_half.y);
-            ctx.lineTo(this.p1.x, this.p1.y);
-            ctx.stroke();
+            glb.ctx.strokeStyle = oldColor;
+            glb.ctx.beginPath();
+            glb.ctx.moveTo(p_half.x, p_half.y);
+            glb.ctx.lineTo(this.p1.x, this.p1.y);
+            glb.ctx.stroke();
         } else {
             // If the wire is full on or off, draw with only one color
             let color = this.is_on ? "red" : "black";
-            ctx.strokeStyle = color;
-            ctx.beginPath();
-            ctx.moveTo(this.p0.x, this.p0.y);
-            ctx.lineTo(this.p1.x, this.p1.y);
-            ctx.stroke();
+            glb.ctx.strokeStyle = color;
+            glb.ctx.beginPath();
+            glb.ctx.moveTo(this.p0.x, this.p0.y);
+            glb.ctx.lineTo(this.p1.x, this.p1.y);
+            glb.ctx.stroke();
         }
-        for(let conductor of this.powering){
-            conductor.draw(ctx, time);
+        for(let i=0; i<this.powering.length; i++) {
+            this.powering[i].draw();
         }
     }
 }

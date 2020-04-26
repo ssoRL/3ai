@@ -130,18 +130,18 @@ class WireOnCog {
             this.terminalConnectedWith(terminal, this.exit);
     }
 
-    draw(ctx: CanvasRenderingContext2D, time: number): void {
-        const time_powered = time - this.time_on;
+    draw(): void {
+        const time_powered = glb.time - this.time_on;
         const total_wire_time = this.en_wire_time + this.arc_wire_time + this.ex_wire_time;
         if(!this.is_on || time_powered > total_wire_time) {
             // if the wire is off, or fully on
-            ctx.strokeStyle = this.is_on ? "red" : "black";
-            ctx.beginPath();
-            ctx.moveTo(this.en_p0.x, this.en_p0.y);
-            ctx.lineTo(this.en_p1.x, this.en_p1.y);
-            ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
-            ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-            ctx.stroke();
+            glb.ctx.strokeStyle = this.is_on ? "red" : "black";
+            glb.ctx.beginPath();
+            glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+            glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+            glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+            glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+            glb.ctx.stroke();
         } else {
             // only going to draw some in the on color
             // determine the color that is at the en and ex points
@@ -157,19 +157,19 @@ class WireOnCog {
                     x: this.en_p0.x - this.en_vec.x * pte * SOL,
                     y: this.en_p0.y - this.en_vec.y * pte * SOL,
                 }
-                ctx.strokeStyle = en_color;
-                ctx.beginPath();
-                ctx.moveTo(this.en_p0.x, this.en_p0.y);
-                ctx.lineTo(mid_p.x, mid_p.y);
-                ctx.stroke();
+                glb.ctx.strokeStyle = en_color;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                glb.ctx.lineTo(mid_p.x, mid_p.y);
+                glb.ctx.stroke();
                 // Then draw the rest
-                ctx.strokeStyle = ex_color;
-                ctx.beginPath();
-                ctx.moveTo(mid_p.x, mid_p.y);
-                ctx.lineTo(this.en_p1.x, this.en_p1.y);
-                ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
-                ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-                ctx.stroke();
+                glb.ctx.strokeStyle = ex_color;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(mid_p.x, mid_p.y);
+                glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+                glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                glb.ctx.stroke();
             } else if (pte < this.en_wire_time + this.arc_wire_time) {
                 // split the arc
                 const arc_time = pte - this.en_wire_time;
@@ -178,21 +178,21 @@ class WireOnCog {
                 // Find the point where the power split happens
                 const arc_split = this.en_arc + this.arc_length * arc_fraction;
                 // Draw it
-                ctx.strokeStyle = en_color;
-                ctx.beginPath();
-                ctx.moveTo(this.en_p0.x, this.en_p0.y);
-                ctx.lineTo(this.en_p1.x, this.en_p1.y);
-                ctx.arc(0, 0, this.mid_r, this.en_arc, arc_split);
-                ctx.stroke();
+                glb.ctx.strokeStyle = en_color;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                glb.ctx.arc(0, 0, this.mid_r, this.en_arc, arc_split);
+                glb.ctx.stroke();
                 // Then draw the rest
                 // First find the point to start from
                 const start_p = getPoint(this.mid_r, arc_split);
-                ctx.strokeStyle = ex_color;
-                ctx.beginPath();
-                ctx.moveTo(start_p.x, start_p.y);
-                ctx.arc(0, 0, this.mid_r, arc_split, this.ex_arc);
-                ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-                ctx.stroke();
+                glb.ctx.strokeStyle = ex_color;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(start_p.x, start_p.y);
+                glb.ctx.arc(0, 0, this.mid_r, arc_split, this.ex_arc);
+                glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                glb.ctx.stroke();
             } else {
                 // The split is in the exit wire
                 const wire_time = pte - this.en_wire_time - this.arc_wire_time;
@@ -200,23 +200,23 @@ class WireOnCog {
                     x: this.ex_p1.x - this.ex_vec.x * wire_time * SOL,
                     y: this.ex_p1.y - this.ex_vec.y * wire_time * SOL,
                 }
-                ctx.strokeStyle = en_color;
-                ctx.beginPath();
-                ctx.moveTo(this.en_p0.x, this.en_p0.y);
-                ctx.lineTo(this.en_p1.x, this.en_p1.y);
-                ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
-                ctx.lineTo(mid_p.x, mid_p.y);
-                ctx.stroke();
+                glb.ctx.strokeStyle = en_color;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+                glb.ctx.lineTo(mid_p.x, mid_p.y);
+                glb.ctx.stroke();
                 // Then draw the rest
-                ctx.strokeStyle = ex_color;
-                ctx.beginPath();
-                ctx.moveTo(mid_p.x, mid_p.y);
-                ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-                ctx.stroke();
+                glb.ctx.strokeStyle = ex_color;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(mid_p.x, mid_p.y);
+                glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                glb.ctx.stroke();
             }
         }
-        for(const out_terminal of this.out_terminals){
-            out_terminal.draw(ctx, time);
+        for(let i=0; i<this.out_terminals.length; i++){
+            this.out_terminals[i].draw();
         }
     }
 }

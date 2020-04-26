@@ -101,42 +101,42 @@ class CogTerminalConnector implements Conductor, TickWatcher {
         this.sendPowerIfConnected();
     }
     
-    draw(ctx: CanvasRenderingContext2D, time: number): void {
+    draw(): void {
         if(SHOW_HELP_GRAPICS){
             // Only mark terminal locations with the dev flag on
-            canvas_controller.setTransform(ctx);
+            glb.canvas_controller.setTransform();
             // Draw a red circle if on
             if(this.is_on){
-                ctx.strokeStyle = "red";
-                ctx.beginPath();
-                ctx.moveTo(this.p.x + 5, this.p.y);
-                ctx.arc(this.p.x, this.p.y, 5, 0, 2*Math.PI);
-                ctx.stroke();
+                glb.ctx.strokeStyle = "red";
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(this.p.x + 5, this.p.y);
+                glb.ctx.arc(this.p.x, this.p.y, 5, 0, 2*Math.PI);
+                glb.ctx.stroke();
             }
             // Chhange the collor of the smaller inner circle for connect info
             if(this.in_connected) {
                 if(this.out_connected){
                     // orange for both
-                    ctx.strokeStyle = "orange";
+                    glb.ctx.strokeStyle = "orange";
                 } else {
                     // blue for in only
-                    ctx.strokeStyle = "blue";
+                    glb.ctx.strokeStyle = "blue";
                 }
             } else {
                 if(this.out_connected){
                     // green for out only
-                    ctx.strokeStyle = "green";
+                    glb.ctx.strokeStyle = "green";
                 } else {
                     // white for none
-                    ctx.strokeStyle = "white";
+                    glb.ctx.strokeStyle = "white";
                 }
             }
-            ctx.beginPath();
-            ctx.moveTo(this.p.x + 7, this.p.y);
-            ctx.arc(this.p.x, this.p.y, 7, 0, 2*Math.PI);
-            ctx.stroke();
+            glb.ctx.beginPath();
+            glb.ctx.moveTo(this.p.x + 7, this.p.y);
+            glb.ctx.arc(this.p.x, this.p.y, 7, 0, 2*Math.PI);
+            glb.ctx.stroke();
         }
         // only draw if wire. Cogs take care of their own drawing
-        if(this.out_power instanceof Wire) this.out_power.draw(ctx, time);
+        if(this.out_power instanceof Wire) this.out_power.draw();
     }
 }

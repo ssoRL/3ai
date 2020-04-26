@@ -26,7 +26,7 @@ class KudzuStoryController {
         kudzu_title?.classList.add("no-height");
         orth_badge?.classList.add("kudzu-transition");
         orth_badge?.classList.add("sidelined");
-        await canvas_controller.animateTranslate(3000, 0, SHIFT_TO_KUDZU_TIME);
+        await glb.canvas_controller.animateTranslate(3000, 0, SHIFT_TO_KUDZU_TIME);
 
         // After the movenment is complete, fill in the title
         const head_title = document.getElementById("kudzu-title-text");
@@ -37,33 +37,33 @@ class KudzuStoryController {
         console.log(`The next section will be ${next_section}`);
     }
 
-    public draw(ctx: CanvasRenderingContext2D, time: number) {
-        canvas_controller.setTransform(ctx);
+    public draw() {
+        glb.canvas_controller.setTransform();
         if (this.in_progress && !this.done) {
             // If the reader is seeing this story currently
-            const gradient = ctx.createRadialGradient(3500, -500, 1200, 3500, -500, 2500);
+            const gradient = glb.ctx.createRadialGradient(3500, -500, 1200, 3500, -500, 2500);
             gradient.addColorStop(0, "darkgreen");
             gradient.addColorStop(0.1, "darkgreen");
             gradient.addColorStop(1, "white");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(1000, 0, 3000, 1000);
-            this.wire0.draw(ctx, time);
+            glb.ctx.fillStyle = gradient;
+            glb.ctx.fillRect(1000, 0, 3000, 1000);
+            this.wire0.draw();
         }else if(this.done && this.in_progress) {
             // If the reader has finished and is returning to the main page
-            const gradient = ctx.createLinearGradient(0, 0, 0, 2000);
+            const gradient = glb.ctx.createLinearGradient(0, 0, 0, 2000);
             gradient.addColorStop(0, "darkgreen");
             gradient.addColorStop(0.5, "darkgreen");
             gradient.addColorStop(1, "white");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, 3000, 2000);
+            glb.ctx.fillStyle = gradient;
+            glb.ctx.fillRect(0, 0, 3000, 2000);
         } else if (this.done) {
             // if the reader is totally done with kudzu
-            const gradient = ctx.createLinearGradient(1000, 0, 3000, 0);
+            const gradient = glb.ctx.createLinearGradient(1000, 0, 3000, 0);
             gradient.addColorStop(0, "white");
             gradient.addColorStop(0.5, "darkgreen");
             gradient.addColorStop(1, "darkgreen");
-            ctx.fillStyle = gradient;
-            ctx.fillRect(1000, 0, 2000, 1000);
+            glb.ctx.fillStyle = gradient;
+            glb.ctx.fillRect(1000, 0, 2000, 1000);
         }
         // else draw nothing
     }

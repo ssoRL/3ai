@@ -66,7 +66,8 @@ class OrthStoryController {
         this.tick(TICKS_AT_START);
 
         // Move the story into view
-        await canvas_controller.animateTranslate(0, 1500, transition_time, tick_easer.easeTickAnimaiton.bind(tick_easer));
+        const easer = glb.tick_easer
+        await glb.canvas_controller.animateTranslate(0, 1500, transition_time, easer.easeTickAnimaiton.bind(easer));
 
         // Set the transition on the story container to handle the shorter scroll transitions
         const scroll_transition_time = TICK_EVERY + TICK_LENGTH;
@@ -87,9 +88,11 @@ class OrthStoryController {
             }
       }
 
-    public draw(ctx: CanvasRenderingContext2D, time: number) {
+    public draw() {
+        if(!this.in_progress) return;
+        glb.cog_swatch = this.color_cog_swatch;
         for(const cog of this.driver_cogs) {
-            cog.draw(ctx, time, this.color_cog_swatch);
+            cog.draw();
         }
     }
 
@@ -110,7 +113,7 @@ class OrthStoryController {
         if(n <= 0) return;
         let time = performance.now();
         window.setTimeout(this.tick.bind(this, n-1), TICK_EVERY);
-        for(const cog of driver_cogs) {
+        for(const cog of glb.driver_cogs) {
             cog.startTick(time);
         }
         if(!this.done) {

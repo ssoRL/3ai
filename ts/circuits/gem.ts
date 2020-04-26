@@ -15,8 +15,8 @@ class GemTerminal implements Conductor {
         }
     }
 
-    draw(ctx: CanvasRenderingContext2D, time: number): void {
-        this.parent.draw(ctx, time, this.orientation);
+    draw(): void {
+        this.parent.draw(this.orientation);
     }
 
     getPosition(): Point {
@@ -84,22 +84,22 @@ class Gem {
         })();
     }
 
-    draw(ctx: CanvasRenderingContext2D, time: number, orientation: CardinalOrientation) {
+    draw(orientation: CardinalOrientation) {
         // Do this so that the gem is not drawn more than once
         if(orientation === this.draw_from) {
             // draw a diamond
-            ctx.beginPath();
-            ctx.moveTo(this.center.x, this.center.y + this.size);
-            ctx.lineTo(this.center.x + this.size, this.center.y);
-            ctx.lineTo(this.center.x, this.center.y - this.size);
-            ctx.lineTo(this.center.x - this.size, this.center.y);
-            ctx.closePath();
+            glb.ctx.beginPath();
+            glb.ctx.moveTo(this.center.x, this.center.y + this.size);
+            glb.ctx.lineTo(this.center.x + this.size, this.center.y);
+            glb.ctx.lineTo(this.center.x, this.center.y - this.size);
+            glb.ctx.lineTo(this.center.x - this.size, this.center.y);
+            glb.ctx.closePath();
             if(this.is_on){
-                ctx.fillStyle = this.color;
-                ctx.fill();
+                glb.ctx.fillStyle = this.color;
+                glb.ctx.fill();
             } else {
-                ctx.strokeStyle = this.color;
-                ctx.stroke();
+                glb.ctx.strokeStyle = this.color;
+                glb.ctx.stroke();
             }
         }
     }
