@@ -32,6 +32,11 @@ class Cog implements Clickable{
     private is_ticking = false;
     private stopped = false;
 
+    // Stored for use when computing wheather to bother drawing this cog
+    /** The highest y axis value this cog reaches */
+    private y_top: number;
+    private height: number;
+
 
     constructor(
         x: number,
@@ -60,6 +65,8 @@ class Cog implements Clickable{
         if(!(this.driver instanceof Cog)) {
             glb.canvas_controller.registerClicable(this);
         }
+        this.y_top = y - this.renderer.outer_radius;
+        this.height = 2*this.renderer.outer_radius;
     }
 
     public static getCogBySerialNumber(cog_sn: number): Cog {
@@ -179,6 +186,8 @@ class Cog implements Clickable{
         for(let i=0; i<this.driven_cogs.length; i++){
             this.driven_cogs[i].draw();
         }
+        // If this cog is not in frame don't draw it
+        if(!glb.canvas_controller.boxIsInVerticalFrame(this.y_top, this.height)) return;
         glb.canvas_controller.setTransform();
         glb.ctx.translate(this.x, this.y);
         // calculate the rotation

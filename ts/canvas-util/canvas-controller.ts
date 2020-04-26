@@ -85,4 +85,10 @@ class CanvasController {
     public registerClicable(clickable: Clickable) {
         this.clickables.push(clickable);
     }
+
+    public boxIsInVerticalFrame(y_top: number, height: number): boolean {
+        const below_frame = y_top > this.offset.y + CANVAS_CANNONICAL_SIZE;
+        const above_frame = y_top + height < this.offset.y;
+        return !(below_frame || above_frame);
+    }
 }
