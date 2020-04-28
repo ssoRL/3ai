@@ -8,7 +8,7 @@ class CanvasController {
     private readonly canvas: HTMLCanvasElement;
     private readonly canvas_container: HTMLDivElement;
     private scale = 1;
-    private offset: Point = {x: 0, y: 0};
+    public offset: Point = {x: 0, y: 0};
     private clickables: Clickable[] = [];
 
     constructor(canvas_: HTMLCanvasElement, canvas_container_: HTMLDivElement){

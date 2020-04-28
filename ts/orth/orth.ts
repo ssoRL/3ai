@@ -2,7 +2,7 @@
 const TICKS_AT_START = 4;
 
 class OrthStoryController {
-    private state: StoryState = StoryState.NOT_STARTED;
+    private done = false;
     private driver_cogs: Cog[];
     /** A number between 0 and 1 that represents the fraction of the story passed */
     private scroll = 0;
@@ -23,8 +23,6 @@ class OrthStoryController {
     }
 
     public async start() {
-        this.state = StoryState.TRANSITION_IN;
-
         // Move the badges and canvas to be in position for the kudzu story
         const orth_badge = getDocumentElementById("orth");
         const orth_title = getDocumentElementById("orth-title-section");
@@ -65,8 +63,6 @@ class OrthStoryController {
         const orth_scroll_transition = `all ${scroll_transition_time}ms ease-in-out`;
         story_container.style.transition = orth_scroll_transition;
         orth_badge.onclick = () => {};
-
-        this.state = StoryState.IN_STORY;
     }
 
     private async initializeContent() {
@@ -111,11 +107,7 @@ class OrthStoryController {
 
         // Then figure out the gradients of the metal and lines
         const counter_rotate = -a;
-        if(
-            this.state === StoryState.NOT_STARTED || 
-            this.state === StoryState.TRANSITION_IN || 
-            this.state === StoryState.IN_STORY
-        ) {
+        if(!this.done) {
             if(y < CANVAS_CANNONICAL_SIZE) {
                 return {
                     metal: "white",
@@ -172,7 +164,7 @@ class OrthStoryController {
         for(const cog of glb.driver_cogs) {
             cog.startTick(time);
         }
-        if(this.state !== StoryState.DONE) {
+        if(!this.done) {
             for(const cog of this.driver_cogs) {
                 cog.startTick(time);
             }

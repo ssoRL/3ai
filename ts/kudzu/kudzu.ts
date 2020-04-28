@@ -1,22 +1,21 @@
-/** The time taken to shift from the main screen to the kudzu story screen */
-const SHIFT_TO_KUDZU_TIME = 1000;
-/** The speed at which text is filled in. Measures in ms per letter */
-const TYPING_SPEED = 15;
-/** The number of letters that fits in a standard 1x1 area */
-const LETTERS_PER_PIXEL = 0.008;
-
 class KudzuStoryController {
     private done = false;
-    private in_progress = false;
     private wire0: Wire;
+
+    /** The time taken to shift from the main screen to the kudzu story screen */
+    private static readonly SHIFT_TO_KUDZU_TIME = 1000;
+    /** The horizontal transition to this story */
+    private static readonly TRANSLATE = 3000;
+    /** The speed at which text is filled in. Measures in ms per letter */
+    private static readonly TYPING_SPEED = 15;
+    /** The number of letters that fits in a standard 1x1 area */
+    private static readonly LETTERS_PER_PIXEL = 0.008;
 
     constructor() {
         this.wire0 = init_kudzu_wires();
     }
 
     public async start() {
-        this.in_progress = true;
-
         // Move the badges and canvas to be in position for the kudzu story
         const kudzu_badge = document.getElementById("kudzu");
         const kudzu_title = document.getElementById("kudzu-title-section");
@@ -26,7 +25,9 @@ class KudzuStoryController {
         kudzu_title?.classList.add("no-height");
         orth_badge?.classList.add("kudzu-transition");
         orth_badge?.classList.add("sidelined");
-        await glb.canvas_controller.animateTranslate(3000, 0, SHIFT_TO_KUDZU_TIME);
+        await glb.canvas_controller.animateTranslate(
+            KudzuStoryController.TRANSLATE, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
+        );
 
         // After the movenment is complete, fill in the title
         const head_title = document.getElementById("kudzu-title-text");
@@ -37,35 +38,49 @@ class KudzuStoryController {
         console.log(`The next section will be ${next_section}`);
     }
 
+    /** The size of the gradient's inner radius */
+    private static readonly GRADIENT_INNER_R = 1300;
+    /** The size of the gradient's inner radius */
+    private static readonly GRADIENT_OUTER_R = 2500;
+
     public draw() {
         glb.canvas_controller.setTransform();
-        if (this.in_progress && !this.done) {
-            // If the reader is seeing this story currently
-            const gradient = glb.ctx.createRadialGradient(3500, -500, 1200, 3500, -500, 2500);
-            gradient.addColorStop(0, "darkgreen");
-            gradient.addColorStop(0.1, "darkgreen");
-            gradient.addColorStop(1, "white");
-            glb.ctx.fillStyle = gradient;
-            glb.ctx.fillRect(1000, 0, 3000, 1000);
-            this.wire0.draw();
-        }else if(this.done && this.in_progress) {
-            // If the reader has finished and is returning to the main page
-            const gradient = glb.ctx.createLinearGradient(0, 0, 0, 2000);
-            gradient.addColorStop(0, "darkgreen");
-            gradient.addColorStop(0.5, "darkgreen");
-            gradient.addColorStop(1, "white");
-            glb.ctx.fillStyle = gradient;
-            glb.ctx.fillRect(0, 0, 3000, 2000);
-        } else if (this.done) {
-            // if the reader is totally done with kudzu
-            const gradient = glb.ctx.createLinearGradient(1000, 0, 3000, 0);
-            gradient.addColorStop(0, "white");
-            gradient.addColorStop(0.5, "darkgreen");
-            gradient.addColorStop(1, "darkgreen");
-            glb.ctx.fillStyle = gradient;
-            glb.ctx.fillRect(1000, 0, 2000, 1000);
+        // If the story isn't started, hold the gradient in place as the frame "pans" to it
+        // Afterwards, hold the gradient pinned to the top
+        const center: Point = this.done ?
+            {
+                x: KudzuStoryController.TRANSLATE + CANVAS_CANNONICAL_SIZE/2,
+                y: -CANVAS_CANNONICAL_SIZE/2
+            } :
+            {
+                x: glb.canvas_controller.offset.x + CANVAS_CANNONICAL_SIZE/2,
+                y: glb.canvas_controller.offset.y - CANVAS_CANNONICAL_SIZE/2
+            };
+
+        const gradient = glb.ctx.createRadialGradient(
+            center.x, center.y, KudzuStoryController.GRADIENT_INNER_R, 
+            center.x, center.y, KudzuStoryController.GRADIENT_OUTER_R
+        );
+
+        gradient.addColorStop(0, "darkgreen");
+        gradient.addColorStop(1, "white");
+        glb.ctx.fillStyle = gradient;
+        glb.ctx.fillRect(1000, 0, 3000, 1000);
+        this.wire0.draw();
+    }
+
+    public getWireColor(): string| CanvasGradient{
+        if(this.done) {
+            return "olive"
+        } else {
+            const gradient = glb.ctx.createLinearGradient(
+                CANVAS_CANNONICAL_SIZE, 0,
+                KudzuStoryController.TRANSLATE, 0
+            );
+            gradient.addColorStop(0, "black");
+            gradient.addColorStop(1, "olive");
+            return gradient;
         }
-        // else draw nothing
     }
 
     /**
@@ -96,7 +111,7 @@ class KudzuStoryController {
         if(!story_section) throw "3AI Error: There is no kudzu-story-text eleement";
         story_section.innerHTML = "";
 
-        const capacity = LETTERS_PER_PIXEL * story_section.clientHeight * story_section.clientWidth;
+        const capacity = KudzuStoryController.LETTERS_PER_PIXEL * story_section.clientHeight * story_section.clientWidth;
         // figure our how many sections can fit this cycle
         let to_section = from_section;
         let total_contents_length = 0;
@@ -193,7 +208,7 @@ class KudzuStoryController {
                         resolve();
                     }
                 },
-                TYPING_SPEED
+                KudzuStoryController.TYPING_SPEED
             );
         }
 
