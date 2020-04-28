@@ -25,9 +25,6 @@ class ThreeAIGlobals {
     /** The current system time when the most recent draw started */
     public time: number;
 
-    /** The swatch that cogs are currently being drawn with */
-    public cog_swatch: CogSwatch;
-
     // Sets up the ctx and canvas controller
     constructor() {
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');

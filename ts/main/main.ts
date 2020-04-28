@@ -9,7 +9,6 @@ function init(){
     glb.orth_story_controller = new OrthStoryController();
     glb.tick_easer = new TickEaser(1.15, 0.85);
     glb.time = performance.now();
-    glb.cog_swatch = glb.orth_story_controller.getCogSwatch();
     
     
     if(TICKING) glb.orth_story_controller.tick();
@@ -39,7 +38,6 @@ function draw() {
     }
     glb.kudzu_story_controller.draw();
     glb.orth_story_controller.draw();
-    glb.cog_swatch = glb.orth_story_controller.getCogSwatch();
     for(const cog of glb.driver_cogs){
         cog.draw();
     }

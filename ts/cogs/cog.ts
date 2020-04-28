@@ -204,9 +204,11 @@ class Cog implements Clickable{
                 return -1*absolute_delta;
             }
         })() : 0;
-        glb.ctx.rotate(rest_angle + animate_delta);
-        glb.ctx.fillStyle = glb.cog_swatch.inner_fill;
-        glb.ctx.strokeStyle = glb.cog_swatch.outer_outline;
+        const rotate = rest_angle + animate_delta;
+        const swatch = glb.orth_story_controller.getCogSwatch(this.y, rotate);
+        glb.ctx.rotate(rotate);
+        glb.ctx.fillStyle = swatch.metal
+        glb.ctx.strokeStyle = swatch.lines;
         // Use the renderer to draw the cog
         this.renderer.draw(glb.ctx);
         if(SHOW_HELP_GRAPICS){
@@ -228,13 +230,8 @@ class Cog implements Clickable{
             })();
         } else {
             // Draw a circle in the middle , colored to represent stopped or going
-            glb.ctx.strokeStyle = glb.cog_swatch.screw_outline;
-            glb.ctx.fillStyle = (() => {
-                if(this.driver instanceof Cog){
-                    return glb.cog_swatch.screw_fill
-                }
-                return this.stopped ? glb.cog_swatch.driver_stopped : glb.cog_swatch.driver_going;
-            })();
+            glb.ctx.strokeStyle = swatch.lines;
+            glb.ctx.fillStyle = "white";
         }
         glb.ctx.beginPath();
         glb.ctx.arc(0, 0, 10, 0, 2*Math.PI);

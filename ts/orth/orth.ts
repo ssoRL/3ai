@@ -2,39 +2,28 @@
 const TICKS_AT_START = 4;
 
 class OrthStoryController {
-    private done = false;
-    private in_progress = false;
+    private state: StoryState = StoryState.NOT_STARTED;
     private driver_cogs: Cog[];
     /** A number between 0 and 1 that represents the fraction of the story passed */
     private scroll = 0;
 
-    private readonly bw_cog_swatch: CogSwatch = {
-        outer_outline: "black",
-        inner_fill: "white",
-        screw_outline: "black",
-        screw_fill: "white",
-        driver_going: "white",
-        driver_stopped: "white"
-    };
-
-    private readonly color_cog_swatch: CogSwatch = {
-        outer_outline: "slateGray",
-        inner_fill: "silver",
-        screw_outline: "slateGray",
-        screw_fill: "silver",
-        driver_going: "green",
-        driver_stopped: "red"
-    };
+    /** The amount to translate the canvas down before starting the story  */
+    static readonly TRANSLATE_DOWN = 1500;
 
     constructor(){
         this.driver_cogs = init_cogs_orth();
         this.initializeContent();
         const orth_badge = getDocumentElementById("orth");
         orth_badge.onclick = this.start.bind(this);
+
+        // Define the gradient of the cog fill at the start
+        const cog_fill_gradient = glb.ctx.createLinearGradient(0, 0, 0, 200);
+        cog_fill_gradient.addColorStop(0, "silver");
+        cog_fill_gradient.addColorStop(1, "white");
     }
 
     public async start() {
-        this.in_progress = true;
+        this.state = StoryState.TRANSITION_IN;
 
         // Move the badges and canvas to be in position for the kudzu story
         const orth_badge = getDocumentElementById("orth");
@@ -67,13 +56,17 @@ class OrthStoryController {
 
         // Move the story into view
         const easer = glb.tick_easer
-        await glb.canvas_controller.animateTranslate(0, 1500, transition_time, easer.easeTickAnimaiton.bind(easer));
+        await glb.canvas_controller.animateTranslate(
+            0, OrthStoryController.TRANSLATE_DOWN, transition_time, easer.easeTickAnimaiton.bind(easer)
+        );
 
         // Set the transition on the story container to handle the shorter scroll transitions
         const scroll_transition_time = TICK_EVERY + TICK_LENGTH;
         const orth_scroll_transition = `all ${scroll_transition_time}ms ease-in-out`;
         story_container.style.transition = orth_scroll_transition;
         orth_badge.onclick = () => {};
+
+        this.state = StoryState.IN_STORY;
     }
 
     private async initializeContent() {
@@ -89,18 +82,81 @@ class OrthStoryController {
       }
 
     public draw() {
-        if(!this.in_progress) return;
-        glb.cog_swatch = this.color_cog_swatch;
         for(const cog of this.driver_cogs) {
             cog.draw();
         }
     }
 
-    public getCogSwatch() {
-        if(this.done) {
-            return this.color_cog_swatch;
-        }else{
-            return this.bw_cog_swatch;
+    // a gradient centered around this cog's center
+    private getCogCenteredGradient(a: number): CanvasGradient {
+        // The start, which is white, should be further from the center
+        const start_p = getPoint(200, a);
+        const end_p = getPoint(-50, a);
+
+        const grad = glb.ctx.createLinearGradient(start_p.y, -start_p.x, end_p.y, -end_p.x);
+        grad.addColorStop(0, "white");
+        grad.addColorStop(1, "silver");
+        return grad;
+    }
+
+    /**
+     * Gets the gradient used to fill in the cog, rotated and transformed properly
+     * @param y the y coord of cog center
+     * @param a the current angle of rotation
+     */
+    public getCogSwatch(y: number, a: number): CogSwatch {
+        // First figure out the gradient of the center light
+        // TODO: do this
+        const driver_light = "white";
+
+        // Then figure out the gradients of the metal and lines
+        const counter_rotate = -a;
+        if(
+            this.state === StoryState.NOT_STARTED || 
+            this.state === StoryState.TRANSITION_IN || 
+            this.state === StoryState.IN_STORY
+        ) {
+            if(y < CANVAS_CANNONICAL_SIZE) {
+                return {
+                    metal: "white",
+                    lines: "black",
+                    driver_light: driver_light
+                }
+            } else if(y > OrthStoryController.TRANSLATE_DOWN) {
+                return {
+                    metal: this.getCogCenteredGradient(counter_rotate),
+                    lines: "slateGray",
+                    driver_light: driver_light
+                }
+            } else {
+                // Make a gradient that extends from the CANVAS_CANNONICAL_SIZE line to TRANSLATE_DOWN
+                const gradient_start_r = y - CANVAS_CANNONICAL_SIZE;
+                const gradient_end_r = y - OrthStoryController.TRANSLATE_DOWN;
+                // And make sure it's shifted to handle the rotation
+                const start_p = getPoint(gradient_start_r, counter_rotate);
+                const end_p = getPoint(gradient_end_r, counter_rotate);
+    
+                const metal_grad = glb.ctx.createLinearGradient(start_p.y, -start_p.x, end_p.y, -end_p.x);
+                metal_grad.addColorStop(0, "white");
+                metal_grad.addColorStop(1, "silver");
+
+                const lines_grad = glb.ctx.createLinearGradient(start_p.y, -start_p.x, end_p.y, -end_p.x);
+                lines_grad.addColorStop(0, "black");
+                lines_grad.addColorStop(1, "slateGray");
+
+                return {
+                    metal: metal_grad,
+                    lines: lines_grad,
+                    driver_light: driver_light
+                }
+            }
+        } else {
+            // always use cog centered once the story is over
+                return {
+                    metal: this.getCogCenteredGradient(counter_rotate),
+                    lines: "slateGray",
+                    driver_light: driver_light
+                }
         }
     }
 
@@ -116,7 +172,7 @@ class OrthStoryController {
         for(const cog of glb.driver_cogs) {
             cog.startTick(time);
         }
-        if(!this.done) {
+        if(this.state !== StoryState.DONE) {
             for(const cog of this.driver_cogs) {
                 cog.startTick(time);
             }
