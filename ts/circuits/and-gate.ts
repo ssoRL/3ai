@@ -129,6 +129,7 @@ class AndGate {
         // Draw a DIN AND gate
         glb.canvas_controller.setTransform();
         glb.ctx.translate(this.p.x, this.p.y);
+        const off_wire_color = glb.kudzu_story_controller.getWireColor(this.p.x);
         // orient it
         const rotation: number = (()=>{
             switch(this.ori){
@@ -144,13 +145,13 @@ class AndGate {
         })();
         glb.ctx.rotate(rotation);
         // Draw the left side base
-        glb.ctx.strokeStyle = this.left_terminal.is_on ? "red" : "black";
+        glb.ctx.strokeStyle = this.left_terminal.is_on ? "red" : off_wire_color;
         glb.ctx.beginPath();
         glb.ctx.moveTo(0, 0);
         glb.ctx.lineTo(-AND_RADIUS, 0);
         glb.ctx.stroke();
         // Draw the right side base
-        glb.ctx.strokeStyle = this.right_terminal.is_on ? "red" : "black";
+        glb.ctx.strokeStyle = this.right_terminal.is_on ? "red" : off_wire_color;
         glb.ctx.beginPath();
         glb.ctx.moveTo(0, 0);
         glb.ctx.lineTo(AND_RADIUS, 0);
@@ -167,7 +168,7 @@ class AndGate {
         })();
         if(power_ratio > 1){
             // Then just draw the arc in one sweep
-            glb.ctx.strokeStyle = this.is_on ? "red" : "black";
+            glb.ctx.strokeStyle = this.is_on ? "red" : off_wire_color;
             glb.ctx.beginPath();
             glb.ctx.moveTo(-AND_RADIUS, 0);
             glb.ctx.arc(0, 0, AND_RADIUS, Math.PI, 2*Math.PI);
@@ -175,14 +176,14 @@ class AndGate {
         } else {
             const power_arc = power_ratio * Math.PI / 2;
             // Draw the base of the semi-circle
-            glb.ctx.strokeStyle = this.is_on ? "red" : "black";
+            glb.ctx.strokeStyle = this.is_on ? "red" : off_wire_color;
             glb.ctx.beginPath();
             glb.ctx.arc(0, 0, AND_RADIUS, 2*Math.PI - power_arc, 2*Math.PI);
             glb.ctx.moveTo(-AND_RADIUS, 0);
             glb.ctx.arc(0, 0, AND_RADIUS, Math.PI, Math.PI + power_arc);
             glb.ctx.stroke();
             // Draw the tip
-            glb.ctx.strokeStyle = this.is_on ? "black" : "red";
+            glb.ctx.strokeStyle = this.is_on ? off_wire_color : "red";
             glb.ctx.beginPath();
             glb.ctx.arc(0, 0, AND_RADIUS, Math.PI + power_arc, 2*Math.PI - power_arc);
             glb.ctx.stroke();

@@ -22,8 +22,8 @@ class CanvasController {
 
         this.canvas.addEventListener('click', (me) => {
             const clickPoint: Point = {
-                x: me.offsetX/this.scale,
-                y: me.offsetY/this.scale
+                x: me.offsetX/this.scale + this.offset.x,
+                y: me.offsetY/this.scale + this.offset.y
             }
             for(const clickable of this.clickables) {
                 if(clickable.isClicked(clickPoint)){

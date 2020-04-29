@@ -1,18 +1,22 @@
 class KudzuStoryController {
     private done = false;
     private wire0: Wire;
+    private kudzu_gem: Gem;
 
     /** The time taken to shift from the main screen to the kudzu story screen */
     private static readonly SHIFT_TO_KUDZU_TIME = 1000;
     /** The horizontal transition to this story */
     private static readonly TRANSLATE = 3000;
     /** The speed at which text is filled in. Measures in ms per letter */
-    private static readonly TYPING_SPEED = 15;
+    private static readonly TYPING_SPEED = 1;
     /** The number of letters that fits in a standard 1x1 area */
     private static readonly LETTERS_PER_PIXEL = 0.008;
 
     constructor() {
-        this.wire0 = init_kudzu_wires();
+        [this.wire0, this.kudzu_gem] = init_kudzu_wires();
+        this.kudzu_gem.onclick = () => {
+            this.end();
+        }
     }
 
     public async start() {
@@ -34,8 +38,25 @@ class KudzuStoryController {
         if(!head_title) throw "3AI Error: There is no kudzu-title-text eleement";
         await this.fillInString(head_title, "Vines of Kudzu");
 
-        const next_section = await this.fillInStory(0);
-        console.log(`The next section will be ${next_section}`);
+        await this.fillInStory(0);
+    }
+
+    public async end() {
+        // Move the badges and canvas to be in position for the kudzu story
+        const kudzu_badge = document.getElementById("kudzu");
+        const kudzu_title = document.getElementById("kudzu-title-section");
+        const orth_badge = document.getElementById("orth");
+        kudzu_badge?.classList.add("kudzu-transition");
+        kudzu_badge?.classList.remove("repositioned");
+        kudzu_badge?.classList.add("story-done");
+        kudzu_title?.classList.add("no-height");
+        orth_badge?.classList.add("kudzu-transition");
+        orth_badge?.classList.remove("sidelined");
+        this.kudzu_gem.powerOut();
+        await glb.canvas_controller.animateTranslate(
+            0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
+        );
+
     }
 
     /** The size of the gradient's inner radius */
@@ -49,12 +70,12 @@ class KudzuStoryController {
         // Afterwards, hold the gradient pinned to the top
         const center: Point = this.done ?
             {
-                x: KudzuStoryController.TRANSLATE + CANVAS_CANNONICAL_SIZE/2,
-                y: -CANVAS_CANNONICAL_SIZE/2
-            } :
-            {
                 x: glb.canvas_controller.offset.x + CANVAS_CANNONICAL_SIZE/2,
                 y: glb.canvas_controller.offset.y - CANVAS_CANNONICAL_SIZE/2
+            } :
+            {
+                x: KudzuStoryController.TRANSLATE + CANVAS_CANNONICAL_SIZE/2,
+                y: -CANVAS_CANNONICAL_SIZE/2
             };
 
         const gradient = glb.ctx.createRadialGradient(
@@ -65,14 +86,21 @@ class KudzuStoryController {
         gradient.addColorStop(0, "darkgreen");
         gradient.addColorStop(1, "white");
         glb.ctx.fillStyle = gradient;
-        glb.ctx.fillRect(1000, 0, 3000, 1000);
+        glb.ctx.fillRect(glb.canvas_controller.offset.x, glb.canvas_controller.offset.y, 1000, 1000);
         this.wire0.draw();
     }
 
-    public getWireColor(): string| CanvasGradient{
+    public getWireColor(x?: number): string | CanvasGradient {
         if(this.done) {
             return "olive"
         } else {
+            if(x) {
+                if(x > KudzuStoryController.TRANSLATE) {
+                    return "olive";
+                } else if (x < CANVAS_CANNONICAL_SIZE) {
+                    return "black";
+                }
+            }
             const gradient = glb.ctx.createLinearGradient(
                 CANVAS_CANNONICAL_SIZE, 0,
                 KudzuStoryController.TRANSLATE, 0
@@ -105,7 +133,7 @@ class KudzuStoryController {
         }
     }
 
-    private async fillInStory(from_section: number): Promise<number> {
+    private async fillInStory(from_section: number) {
         // get the story section and then clear out the previous text
         const story_section = document.getElementById("kudzu-story-text");
         if(!story_section) throw "3AI Error: There is no kudzu-story-text eleement";
@@ -156,12 +184,16 @@ class KudzuStoryController {
         const next_button = document.createElement("a");
         next_button.classList.add("kudzu-next");
         next_button.innerText = "Next";
-        next_button.onclick = () => {
-            this.fillInStory(to_section);
+        if(to_section >= kudzu_story.length) {
+            next_button.onclick = () => {
+                this.end_of_story();
+            }
+        } else {
+            next_button.onclick = () => {
+                this.fillInStory(to_section);
+            }
         }
         story_section.appendChild(next_button);
-
-        return to_section;
     }
 
     /**
@@ -216,5 +248,24 @@ class KudzuStoryController {
         return new Promise((resolve) => {
             addChar(0, resolve);
         });
+    }
+
+    private end_of_story() {
+        this.done = true;
+        this.wire0.power(true);
+
+        const story_section = document.getElementById("kudzu-story-text");
+        if(!story_section) throw "3AI Error: There is no kudzu-story-text eleement";
+        story_section.innerHTML = "";
+
+        const html_story_section = document.createElement("div");
+        html_story_section.classList.add("kudzu-story-section");
+        story_section.appendChild(html_story_section);
+
+        const html_final_message_div = document.createElement("div");
+        html_final_message_div.classList.add("kudzu-story-paragraph");
+        html_story_section.appendChild(html_final_message_div);
+
+        this.fillInString(html_final_message_div, `You have completed "Vines of Kudzu". Wires will now be powered. Click on glowing terminal to return to the main page.`)
     }
 }
