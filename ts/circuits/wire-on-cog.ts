@@ -57,7 +57,7 @@ class WireOnCog {
         // Get the distance that the various points will be from the center
         const en_r = enter_.outer ? outer_radius : inner_radius;
         const ex_r = exit_.outer ? outer_radius : inner_radius;
-        this.mid_r = inner_radius / 2;
+        this.mid_r = 2* inner_radius / 3;
 
         // calculate the points 
         this.en_p0 = getPoint(en_r, this.en_arc);
@@ -135,7 +135,7 @@ class WireOnCog {
         const total_wire_time = this.en_wire_time + this.arc_wire_time + this.ex_wire_time;
         if(!this.is_on || time_powered > total_wire_time) {
             // if the wire is off, or fully on
-            glb.ctx.strokeStyle = this.is_on ? "red" : "black";
+            glb.ctx.strokeStyle = this.is_on ? "red" : glb.kudzu_story_controller.getWireColor();
             glb.ctx.beginPath();
             glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
             glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
@@ -145,8 +145,8 @@ class WireOnCog {
         } else {
             // only going to draw some in the on color
             // determine the color that is at the en and ex points
-            const en_color = this.power_from === "en" ? "red" : "black";
-            const ex_color = this.power_from === "ex" ? "red" : "black";
+            const en_color = this.power_from === "en" ? "red" : glb.kudzu_story_controller.getWireColor();
+            const ex_color = this.power_from === "ex" ? "red" : glb.kudzu_story_controller.getWireColor();
             // determine the powered time equivilant. this is just powered time
             // if starting from the en, but from ex, it will be the inverse since
             // the red line needs to move "backwards"

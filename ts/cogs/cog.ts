@@ -57,7 +57,7 @@ class Cog implements Clickable{
         this.x = x;
         this.y = y;
         this.tooth_count = tooth_count;
-        this.renderer = CogRendererProvider.getRenderer(tooth_count);
+        this.renderer = CogRendererProvider.getRenderer(tooth_count, !(driver_ instanceof Cog));
         // Set the starting position of the cog
         this.base_rotate = base_rotate;
         this.current_tooth = 0;
@@ -211,32 +211,13 @@ class Cog implements Clickable{
         glb.ctx.strokeStyle = swatch.lines;
         // Use the renderer to draw the cog
         this.renderer.draw(glb.ctx);
+
         if(SHOW_HELP_GRAPICS){
             // only show the serial number with dev flag
-            glb.ctx.fillStyle = "black";
+            glb.ctx.fillStyle = "red";
             glb.ctx.fillText(`#${this.serial_number}`, 10, 10);
         }
-        if(CLICK_ACTION === "change") {
-            // Draw a circle in the middle, colored to represent the direction of travel
-            glb.ctx.fillStyle = (() => {
-                if(this.driver instanceof Cog){
-                    return "slateGray"
-                }
-                const will_spin_clockwise = 
-                    (this.driver === SpinDirection.CLOCKWISE && !this.change_direction) ||
-                    (this.driver === SpinDirection.COUNTER_CLOCKWISE && this.change_direction);
-    
-                return will_spin_clockwise ? "orange" : "purple";
-            })();
-        } else {
-            // Draw a circle in the middle , colored to represent stopped or going
-            glb.ctx.strokeStyle = swatch.lines;
-            glb.ctx.fillStyle = "white";
-        }
-        glb.ctx.beginPath();
-        glb.ctx.arc(0, 0, 10, 0, 2*Math.PI);
-        glb.ctx.fill();
-        glb.ctx.stroke();
+
         // Draw it's wire if any
         if(this.etched_wire){
             this.etched_wire.draw();
@@ -285,7 +266,7 @@ class Cog implements Clickable{
      */
     public addDrivenCog(at_index: number, tooth_count: number): Cog{
         // Get the new cog's renderer so info on it can be gleaned
-        let new_cog_renderer = CogRendererProvider.getRenderer(tooth_count);
+        let new_cog_renderer = CogRendererProvider.getRenderer(tooth_count, false);
 
         // First determine the position of the new cog
         // (at_index + .5 since the teeth tops are off by half a section arc)

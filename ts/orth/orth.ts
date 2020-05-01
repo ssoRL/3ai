@@ -6,6 +6,15 @@ class OrthStoryController {
     private driver_cogs: Cog[];
     /** A number between 0 and 1 that represents the fraction of the story passed */
     private scroll = 0;
+    // Things to control the glowing centers of the cogs
+    /** The glow amount, between 0 and 1 */
+    private glow = 0;
+    /** The amount the the glow jitters by */
+    private static readonly GLOW_JITTER = 0.05;
+    /** How ofter the glow jitters in milliseconds */
+    private static readonly JITTER_FREQ = 200;
+    private static readonly STOP_COLOR = "255,8,0";
+    private static readonly GO_COLOR = "102,255,0";
 
     /** The amount to translate the canvas down before starting the story  */
     static readonly TRANSLATE_DOWN = 1500;
@@ -111,14 +120,12 @@ class OrthStoryController {
             if(y < CANVAS_CANNONICAL_SIZE) {
                 return {
                     metal: "white",
-                    lines: "black",
-                    driver_light: driver_light
+                    lines: "black"
                 }
             } else if(y > OrthStoryController.TRANSLATE_DOWN) {
                 return {
                     metal: this.getCogCenteredGradient(counter_rotate),
-                    lines: "slateGray",
-                    driver_light: driver_light
+                    lines: "slateGray"
                 }
             } else {
                 // Make a gradient that extends from the CANVAS_CANNONICAL_SIZE line to TRANSLATE_DOWN
@@ -138,17 +145,24 @@ class OrthStoryController {
 
                 return {
                     metal: metal_grad,
-                    lines: lines_grad,
-                    driver_light: driver_light
+                    lines: lines_grad
                 }
             }
         } else {
             // always use cog centered once the story is over
                 return {
                     metal: this.getCogCenteredGradient(counter_rotate),
-                    lines: "slateGray",
-                    driver_light: driver_light
+                    lines: "slateGray"
                 }
+        }
+    }
+
+    public drawDriverLight(stopped: boolean  ) {
+        const color = stopped ? OrthStoryController.STOP_COLOR : OrthStoryController.GO_COLOR;
+        if(this.done) {
+            // some shit
+        } else {
+            
         }
     }
 

@@ -20,7 +20,11 @@ class InvoluteCogRenderer {
     // The part taken up by the top of the tooth
     private tooth_top_arc: number;
 
-    constructor(spur_count: number) {
+    // The sizes for the center circle
+    private static readonly CENTER_CIRCLE_RADIUS_DRIVER = 10;
+    private static readonly CENTER_CIRCLE_RADIUS_DRIVEN = 35;
+
+    constructor(spur_count: number, is_driver: boolean) {
         this.spur_count = spur_count;
         this.section_arc = 2 * Math.PI / spur_count;
 
@@ -60,11 +64,11 @@ class InvoluteCogRenderer {
         this.base_arc = this.section_arc / 2 - lower_involute_arc * 2;
         this.tooth_top_arc = this.section_arc / 2 - upper_involute_arc * 2;
 
-        this.draw_path = this.generateDrawPath();
+        this.draw_path = this.generateDrawPath(is_driver);
     }
 
     public draw(ctx: CanvasRenderingContext2D){
-        ctx.fill(this.draw_path);
+        ctx.fill(this.draw_path, "evenodd");
         ctx.stroke(this.draw_path);
     }
 
@@ -119,7 +123,7 @@ class InvoluteCogRenderer {
         return B(t);
     }
 
-    private generateDrawPath(): Path2D {
+    private generateDrawPath(is_driver: boolean): Path2D {
         let path = new Path2D();
         if(SHOW_HELP_GRAPICS){
             // only show the 0rad line for dev work
@@ -181,6 +185,11 @@ class InvoluteCogRenderer {
             //
         }
         svg_d += "Z";
+
+        // Add the cut out circle in the middle
+        const cut_out_radius = is_driver ? InvoluteCogRenderer.CENTER_CIRCLE_RADIUS_DRIVER : InvoluteCogRenderer.CENTER_CIRCLE_RADIUS_DRIVEN;
+        path.moveTo(cut_out_radius, 0);
+        path.arc(0, 0, cut_out_radius, 0, 2*Math.PI);
         //console.log(svg_d);
         //path.closePath();
         return path;

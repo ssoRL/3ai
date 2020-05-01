@@ -53,12 +53,20 @@ html body {
     top: 10%;
 }
 
+#kudzu-title-text.story-done {
+    left: 225%;
+}
+
 #kudzu-story-text {
     position: absolute;
     left: 15%;
     top: 25%;
     width: 70%;
     height: 65%;
+}
+
+#kudzu-story-text.story-done {
+    left: 215%;
 }
 
 .kudzu-story-section {
