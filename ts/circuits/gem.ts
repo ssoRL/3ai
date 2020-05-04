@@ -29,6 +29,8 @@ class Gem implements Clickable {
     private readonly size: number;
     private draw_from: CardinalOrientation | undefined = undefined;
     private readonly color: {r: number, g: number, b: number};
+    // The orb in the center that glows and flickers
+    private orb: GlowingOrb;
     public onclick: () => void;
     /** The glow amount, between 0 and 1 */
     private glow = 0;
@@ -49,6 +51,8 @@ class Gem implements Clickable {
         this.center = center_;
         this.size = size_;
         this.color = color_;
+
+        this.orb = new GlowingOrb(size_, color_);
 
         glb.canvas_controller.registerClicable(this);
     }
@@ -110,8 +114,7 @@ class Gem implements Clickable {
         })();
 
         if(this.is_on) {
-            // glow to start expanding
-            this.jitter();
+            this.orb.is_on = this.is_on;
         }
     }
 
@@ -139,35 +142,10 @@ class Gem implements Clickable {
             glb.ctx.beginPath();
             //glb.ctx.moveTo(this.center.x + this.size, this.center.y);
             glb.ctx.arc(this.center.x, this.center.y, this.size, 0, Math.PI * 2);
-            glb.ctx.fillStyle = `rgb(${this.color.r},${this.color.g},${this.color.b})`;
             glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
-            glb.ctx.fill();
             glb.ctx.stroke();
 
-            if(this.is_on){
-                const grad = glb.ctx.createRadialGradient(
-                    this.center.x, this.center.y, this.size/5,
-                    this.center.x, this.center.y, this.size*3
-                );
-                grad.addColorStop(0, `rgba(255,255,255,0.8)`);
-                grad.addColorStop(1/3, `rgba(${this.color.r},${this.color.g},${this.color.b},0.8)`);
-                grad.addColorStop(.5*(1+this.glow), `rgba(${this.color.r},${this.color.g},${this.color.b},0)`);
-                glb.ctx.fillStyle = grad;
-                // fill in a larger circle
-                glb.ctx.beginPath();
-                glb.ctx.arc(this.center.x, this.center.y, this.size*3, 0, Math.PI * 2);
-                glb.ctx.fill();
-            } else {
-                // Dark
-                const grad = glb.ctx.createRadialGradient(
-                    this.center.x, this.center.y, this.size/5,
-                    this.center.x, this.center.y, this.size
-                );
-                grad.addColorStop(0, "rgba(0, 0, 0, 0.2)");
-                grad.addColorStop(1, "rgba(0, 0, 0, 0.8)");
-                glb.ctx.fillStyle = grad;
-                glb.ctx.fill();
-            }
+            this.orb.draw(this.center);
         }
 
         for(const t of this .terminals) {
@@ -175,17 +153,5 @@ class Gem implements Clickable {
                 t[1].draw();
             }
         }
-    }
-
-    private jitter() {
-        if(Math.random() > this.glow) {
-            // glow's small, make it bigger
-            this.glow = Math.min(1, this.glow + Gem.GLOW_JITTER);
-        } else {
-            // it's big, make it smaller
-            this.glow = Math.max(0, this.glow - Gem.GLOW_JITTER);
-        }
-
-        window.setTimeout(() => {this.jitter()}, Gem.JITTER_FREQ);
     }
 }

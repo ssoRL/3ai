@@ -2,7 +2,7 @@
 const TICKS_AT_START = 4;
 
 class OrthStoryController {
-    private done = false;
+    public done = false;
     private driver_cogs: Cog[];
     /** A number between 0 and 1 that represents the fraction of the story passed */
     private scroll = 0;
@@ -154,15 +154,6 @@ class OrthStoryController {
                     metal: this.getCogCenteredGradient(counter_rotate),
                     lines: "slateGray"
                 }
-        }
-    }
-
-    public drawDriverLight(stopped: boolean  ) {
-        const color = stopped ? OrthStoryController.STOP_COLOR : OrthStoryController.GO_COLOR;
-        if(this.done) {
-            // some shit
-        } else {
-            
         }
     }
 
