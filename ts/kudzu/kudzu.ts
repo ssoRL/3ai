@@ -61,6 +61,7 @@ class KudzuStoryController {
             0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
         );
 
+        glb.wire0.power(true);
     }
 
     /** The size of the gradient's inner radius */
