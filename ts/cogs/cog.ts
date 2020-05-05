@@ -19,7 +19,7 @@ class Cog implements Clickable{
     private current_tooth: number;
     /** The cogs that this cog drives */
     private driven_cogs: Cog[] = [];
-    public etched_wire: WireOnCog | undefined = undefined;
+    public etched_wire: WireOnCog | null;
     /** 
      * The force that determines the spin directin of this cog. Either another cog,
      * or a spin direction if it's self-driven
@@ -36,6 +36,11 @@ class Cog implements Clickable{
     /** The highest y axis value this cog reaches */
     private y_top: number;
     private height: number;
+
+    private pilot_light: GlowingOrb | undefined = undefined;
+    // constants for the light colors
+    private static readonly RED =  {r: 255, g: 51, b: 51};
+    private static readonly GREEN = {r: 0, g: 204, b: 0};
 
 
     constructor(
@@ -63,7 +68,10 @@ class Cog implements Clickable{
         this.current_tooth = 0;
         this.driver = driver_;
         if(!(this.driver instanceof Cog)) {
+            // add driver to the clickable's list
             glb.canvas_controller.registerClicable(this);
+            // and set up its pilot light
+            this.pilot_light = new GlowingOrb(10, Cog.GREEN, true);
         }
         this.y_top = y - this.renderer.outer_radius;
         this.height = 2*this.renderer.outer_radius;
@@ -211,6 +219,11 @@ class Cog implements Clickable{
         glb.ctx.strokeStyle = swatch.lines;
         // Use the renderer to draw the cog
         this.renderer.draw(glb.ctx);
+
+        if(this.pilot_light && glb.orth_story_controller.done) {
+            // if this is a driver cog and the orth story is over, draw a pilot light
+            this.pilot_light.draw({x: 0, y: 0});
+        }
 
         if(SHOW_HELP_GRAPICS){
             // only show the serial number with dev flag
