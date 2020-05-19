@@ -5,6 +5,7 @@ function init(){
     glb = new ThreeAIGlobals();
     glb.driver_cogs = init_cogs();
     glb.wire0 = init_wires();
+    init_words();
     glb.kudzu_story_controller = new KudzuStoryController();
     glb.orth_story_controller = new OrthStoryController();
     glb.tick_easer = new TickEaser(1.15, 0.85);
@@ -42,6 +43,8 @@ function draw() {
         cog.draw();
     }
     glb.wire0.draw();
+    const t = performance.now()
+    // console.log(`t: ${glb.time},d: ${t - glb.time}`);
     window.requestAnimationFrame(draw.bind(this));
 }
 

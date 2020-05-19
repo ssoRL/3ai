@@ -68,7 +68,6 @@ class CanvasController {
     }
 
     public updateScale(){
-        console.log("call");
         const w = document.documentElement.clientWidth;
         const h = document.documentElement.clientHeight;
         const canvas_size = Math.min(w, h) - 20;

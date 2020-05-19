@@ -15,6 +15,10 @@ function getPoint(r: number, a: number): Point {
     return {x: x, y: y};
 }
 
+function p(x: number, y: number): Point {
+    return {x: x, y:y};
+}
+
 /**
  * Return the distance between two points and a unit vector pointing from p0 to p1
  * @param p0 The starting point

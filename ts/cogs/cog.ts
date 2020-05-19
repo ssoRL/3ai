@@ -42,6 +42,8 @@ class Cog implements Clickable{
     private static readonly RED =  {r: 255, g: 51, b: 51};
     private static readonly GREEN = {r: 0, g: 204, b: 0};
 
+    // a word that will be enscribed on the cog
+    private words: Word[] = [];
 
     constructor(
         x: number,
@@ -228,10 +230,22 @@ class Cog implements Clickable{
         if(SHOW_HELP_GRAPICS){
             // only show the serial number with dev flag
             glb.ctx.fillStyle = "red";
-            glb.ctx.fillText(`#${this.serial_number}`, 10, 10);
+            glb.ctx.font = "20px Sans"
+            glb.ctx.fillText(`#${this.serial_number}`, 10, 15);
         }
 
-        // Draw it's wire if any
+        // Draw the word etched onto the cog
+        if(this.words.length > 0) {
+            glb.ctx.save();
+            glb.ctx.rotate(-this.base_rotate);
+            glb.ctx.fillStyle = swatch.lines;
+            for(const word of this.words) {
+                word.draw();
+            }
+            glb.ctx.restore();
+        }
+
+        // Draw its wire if any
         if(this.etched_wire){
             this.etched_wire.draw();
         }
@@ -243,6 +257,10 @@ class Cog implements Clickable{
      */
     public getIndexOfTooth(tooth: number){
         return (this.current_tooth + tooth) % this.tooth_count;
+    }
+
+    public addWord(word: Word) {
+        this.words.push(word);
     }
 
     // This will cause the cog to start a new movement cycle at the given time
