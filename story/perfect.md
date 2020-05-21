@@ -100,3 +100,54 @@ And then she walked from the room.
 
 <div class="perfect-break"></div>
 
+The first day, co-workers and neighbors came. My former office mates, Men and women who had always been studiously polite to my face, reminded me of all my failed endevors. Long nights spent on projects that were thrown away before anyone saw them. Foolish oversights that had embarased me in front of my associates. My neighbors listed all of their petty anoyances. Grass left to go to seed. Paint peeling before I got around to repainting. That oil stain from the one time I tried to change it myself.
+
+I jst sneered at them. I had long ago stopped caring for such trival things.
+
+<div class="perfect-break"></div>
+
+The next day came my friends. First it was many who I'd only met after the implants. I brushed aside the complaints of those fast talking automotons as easily as I had those from the day before. Did they not represent everything I loathed most?
+
+But as the day wore on, friends from my childhood arrived. They told me of the wrongs from long ago, from before the implants. In deadpan declarative sentances, they told me of all the betrayals of trust I had visited upon them. All the hurtful words I had spoken, often without even knowing. By the end of that day, I was no longer sneering.
+
+<div class="perfect-break"></div>
+
+The final day, came my family. People who had loved me unconditionally thru my life arrived and, one by one, cut me to pieces.
+
+Cousins told me how they'd only ever put up with me because their parents had make them. Aunts and uncles who had long harbored resentment for the cards I'd never replied to; for the visits I'd postponed and canceled.
+
+For an hour, my brother recited to me all the enbarasing secrests of my childhood. All the childish, foolish mistakes I would have most liked to leave buried, he ripped out of me and put on display.
+
+And finally, my father. For a long time he looked down upon me, bound in the chair and glaring back at him. At last, he said, "Son, I am so ashamed of what you've become."
+
+I tried to laugh at him in defiance, byt it came out a cough.
+
+He said, "If I knew what you were to become, then... I would hace wished you were never born at all."
+
+His voice remained level when he said it. I knew that his aim was not to hurt me, but simply speak the truth.I felt my hands begin to shake despite my resolve, and my voice cracked as I snarled at him, "Oh, and what's next? Is Mom going to come and tell me how she never *really* loved me!"
+
+He shook his head, "No. She dies. While you were off in the woods. She never stopped loving you. She always wished she could."
+
+<div class="perfect-break"></div>
+
+When he left, I cried. Tears stream from my eyes until I had no more tears. Sobs wracked my chest until it ached from the pain. At last, I shut my eyes, exhausted and spent, wishing that death would come for me.
+
+Instead, I felt a hand rest gently upon my cheek. I looked up into the face of my wife and asked, "If it you this time?"
+
+She nodded.
+
+"Why? Why have you done this to me?"
+
+"Because you needed to see. See yourself for what you truely are. See that humanity id not flawed; humanity is flaw."
+
+"Then what's the point? Why not just end is all?"
+
+She smiled, "There was no point.  Before the implant, before the algorithm. But now there is. It has given us a true path to walk. Open yourself to it. Let youself become a vessle of perfection."
+
+"Yes," I said, "Please! That is what I want!" And as I said the words, I knew them to be true.
+
+She untied the bonds from my feet, then my hands. Finally, she ran her hand thru my hair, and I felt my implant come on, welcome me back to The Path. Take me in as though I'd never gone at all.
+
+Her arms wrapped me in a sweet embrace and I felt tears running down my face. But they were tears of relief. Tears of joy. They had taken me back. She had taken me back. It had taken me back. Praise be!
+
+*; to forgive, divine.*
