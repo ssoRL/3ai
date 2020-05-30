@@ -17,7 +17,7 @@ const TOOTH_LENGTH = 22;
 const GAP_WIDTH = 40;
 
 /** Show graphics that are helpful for debugging, but not in final */
-const SHOW_HELP_GRAPICS = false;
+const SHOW_HELP_GRAPICS = true;
 
 /** The speed of light thru wires in pixels per millisecond */
 const SOL = 3;
@@ -27,3 +27,6 @@ const TICKING = false;
 
 /** What effect click on a cog has */
 const CLICK_ACTION: "stop" | "change" = "stop"; 
+
+/** Hopefully this can be used to debug huge slowdowns :p */
+var TRIP_WIRE = false;

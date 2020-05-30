@@ -12,6 +12,8 @@ class KudzuStoryController {
     /** The number of letters that fits in a standard 1x1 area */
     private static readonly LETTERS_PER_PIXEL = 0.008;
 
+    public words: Word[] = [];
+
     constructor() {
         [this.wire0, this.kudzu_gem] = init_kudzu_wires();
         this.kudzu_gem.onclick = () => {
@@ -92,7 +94,27 @@ class KudzuStoryController {
         gradient.addColorStop(1, "white");
         glb.ctx.fillStyle = gradient;
         glb.ctx.fillRect(glb.canvas_controller.offset.x, glb.canvas_controller.offset.y, 1000, 1000);
+
+
+        // Draw a grid for dev stuff
+        if(SHOW_HELP_GRAPICS) {
+            glb.ctx.strokeStyle = "lightBlue"
+            for(let i=100; i<1000; i+= 100) {
+                glb.ctx.beginPath()
+                glb.ctx.moveTo(0, i);
+                glb.ctx.lineTo(1000, i);
+                glb.ctx.moveTo(i, 0);
+                glb.ctx.lineTo(i, 1000);
+                glb.ctx.stroke();
+            }
+        }
+
         this.wire0.draw();
+
+        glb.ctx.fillStyle = this.getWireColor();
+        for(const word of this.words) {
+            word.draw();
+        }
     }
 
     public getWireColor(x?: number): string | CanvasGradient {

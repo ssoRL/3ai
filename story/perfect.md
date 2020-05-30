@@ -126,7 +126,7 @@ He said, "If I knew what you were to become, then... I would hace wished you wer
 
 His voice remained level when he said it. I knew that his aim was not to hurt me, but simply speak the truth.I felt my hands begin to shake despite my resolve, and my voice cracked as I snarled at him, "Oh, and what's next? Is Mom going to come and tell me how she never *really* loved me!"
 
-He shook his head, "No. She dies. While you were off in the woods. She never stopped loving you. She always wished she could."
+He shook his head, "No. She died. While you were off in the woods. She never stopped loving you. She always wished she could."
 
 <div class="perfect-break"></div>
 

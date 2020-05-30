@@ -5,9 +5,9 @@ function init(){
     glb = new ThreeAIGlobals();
     glb.driver_cogs = init_cogs();
     glb.wire0 = init_wires();
-    init_words();
     glb.kudzu_story_controller = new KudzuStoryController();
     glb.orth_story_controller = new OrthStoryController();
+    init_words();
     glb.tick_easer = new TickEaser(1.15, 0.85);
     glb.time = performance.now();
     
@@ -25,17 +25,8 @@ function draw() {
     glb.ctx.setTransform(1, 0, 0, 1, 0, 0);
     glb.ctx.clearRect(0, 0, 1000, 1000);
     glb.ctx.lineWidth = 3;
-    // Draw a grid for dev stuff
-    if(SHOW_HELP_GRAPICS) {
-        glb.ctx.strokeStyle = "lightBlue"
-        for(let i=100; i<1000; i+= 100) {
-            glb.ctx.beginPath()
-            glb.ctx.moveTo(0, i);
-            glb.ctx.lineTo(1000, i);
-            glb.ctx.moveTo(i, 0);
-            glb.ctx.lineTo(i, 1000);
-            glb.ctx.stroke();
-        }
+    if(TRIP_WIRE) {
+        debugger;
     }
     glb.kudzu_story_controller.draw();
     glb.orth_story_controller.draw();
