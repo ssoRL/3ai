@@ -3,7 +3,7 @@ const TICKS_AT_START = 4;
 
 class OrthStoryController {
     public done = false;
-    private driver_cogs: Cog[];
+    private driver_cog: Cog;
     /** A number between 0 and 1 that represents the fraction of the story passed */
     private scroll = 0;
     // Things to control the glowing centers of the cogs
@@ -20,7 +20,7 @@ class OrthStoryController {
     static readonly TRANSLATE_DOWN = 1500;
 
     constructor(){
-        this.driver_cogs = init_cogs_orth();
+        this.driver_cog = init_cogs_orth();
         this.initializeContent();
         const orth_badge = getDocumentElementById("orth");
         orth_badge.onclick = this.start.bind(this);
@@ -87,9 +87,7 @@ class OrthStoryController {
       }
 
     public draw() {
-        for(const cog of this.driver_cogs) {
-            cog.draw();
-        }
+        this.driver_cog.draw();
     }
 
     // a gradient centered around this cog's center
@@ -170,9 +168,7 @@ class OrthStoryController {
             cog.startTick(time);
         }
         if(!this.done) {
-            for(const cog of this.driver_cogs) {
-                cog.startTick(time);
-            }
+            this.driver_cog.startTick(time);
         }
     }
 

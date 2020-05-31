@@ -95,16 +95,18 @@ class KudzuStoryController {
         glb.ctx.fillStyle = gradient;
         glb.ctx.fillRect(glb.canvas_controller.offset.x, glb.canvas_controller.offset.y, 1000, 1000);
 
-
         // Draw a grid for dev stuff
         if(SHOW_HELP_GRAPICS) {
             glb.ctx.strokeStyle = "lightBlue"
-            for(let i=100; i<1000; i+= 100) {
+            // Get the offsets shifted to the nearest multiple of 100
+            let offx = Math.ceil(glb.canvas_controller.offset.x/100)*100;
+            let offy = Math.ceil(glb.canvas_controller.offset.y/100)*100;
+            for(let i=0; i<1000; i+= 100) {
                 glb.ctx.beginPath()
-                glb.ctx.moveTo(0, i);
-                glb.ctx.lineTo(1000, i);
-                glb.ctx.moveTo(i, 0);
-                glb.ctx.lineTo(i, 1000);
+                glb.ctx.moveTo(0 + offx, i + offy);
+                glb.ctx.lineTo(1000 + offx, i + offy);
+                glb.ctx.moveTo(i + offx, 0 + offy);
+                glb.ctx.lineTo(i + offx, 1000 + offy);
                 glb.ctx.stroke();
             }
         }
