@@ -20,8 +20,10 @@ html body {
 #kudzu {
     position: absolute;
     width: 40%;
+    height: 53%;
     top: 5%;
     right: 5%;
+    overflow: hidden;
     z-index: 2;
     border: 3px solid;
     background-color: white;
@@ -29,12 +31,14 @@ html body {
 
 #kudzu.repositioned {
     width: 10%;
+    height: 10%;
     top: 7%;
     right: 80%;
 }
 
 #kudzu.story-done {
     width: 10%;
+    height: 10%;
     top: 5%;
     right: 5%;
 }
@@ -93,15 +97,18 @@ a.kudzu-next {
 #orth {
     position: absolute;
     width: 40%;
+    height: 54%;
     bottom: 5%;
     left: 5%;
     z-index: 2;
     border: 3px solid;
     background-color: white;
+    overflow: hidden;
 }
 
 #orth.repositioned {
     width: 10%;
+    height: 10%;
     bottom: 87%;
     left: 6%;
 }
@@ -137,10 +144,6 @@ a.kudzu-next {
 
 #orth-next.repositioned {
     top: 90%;
-}
-
-.no-height {
-    height: 0;
 }
 
 .read {

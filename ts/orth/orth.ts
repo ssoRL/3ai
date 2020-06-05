@@ -34,7 +34,6 @@ class OrthStoryController {
     public async start() {
         // Move the badges and canvas to be in position for the kudzu story
         const orth_badge = getDocumentElementById("orth");
-        const orth_title = getDocumentElementById("orth-title-section");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
         const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
@@ -47,7 +46,6 @@ class OrthStoryController {
         next_button.style.transition = orth_transition;
         // and then execute the transitions
         kudzu_badge?.classList.add("sidelined");
-        orth_title?.classList.add("no-height");
         orth_badge?.classList.add("repositioned");
         story_container.style.top = "10%";
         next_button.classList.add("repositioned");
