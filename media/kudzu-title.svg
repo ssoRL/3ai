@@ -1,0 +1,10 @@
+<svg viewBox="0 0 180 50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .common { text-anchor: middle; fill: black; }
+    .read { font: italic 15px sans-serif; }
+    .vok  { font: bold 23px sans-serif; }
+  </style>
+
+  <text x="90" y="12" class="common read">Read:</text>
+  <text x="90" y="40" class="common vok">Vines of Kudzu</text>
+</svg>

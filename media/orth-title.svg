@@ -1,0 +1,11 @@
+<svg viewBox="0 0 180 50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .common { text-anchor: middle; fill: black; }
+    .read { font: italic 15px serif; }
+    .tom  { font: bold 20px serif; }
+  </style>
+
+  <text x="90" y="10" class="common read">Read:</text>
+  <text x="90" y="30" class="common tom">The Orthogonal</text>
+  <text x="90" y="50" class="common tom">Machines</text>
+</svg>
