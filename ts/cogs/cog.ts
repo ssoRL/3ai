@@ -31,6 +31,8 @@ class Cog implements Clickable{
     private tick_watchers: TickWatcher[] = [];
     private is_ticking = false;
     private stopped = false;
+    /** A value that is true if this cog is activated and clickable */
+    private activated = false;
 
     // Stored for use when computing wheather to bother drawing this cog
     /** The highest y axis value this cog reaches */
@@ -72,8 +74,6 @@ class Cog implements Clickable{
         if(!(this.driver instanceof Cog)) {
             // add driver to the clickable's list
             glb.canvas_controller.registerClicable(this);
-            // and set up its pilot light
-            this.pilot_light = new GlowingOrb(10, Cog.GREEN, true);
         }
         this.y_top = y - this.renderer.outer_radius;
         this.height = 2*this.renderer.outer_radius;
@@ -222,8 +222,8 @@ class Cog implements Clickable{
         // Use the renderer to draw the cog
         this.renderer.draw(glb.ctx);
 
-        if(this.pilot_light && glb.orth_story_controller.done) {
-            // if this is a driver cog and the orth story is over, draw a pilot light
+        // If this is an activated driver cog, draw its pilot light
+        if(this.pilot_light && this.activated) {
             this.pilot_light.draw({x: 0, y: 0});
         }
 
@@ -263,7 +263,10 @@ class Cog implements Clickable{
         this.words.push(word);
     }
 
-    // This will cause the cog to start a new movement cycle at the given time
+    /**
+     * This will cause the cog to start a new movement cycle at the given time
+     * @param startTime When the tick starts. Can be in the future
+     */
     public startTick(startTime: number){
         // If the cog is changing direction, don't tick this cycle
         if(this.change_direction){
@@ -319,8 +322,31 @@ class Cog implements Clickable{
     public addTickWatcher(watcher: TickWatcher) {
         this.tick_watchers.push(watcher);
     }
+
+    /**
+     * Activates this cog lighting up it's pilot light and making it clickable
+     * @param start_ticking whether to have it start ticking right away
+     */
+    public activate(start_ticking: boolean) {
+        // and set up its pilot light
+        this.stopped = !start_ticking;
+        this.activated = true;
+        this.setCenter();
+    }
+
+    /**
+     * Sets the glowing orb in the center
+     */
+    private setCenter() {
+        this.pilot_light = new GlowingOrb(
+            10, 
+            this.stopped ? Cog.RED : Cog.GREEN, 
+            true
+        );
+    }
     
     isClicked(p: Point): boolean {
+        if(!this.activated) return false;
         const x_diff = this.x - p.x;
         const y_diff = this.y - p.y;
         const distance = Math.sqrt(x_diff*x_diff + y_diff*y_diff);
@@ -328,14 +354,15 @@ class Cog implements Clickable{
     }
 
     click(): void {
-        if(TICKING){
-            if(CLICK_ACTION === "change") {
-                this.change_direction = true;
-            } else {
-                this.stopped = !this.stopped;
-            }
+        if(CLICK_ACTION === "change") {
+            this.change_direction = true;
         } else {
-            this.startTick(performance.now());
+            this.stopped = !this.stopped;
+            this.setCenter();
         }
+        this.onClick();
     }
+
+    /** Over  */
+    public onClick = () => {};
 }

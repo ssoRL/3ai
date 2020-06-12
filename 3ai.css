@@ -69,7 +69,7 @@ html body {
     height: 65%;
 }
 
-#kudzu-story-text.story-done {
+#kudzu-story-text.sidelined {
     left: 215%;
 }
 
@@ -111,6 +111,13 @@ a.kudzu-next {
     height: 10%;
     bottom: 87%;
     left: 6%;
+}
+
+#orth.story-done {
+    width: 10%;
+    height: 10%;
+    bottom: 5%;
+    left: 5%;
 }
 
 #orth.sidelined {

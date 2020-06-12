@@ -25,10 +25,13 @@ class KudzuStoryController {
         // Move the badges and canvas to be in position for the kudzu story
         const kudzu_badge = document.getElementById("kudzu");
         const orth_badge = document.getElementById("orth");
+        const story_section = document.getElementById("kudzu-story-text");
         kudzu_badge?.classList.add("kudzu-transition");
         kudzu_badge?.classList.add("repositioned");
         orth_badge?.classList.add("kudzu-transition");
         orth_badge?.classList.add("sidelined");
+        story_section?.classList.add("kudzu-transition");
+        story_section?.classList.remove("sidelined");
         await glb.canvas_controller.animateTranslate(
             KudzuStoryController.TRANSLATE, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
         );
@@ -55,7 +58,7 @@ class KudzuStoryController {
         head_title?.classList.add("kudzu-transition");
         head_title?.classList.add("story-done");
         story_section?.classList.add("kudzu-transition");
-        story_section?.classList.add("story-done");
+        story_section?.classList.add("sidelined");
         this.kudzu_gem.powerOut();
         await glb.canvas_controller.animateTranslate(
             0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME

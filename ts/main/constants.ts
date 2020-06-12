@@ -22,9 +22,6 @@ const SHOW_HELP_GRAPICS = false;
 /** The speed of light thru wires in pixels per millisecond */
 const SOL = 3;
 
-/** Weather to tick or not */
-const TICKING = false;
-
 /** What effect click on a cog has */
 const CLICK_ACTION: "stop" | "change" = "stop"; 
 

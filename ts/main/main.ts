@@ -11,8 +11,6 @@ function init(){
     glb.tick_easer = new TickEaser(1.15, 0.85);
     glb.time = performance.now();
     
-    
-    if(TICKING) glb.orth_story_controller.tick();
     window.requestAnimationFrame(draw.bind(this));
 
     // Set the actions on the READ badges
