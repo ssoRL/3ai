@@ -215,7 +215,6 @@ class OrthStoryController {
      * @param n How many times to tick. By default will tick forever
      */
     public async tick(n = Number.POSITIVE_INFINITY) {
-        console.log(`tick ${n}`);
         // Base case
         if(n <= 0) return;
         let time = performance.now();

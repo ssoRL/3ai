@@ -63,10 +63,11 @@ html body {
 
 #kudzu-story-text {
     position: absolute;
-    left: 15%;
+    left: 5%;
     top: 25%;
-    width: 70%;
-    height: 65%;
+    width: 85%;
+    height: 60%;
+    overflow-y: scroll;
 }
 
 #kudzu-story-text.sidelined {
@@ -74,7 +75,7 @@ html body {
 }
 
 .kudzu-story-section {
-    margin: 20px 0;
+    margin: 20px;
 }
 
 .kudzu-story-paragraph {

@@ -1,6 +1,3 @@
-/** The radius of the circle describing this AND gate */
-const AND_RADIUS = 20;
-
 class AndTerminal implements Conductor {
     public is_on = false;
     private to: AndGate;
@@ -37,6 +34,12 @@ class AndGate {
     private ori: CardinalOrientation;
     private time_switched = 0;
     private is_on = false;
+    private orb: GlowingOrb;
+
+    /** The radius of the circle describing this AND gate */
+    private static readonly RADIUS = 25;
+    private static readonly WHITE = {r: 255, g: 255, b: 255};
+    private static readonly MAX_GLOW = 45;
 
     constructor(x_: number, y_: number, ori_: CardinalOrientation){
         this.ori = ori_;
@@ -44,6 +47,7 @@ class AndGate {
         this.right_terminal = new AndTerminal(this, false);
         this.p = {x: x_, y: y_};
         this.addPoweringWire();
+        this.orb = new GlowingOrb(AndGate.RADIUS/2.4, AndGate.WHITE, false);
     }
 
     /**
@@ -54,13 +58,13 @@ class AndGate {
         const point: Point = (() => {
             switch (this.ori) {
                 case "N":
-                    return {x: this.p.x, y: this.p.y - AND_RADIUS};
+                    return {x: this.p.x, y: this.p.y - AndGate.RADIUS};
                 case "E":
-                    return {x: this.p.x + AND_RADIUS, y: this.p.y};
+                    return {x: this.p.x + AndGate.RADIUS, y: this.p.y};
                 case "S":
-                    return {x: this.p.x, y: this.p.y + AND_RADIUS};
+                    return {x: this.p.x, y: this.p.y + AndGate.RADIUS};
                 case "W":
-                    return {x: this.p.x - AND_RADIUS, y: this.p.y};
+                    return {x: this.p.x - AndGate.RADIUS, y: this.p.y};
             }
         })()
         this.powering = new Wire(point, point);
@@ -71,22 +75,22 @@ class AndGate {
     }
 
     public getTerminalPosition(is_left: boolean): Point {
-        // The terminal will be along the bottom of the AND, half a radius from cneter
-        const offset = AND_RADIUS / 2;
+        // The terminal will be along the bottom of the AND, half a radius from center
+        const offset = AndGate.RADIUS / 2;
         switch (this.ori) {
             case "N":
             case "S":
                 // Determine if the offset should be added or subtracted
                 // Uses the ori, and whether this is the left terminal
-                const cardnial_sign_x = this.ori == "N" ? 1 : -1;
+                const cardinal_sign_x = this.ori == "N" ? 1 : -1;
                 const is_left_sign_x = is_left ? -1 : 1;
-                const x = this.p.x + cardnial_sign_x*is_left_sign_x*offset;
+                const x = this.p.x + cardinal_sign_x*is_left_sign_x*offset;
                 return {x: x, y: this.p.y};
             case "E":
             case "W":
-                const cardnial_sign_y = this.ori == "E" ? 1 : -1;
+                const cardinal_sign_y = this.ori == "E" ? 1 : -1;
                 const is_left_sign_y = is_left ? -1 : 1;
-                const y = this.p.y + cardnial_sign_y*is_left_sign_y*offset;
+                const y = this.p.y + cardinal_sign_y*is_left_sign_y*offset;
                 return {x: this.p.x, y: y};
         }
     }
@@ -103,22 +107,18 @@ class AndGate {
 
         // check if is_on needs to be switched
         if(this.is_on !== will_be_on) {
-            if(this.p.x === 700){
-                if(will_be_on) {
-                    //console.log(`powering up at ${performance.now()}`);
-                } else {
-                    //console.log(`powering down at ${performance.now()}`);
-                }
-            }
             this.time_switched = performance.now();
             this.is_on = will_be_on;
 
+            // If this is on, turn on the orb
+            if(will_be_on) {
+                this.orb.addGlow(AndGate.MAX_GLOW);
+            }
+
             window.setTimeout(
                 () => {
-                    if(this.p.x === 700) {
-                        //console.log(`switched ${this.is_on ? 'on' : 'off'} at ${performance.now()}`);
-                    }
                     this.powering.power(this.is_on);
+                    this.orb.power(this.is_on);
                 },
                 this.is_on ? AND_POWER_UP_TIME : AND_POWER_DOWN_TIME
             )
@@ -126,6 +126,7 @@ class AndGate {
     }
 
     public draw() {
+        this.powering.draw();
         // Draw a DIN AND gate
         glb.canvas_controller.setTransform();
         glb.ctx.translate(this.p.x, this.p.y);
@@ -144,51 +145,31 @@ class AndGate {
             }
         })();
         glb.ctx.rotate(rotation);
-        // Draw the left side base
         glb.ctx.strokeStyle = this.left_terminal.is_on ? "red" : off_wire_color;
-        glb.ctx.beginPath();
-        glb.ctx.moveTo(0, 0);
-        glb.ctx.lineTo(-AND_RADIUS, 0);
-        glb.ctx.stroke();
-        // Draw the right side base
-        glb.ctx.strokeStyle = this.right_terminal.is_on ? "red" : off_wire_color;
-        glb.ctx.beginPath();
-        glb.ctx.moveTo(0, 0);
-        glb.ctx.lineTo(AND_RADIUS, 0);
-        glb.ctx.stroke();
-        // Draw the semi-circle top
-        // Calculate the ratio of the time that's passed of the power cycle
-        const power_ratio = (()=>{
-            const power_time = glb.time - this.time_switched;
-            if(this.is_on) {
-                return power_time / AND_POWER_UP_TIME;
-            } else {
-                return power_time / AND_POWER_DOWN_TIME;
-            }
-        })();
-        if(power_ratio > 1){
-            // Then just draw the arc in one sweep
-            glb.ctx.strokeStyle = this.is_on ? "red" : off_wire_color;
-            glb.ctx.beginPath();
-            glb.ctx.moveTo(-AND_RADIUS, 0);
-            glb.ctx.arc(0, 0, AND_RADIUS, Math.PI, 2*Math.PI);
-            glb.ctx.stroke();
-        } else {
-            const power_arc = power_ratio * Math.PI / 2;
-            // Draw the base of the semi-circle
-            glb.ctx.strokeStyle = this.is_on ? "red" : off_wire_color;
-            glb.ctx.beginPath();
-            glb.ctx.arc(0, 0, AND_RADIUS, 2*Math.PI - power_arc, 2*Math.PI);
-            glb.ctx.moveTo(-AND_RADIUS, 0);
-            glb.ctx.arc(0, 0, AND_RADIUS, Math.PI, Math.PI + power_arc);
-            glb.ctx.stroke();
-            // Draw the tip
-            glb.ctx.strokeStyle = this.is_on ? off_wire_color : "red";
-            glb.ctx.beginPath();
-            glb.ctx.arc(0, 0, AND_RADIUS, Math.PI + power_arc, 2*Math.PI - power_arc);
-            glb.ctx.stroke();
-        }
 
-        this.powering.draw();
+        // Draw the AND shape
+        glb.ctx.beginPath();
+        // The base
+        glb.ctx.moveTo(AndGate.RADIUS, 0);
+        glb.ctx.lineTo(-AndGate.RADIUS, 0);
+        // Draw the semi-circle top
+        glb.ctx.arc(0, 0, AndGate.RADIUS, Math.PI, 2*Math.PI);
+        glb.ctx.fillStyle = off_wire_color;
+        glb.ctx.fill();
+
+        // Then place an orb in the center
+        if(!this.is_on) {
+            // if the orb is turning off, having to phase down the strength
+            const power_time = glb.time - this.time_switched;
+            const charge_ratio = power_time/AND_POWER_DOWN_TIME;
+            if(charge_ratio < 1) {
+                console.log(`${power_time} => ${charge_ratio}`);
+                // Then there is something happening, set a new glow strength
+                const glow_ratio = 1 - charge_ratio;
+                // Set the strength
+                this.orb.addGlow(glow_ratio*AndGate.MAX_GLOW);
+            }
+        }
+        this.orb.draw(p(0, -AndGate.RADIUS/2.2));
     }  
 }

@@ -113,8 +113,9 @@ class Gem implements Clickable {
             return true;
         })();
 
+        // If this gem is turned on, turn on the orb
         if(this.is_on) {
-            this.orb.is_on = this.is_on;
+            this.orb.power(true);
         }
     }
 
@@ -148,7 +149,7 @@ class Gem implements Clickable {
             this.orb.draw(this.center);
         }
 
-        for(const t of this .terminals) {
+        for(const t of this.terminals) {
             if(t[1] instanceof Wire) {
                 t[1].draw();
             }

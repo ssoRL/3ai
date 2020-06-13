@@ -36,9 +36,9 @@ class KudzuStoryController {
             KudzuStoryController.TRANSLATE, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
         );
 
-        // After the movenment is complete, fill in the title
+        // After the movement is complete, fill in the title
         const head_title = document.getElementById("kudzu-title-text");
-        if(!head_title) throw "3AI Error: There is no kudzu-title-text eleement";
+        if(!head_title) throw "3AI Error: There is no kudzu-title-text element";
         await this.fillInString(head_title, "Vines of Kudzu");
 
         await this.fillInStory(0);
@@ -91,7 +91,7 @@ class KudzuStoryController {
             center.x, center.y, KudzuStoryController.GRADIENT_OUTER_R
         );
 
-        gradient.addColorStop(0, "darkgreen");
+        gradient.addColorStop(0, "darkGreen");
         gradient.addColorStop(1, "white");
         glb.ctx.fillStyle = gradient;
         glb.ctx.fillRect(glb.canvas_controller.offset.x, glb.canvas_controller.offset.y, 1000, 1000);
@@ -100,24 +100,25 @@ class KudzuStoryController {
         if(SHOW_HELP_GRAPHICS) {
             glb.ctx.strokeStyle = "lightBlue"
             // Get the offsets shifted to the nearest multiple of 100
-            let offx = Math.ceil(glb.canvas_controller.offset.x/100)*100;
-            let offy = Math.ceil(glb.canvas_controller.offset.y/100)*100;
+            let off_x = Math.ceil(glb.canvas_controller.offset.x/100)*100;
+            let off_y = Math.ceil(glb.canvas_controller.offset.y/100)*100;
             for(let i=0; i<1000; i+= 100) {
                 glb.ctx.beginPath()
-                glb.ctx.moveTo(0 + offx, i + offy);
-                glb.ctx.lineTo(1000 + offx, i + offy);
-                glb.ctx.moveTo(i + offx, 0 + offy);
-                glb.ctx.lineTo(i + offx, 1000 + offy);
+                glb.ctx.moveTo(0 + off_x, i + off_y);
+                glb.ctx.lineTo(1000 + off_x, i + off_y);
+                glb.ctx.moveTo(i + off_x, 0 + off_y);
+                glb.ctx.lineTo(i + off_x, 1000 + off_y);
                 glb.ctx.stroke();
             }
         }
 
-        this.wire0.draw();
-
-        glb.ctx.fillStyle = this.getWireColor();
+        // draw the words on the main screen
+        glb.ctx.fillStyle = this.getWireColor(0);
         for(const word of this.words) {
             word.draw();
         }
+
+        this.wire0.draw();
     }
 
     public getWireColor(x?: number): string | CanvasGradient {
@@ -166,7 +167,7 @@ class KudzuStoryController {
     private async fillInStory(from_section: number) {
         // get the story section and then clear out the previous text
         const story_section = document.getElementById("kudzu-story-text");
-        if(!story_section) throw "3AI Error: There is no kudzu-story-text eleement";
+        if(!story_section) throw "3AI Error: There is no kudzu-story-text element";
         story_section.innerHTML = "";
 
         const capacity = KudzuStoryController.LETTERS_PER_PIXEL * story_section.clientHeight * story_section.clientWidth;
@@ -285,7 +286,7 @@ class KudzuStoryController {
         this.wire0.power(true);
 
         const story_section = document.getElementById("kudzu-story-text");
-        if(!story_section) throw "3AI Error: There is no kudzu-story-text eleement";
+        if(!story_section) throw "3AI Error: There is no kudzu-story-text element";
         story_section.innerHTML = "";
 
         const html_story_section = document.createElement("div");
