@@ -7,7 +7,7 @@ class TickEaser {
     readonly x_peak: number;
     /** half of the peak */
     readonly x_half_peak: number;
-    /** half of the amound of the fall back to 1 from the peak */
+    /** half of the amount of the fall back to 1 from the peak */
     readonly x_half_fall: number;
     /** The point (between 0 and 1) when the highest value is returned */
     readonly t_peak: number;
@@ -41,7 +41,7 @@ class TickEaser {
         this.fall_factor = 1/this.half_fall_duration;
     }
 
-    public easeTickAnimaiton(t: number): number{
+    public easeTickAnimation(t: number): number{
         //First check if the current t is the same as the last computed
         const diff = t - this.last_t;
         if(diff < this.allow_diff && diff > -this.allow_diff) {

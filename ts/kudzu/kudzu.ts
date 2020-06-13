@@ -78,12 +78,12 @@ class KudzuStoryController {
         // Afterwards, hold the gradient pinned to the top
         const center: Point = this.done ?
             {
-                x: glb.canvas_controller.offset.x + CANVAS_CANNONICAL_SIZE/2,
-                y: glb.canvas_controller.offset.y - CANVAS_CANNONICAL_SIZE/2
+                x: glb.canvas_controller.offset.x + CANVAS_DEFINED_SIZE/2,
+                y: glb.canvas_controller.offset.y - CANVAS_DEFINED_SIZE/2
             } :
             {
-                x: KudzuStoryController.TRANSLATE + CANVAS_CANNONICAL_SIZE/2,
-                y: -CANVAS_CANNONICAL_SIZE/2
+                x: KudzuStoryController.TRANSLATE + CANVAS_DEFINED_SIZE/2,
+                y: -CANVAS_DEFINED_SIZE/2
             };
 
         const gradient = glb.ctx.createRadialGradient(
@@ -97,7 +97,7 @@ class KudzuStoryController {
         glb.ctx.fillRect(glb.canvas_controller.offset.x, glb.canvas_controller.offset.y, 1000, 1000);
 
         // Draw a grid for dev stuff
-        if(SHOW_HELP_GRAPICS) {
+        if(SHOW_HELP_GRAPHICS) {
             glb.ctx.strokeStyle = "lightBlue"
             // Get the offsets shifted to the nearest multiple of 100
             let offx = Math.ceil(glb.canvas_controller.offset.x/100)*100;
@@ -127,12 +127,12 @@ class KudzuStoryController {
             if(x) {
                 if(x > KudzuStoryController.TRANSLATE) {
                     return "olive";
-                } else if (x < CANVAS_CANNONICAL_SIZE) {
+                } else if (x < CANVAS_DEFINED_SIZE) {
                     return "black";
                 }
             }
             const gradient = glb.ctx.createLinearGradient(
-                CANVAS_CANNONICAL_SIZE, 0,
+                CANVAS_DEFINED_SIZE, 0,
                 KudzuStoryController.TRANSLATE, 0
             );
             gradient.addColorStop(0, "black");

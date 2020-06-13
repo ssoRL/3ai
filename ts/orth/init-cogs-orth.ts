@@ -1,5 +1,5 @@
 /**
- * Set up the cogs for the orthoganal machines story
+ * Set up the cogs for the orthogonal machines story
  * @returns The driver cog for the cogs in the orthogonal machine section
  */
 function init_cogs_orth(): {learn_stop_cog: Cog, learn_start_cog: Cog} {

@@ -102,7 +102,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     }
     
     draw(): void {
-        if(SHOW_HELP_GRAPICS){
+        if(SHOW_HELP_GRAPHICS){
             // Only mark terminal locations with the dev flag on
             glb.canvas_controller.setTransform();
             // Draw a red circle if on
@@ -113,7 +113,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
                 glb.ctx.arc(this.p.x, this.p.y, 5, 0, 2*Math.PI);
                 glb.ctx.stroke();
             }
-            // Chhange the collor of the smaller inner circle for connect info
+            // Change the color of the smaller inner circle for connect info
             if(this.in_connected) {
                 if(this.out_connected){
                     // orange for both

@@ -21,7 +21,7 @@ class Cog implements Clickable{
     private driven_cogs: Cog[] = [];
     public etched_wire: WireOnCog | null;
     /** 
-     * The force that determines the spin directin of this cog. Either another cog,
+     * The force that determines the spin direction of this cog. Either another cog,
      * or a spin direction if it's self-driven
      */
     private driver: Cog | SpinDirection;
@@ -34,7 +34,7 @@ class Cog implements Clickable{
     /** A value that is true if this cog is activated and clickable */
     private activated = false;
 
-    // Stored for use when computing wheather to bother drawing this cog
+    // Stored for use when computing whether to bother drawing this cog
     /** The highest y axis value this cog reaches */
     private y_top: number;
     private height: number;
@@ -44,7 +44,7 @@ class Cog implements Clickable{
     private static readonly RED =  {r: 255, g: 51, b: 51};
     private static readonly GREEN = {r: 0, g: 204, b: 0};
 
-    // a word that will be enscribed on the cog
+    // a word that will be inscribed on the cog
     private words: Word[] = [];
 
     constructor(
@@ -72,8 +72,8 @@ class Cog implements Clickable{
         this.current_tooth = 0;
         this.driver = driver_;
         if(!(this.driver instanceof Cog)) {
-            // add driver to the clickable's list
-            glb.canvas_controller.registerClicable(this);
+            // add driver to the clickable list
+            glb.canvas_controller.registerClickable(this);
         }
         this.y_top = y - this.renderer.outer_radius;
         this.height = 2*this.renderer.outer_radius;
@@ -207,7 +207,7 @@ class Cog implements Clickable{
         const animate_delta = this.is_ticking ? (() => {
             const animation_progress_t = Math.min(glb.time - this.tick_start, TICK_LENGTH);
             const animation_progress = animation_progress_t / TICK_LENGTH;
-            const absolute_delta = glb.tick_easer.easeTickAnimaiton(animation_progress) * tick_angle;
+            const absolute_delta = glb.tick_easer.easeTickAnimation(animation_progress) * tick_angle;
             if(this.getSpinDirection() === SpinDirection.CLOCKWISE) {
                 return absolute_delta;
             }else{
@@ -227,7 +227,7 @@ class Cog implements Clickable{
             this.pilot_light.draw({x: 0, y: 0});
         }
 
-        if(SHOW_HELP_GRAPICS){
+        if(SHOW_HELP_GRAPHICS){
             // only show the serial number with dev flag
             glb.ctx.fillStyle = "red";
             glb.ctx.font = "20px Sans"

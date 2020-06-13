@@ -54,7 +54,7 @@ class Gem implements Clickable {
 
         this.orb = new GlowingOrb(size_, color_);
 
-        glb.canvas_controller.registerClicable(this);
+        glb.canvas_controller.registerClickable(this);
     }
 
     /**
@@ -63,7 +63,7 @@ class Gem implements Clickable {
      */
     addTerminal(orientation: CardinalOrientation): GemTerminal {
         if(this.terminals.get(orientation)){
-            throw "3AI Error: cannont add the same terminal twice"
+            throw "3AI Error: cannot add the same terminal twice"
         }
         // If there is no terminal assigned to draw this gem, use this one
         if(!this.draw_from){
@@ -126,8 +126,8 @@ class Gem implements Clickable {
     }
 
     isClicked(p: Point): boolean {
-        const lnuv = getLengthAndUnitVector(p, this.center);
-        return lnuv[0] < this.size;
+        const length_and_unit_vector = getLengthAndUnitVector(p, this.center);
+        return length_and_unit_vector[0] < this.size;
     }
 
     click(): void {

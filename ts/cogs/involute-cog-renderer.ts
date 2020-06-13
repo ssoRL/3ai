@@ -7,7 +7,7 @@ class InvoluteCogRenderer {
     public pitch_radius: number;
     /** The radius of the outer circle where the teeth end */
     public outer_radius: number;
-    /** The radius of the inner cicle (the wheel of the cog) */
+    /** The radius of the inner circle (the wheel of the cog) */
     public inner_radius: number;
     /** The angle to the point where the involute intersects the outer circle */
     private outer_intersect_arc: number;
@@ -125,7 +125,7 @@ class InvoluteCogRenderer {
 
     private generateDrawPath(is_driver: boolean): Path2D {
         let path = new Path2D();
-        if(SHOW_HELP_GRAPICS){
+        if(SHOW_HELP_GRAPHICS){
             // only show the 0rad line for dev work
             path.moveTo(0, 0);
             path.lineTo(this.inner_radius, 0);

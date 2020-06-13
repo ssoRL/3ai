@@ -1,8 +1,8 @@
 /** 
  * No matter how small or large the canvas gets, the coordinate system for
- * positioning the cogs and wires will always be between 0 and CANVAS_CANNONICAL_SIZE
+ * positioning the cogs and wires will always be between 0 and CANVAS_DEFINED_SIZE
  */
-const CANVAS_CANNONICAL_SIZE = 1000;
+const CANVAS_DEFINED_SIZE = 1000;
 
 class CanvasController {
     private readonly canvas: HTMLCanvasElement;
@@ -71,7 +71,7 @@ class CanvasController {
         const w = document.documentElement.clientWidth;
         const h = document.documentElement.clientHeight;
         const canvas_size = Math.min(w, h) - 20;
-        this.scale = canvas_size / CANVAS_CANNONICAL_SIZE;
+        this.scale = canvas_size / CANVAS_DEFINED_SIZE;
         this.canvas_container.style.width = `${canvas_size}px`;
         this.canvas_container.style.height = `${canvas_size}px`;
     }
@@ -81,12 +81,12 @@ class CanvasController {
         glb.ctx.translate(-this.offset.x, -this.offset.y);
     }
 
-    public registerClicable(clickable: Clickable) {
+    public registerClickable(clickable: Clickable) {
         this.clickables.push(clickable);
     }
 
     public boxIsInVerticalFrame(y_top: number, height: number): boolean {
-        const below_frame = y_top > this.offset.y + CANVAS_CANNONICAL_SIZE;
+        const below_frame = y_top > this.offset.y + CANVAS_DEFINED_SIZE;
         const above_frame = y_top + height < this.offset.y;
         return !(below_frame || above_frame);
     }

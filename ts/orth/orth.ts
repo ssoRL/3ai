@@ -66,7 +66,7 @@ class OrthStoryController {
         // Move the story into view
         const easer = glb.tick_easer
         await glb.canvas_controller.animateTranslate(
-            0, OrthStoryController.TRANSLATE_DOWN, transition_time, easer.easeTickAnimaiton.bind(easer)
+            0, OrthStoryController.TRANSLATE_DOWN, transition_time, easer.easeTickAnimation.bind(easer)
         );
 
         // Set the transition on the story container to handle the shorter scroll transitions
@@ -124,7 +124,7 @@ class OrthStoryController {
         next_button.classList.remove("repositioned");
 
         await glb.canvas_controller.animateTranslate(
-            0, 0, transition_time, glb.tick_easer.easeTickAnimaiton.bind(glb.tick_easer)
+            0, 0, transition_time, glb.tick_easer.easeTickAnimation.bind(glb.tick_easer)
         );
     }
 
@@ -159,7 +159,7 @@ class OrthStoryController {
 
     /**
      * Gets the gradient used to fill in the cog, rotated and transformed properly
-     * @param y the y coord of cog center
+     * @param y the y coordinate of cog center
      * @param a the current angle of rotation
      */
     public getCogSwatch(y: number, a: number): CogSwatch {
@@ -170,7 +170,7 @@ class OrthStoryController {
         // Then figure out the gradients of the metal and lines
         const counter_rotate = -a;
         if(!this.done) {
-            if(y < CANVAS_CANNONICAL_SIZE) {
+            if(y < CANVAS_DEFINED_SIZE) {
                 return {
                     metal: "white",
                     lines: "black"
@@ -181,8 +181,8 @@ class OrthStoryController {
                     lines: "slateGray"
                 }
             } else {
-                // Make a gradient that extends from the CANVAS_CANNONICAL_SIZE line to TRANSLATE_DOWN
-                const gradient_start_r = y - CANVAS_CANNONICAL_SIZE;
+                // Make a gradient that extends from the CANVAS_DEFINED_SIZE line to TRANSLATE_DOWN
+                const gradient_start_r = y - CANVAS_DEFINED_SIZE;
                 const gradient_end_r = y - OrthStoryController.TRANSLATE_DOWN;
                 // And make sure it's shifted to handle the rotation
                 const start_p = getPoint(gradient_start_r, counter_rotate);
