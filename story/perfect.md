@@ -4,15 +4,15 @@
 
 First we tamed fire, to control our present. That our weak eyes could see in the dark. That our naked bodies could live in the cold. That our voracious appetites could feed on the game that should have gone to the lions and the wolves.
 
-Then we invented language, invented writing, to claim the past. With these, we broke the endlessly repeaded cycle of errors that defined the lives of the beasts in the field. We learned to look into our past. See the hazards to avoid, the successes to replicate. But it seemed our species had an indefatigable genius for error; always there were new mistakes to be made.
+Then we invented language, invented writing, to claim the past. With these, we broke the endlessly repeated cycle of errors that defined the lives of the beasts in the field. We learned to look into our past. See the hazards to avoid, the successes to replicate. But it seemed our species had an indefatigable genius for error; always there were new mistakes to be made.
 
-And so we developed the maths and sciences. Made models that showed us a fuzzy image of the future, of what we would reap from any of today's hypothetical sowings. And so, bit by bit, we began to get a handle on the future.
+And so we developed the maths and sciences. Made models that showed us a fuzzy image of the future, of what we would reap from any of today's hypothetical sowing. And so, bit by bit, we began to get a handle on the future.
 
-The Algorithm was a natural continuation of this progression. Just the next small step in the path we'd been walking for tens of milleneum. The inevitable outcome of the erring in our nature, and our implacible drive to excise it completely. To access The Algorithm, unintrusive devices were implanted via a simple surgery near the top of the spine. From that moment, our brain were connected directly to a catalog of all the knowledge of humanity. Nevermore did one wonder: the facts simply fell into place before you. The barriers of language and education and skill fell away. And we saw that it was good.
+The Algorithm was a natural continuation of this progression. Just the next small step in the path we'd been walking for tens of millennium. The inevitable outcome of the erring in our nature, and our implacable drive to excise it completely. To access The Algorithm, unobtrusive devices were implanted via a simple surgery near the top of the spine. From that moment, our brain were connected directly to a catalog of all the knowledge of humanity. Nevermore did one wonder: the facts simply fell into place before you. The barriers of language and education and skill fell away. And we saw that it was good.
 
 But not perfect. And so The Algorithm was updated. Now the implant not only gave any information about the past, but it also struck out ahead, predicting the probable shape of the future. One had only to think of an action and the implant would show its likely outcomes, its rewards and dangers, calculated by the best models available. It lighted our paths forward as they had never been lit before. And we saw it was good.
 
-But not perfect. And so The Algorithm was updated. Rather than showing the likly outcomes of the path that the user specified, now the implant would anylize their life, compute every plausible option, and provided each user with a list of paths. Some lead to fortune and power, others to leisure and satisfaction, but all lead true. After an eternity of groping blindly in the dark, it gave us a map around the trials and pitfalls of life. And we saw it was good.
+But not perfect. And so The Algorithm was updated. Rather than showing the likely outcomes of the path that the user specified, now the implant would analyze their life, compute every plausible option, and provided each user with a list of paths. Some lead to fortune and power, others to leisure and satisfaction, but all lead true. After an eternity of groping blindly in the dark, it gave us a map around the trials and pitfalls of life. And we saw it was good.
 
 <div class="perfect-break"></div>
 
@@ -34,9 +34,9 @@ In the beginning I tried. I truly did. I kept going to my job, even increasing t
 
 But it didn't last.
 
-At work I chose projects that seemed promising. But always it seemed they would come to naught. Failing in ways that I never could have forseens. Within two quarters I had been warned to improve my performance. When that did not happen, I was fired.
+At work I chose projects that seemed promising. But always it seemed they would come to naught. Failing in ways that I never could have forseen. Within two quarters I had been warned to improve my performance. When that did not happen, I was fired.
 
-At social events, without the constant stream of information coming to me from the implant, I found myself unable to participate in even the most basic discussion. I stood to the side, silent, frustrated. More and more I stayed away. Walking alone with my slow, quotidien thoughts.
+At social events, without the constant stream of information coming to me from the implant, I found myself unable to participate in even the most basic discussion. I stood to the side, silent, frustrated. More and more I stayed away. Walking alone with my slow, quotidian thoughts.
 
 As for my wife, I never had a chance. Every present I gave her that wasn't just what she wanted, she hated. Every compliment and word of love that wasn't exactly how she wanted it said, made her cringe. She knew that I had turned off my implant, not longer had The Algorithm to guide me, and resented me for it. I couldn't blame her. My mad desire for autonomy had deprived her of her perfect lover; replaced him with an idiot who tried vainly to understand this woman he had never had to think about before. She took my clumsy affections and piled them one by one onto the wall she was building between us. When at last I caught her in bed with another man, I understood it was over and left without another word.
 
@@ -44,7 +44,7 @@ As for my wife, I never had a chance. Every present I gave her that wasn't just 
 
 I lived alone in the woods. Huddled under a tarp to hide from the wind and rain. Anything I needed I stole, walking through unlocked doors to take whatever I could carry. Sometimes I would see the owners of the homes from which I stole, but they never lifted a finger to stop me.
 
-One night I sneered at a man who stood motionless, watching as I threw cans of beans, cans of beer, from his fride into my worn backpack. I asked him, "Why do you let me do this? Doesn't it fill you with rage, with shame, that I steal from you so brazenly?"
+One night I sneered at a man who stood motionless, watching as I threw cans of beans, cans of beer, from his fridge into my worn backpack. I asked him, "Why do you let me do this? Doesn't it fill you with rage, with shame, that I steal from you so brazenly?"
 
 "Yes," he admitted, "But I have little to gain fighting you, and much to lose. Why would I risk injury or death over a few cans of beans?"
 
@@ -52,11 +52,11 @@ One night I sneered at a man who stood motionless, watching as I threw cans of b
 
 He replied levelly, "Perhaps. But I see that in not a good path. With The Algorithm to show me the way, I am more than just a man."
 
-I cursed him and spat at him, but he never lost his composure. Eventually, I stormed away. Back to my place in the woods to drink away the hatred that knawed at me.
+I cursed him and spat at him, but he never lost his composure. Eventually, I stormed away. Back to my place in the woods to drink away the hatred that gnawed at me.
 
 <div class="perfect-break"></div>
 
-The months dragged all too swiftly into years. Years in the forest, angry and alone. At times I thought of turning my implant back on, let The Algorithm guide me back. But as bad as it was for me, I always shrank away at the memory of my life's previous extistensial claustrophobia. I lived in misery, but it was mine.
+The months dragged all too swiftly into years. Years in the forest, angry and alone. At times I thought of turning my implant back on, let The Algorithm guide me back. But as bad as it was for me, I always shrank away at the memory of my life's previous existential claustrophobia. I lived in misery, but it was mine.
 
 And then one day, out of the seething maelstrom of my anger, an idea came to me: I would kill my wife. It was she after all who had driven me from my life in the end. I would make her pay, and through her the whole mad society that had spurned me.
 
@@ -78,33 +78,33 @@ I called out her name nad she replied, "Yes, it is me. But for now, another spea
 
 "And what calls for it now? Have you come to destroy me?"
 
-"No," She pursed her lips as she always had when she was dissapointed with me, "Can you not see that we intend to save you?"
+"No," She pursed her lips as she always had when she was disappointed with me, "Can you not see that we intend to save you?"
 
-"Ha! You'll never drag me back into your guilded Hell of predetermined tedium."
+"Ha! You'll never drag me back into your gilded Hell of predetermined tedium."
 
 "We will not. You will come willingly, or not at all."
 
 "Then let it be not at all! Let me return to my place in the woods."
 
-She shook her head, "No. we were content to leave you there as long as you only stole and inflicted pain on yourself. It seemed where you were... happiest. But today, we computed that your intent was to do worse that steal. You intensed to kill her... kill me."
+She shook her head, "No. we were content to leave you there as long as you only stole and inflicted pain on yourself. It seemed where you were... happiest. But today, we computed that your intent was to do worse that steal. You intended to kill her... kill me."
 
 I spat on the ground at her feet, "Thats what I think of the happiness you allowed me. I've only ever suffered at you hands."
 
-She sighed, and her voice quavered when she next spoke, "We've only ever wanted happiness for you. Please believe that what we do to you next is in swervice only of that."
+She sighed, and her voice quavered when she next spoke, "We've only ever wanted happiness for you. Please believe that what we do to you next is in service only of that."
 
 And then she walked from the room.
 
 <div class="perfect-break"></div>
 
-The first day, co-workers and neighbors came. My former office mates, Men and women who had always been studiously polite to my face, reminded me of all my failed endevors. Long nights spent on projects that were thrown away before anyone saw them. Foolish oversights that had embarased me in front of my associates. My neighbors listed all of their petty anoyances. Grass left to go to seed. Paint peeling before I got around to repainting. That oil stain from the one time I tried to change it myself.
+The first day, co-workers and neighbors came. My former office mates, Men and women who had always been studiously polite to my face, reminded me of all my failed endeavors. Long nights spent on projects that were thrown away before anyone saw them. Foolish oversights that had embarrassed me in front of my associates. My neighbors listed all of their petty annoyances. Grass left to go to seed. Paint peeling before I got around to repainting. That oil stain from the one time I tried to change it myself.
 
-I just sneered at them. I had long ago stopped caring for such trival things.
+I just sneered at them. I had long ago stopped caring for such trivial things.
 
 <div class="perfect-break"></div>
 
-The next day came my friends. First it was many who I'd only met after the implants. I brushed aside the complaints of those fast talking automotons as easily as I had those from the day before. Did they not represent everything I loathed most?
+The next day came my friends. First it was many who I'd only met after the implants. I brushed aside the complaints of those fast talking automatons as easily as I had those from the day before. Did they not represent everything I loathed most?
 
-But as the day wore on, friends from my childhood arrived. They told me of the wrongs from long ago, from before the implants. In deadpan declarative sentances, they told me of all the betrayals of trust I had visited upon them. All the hurtful words I had spoken, often without even knowing. Bit by bit I began to see the person I had been, we all had been before the implants. Calous, selfish, hurting eachother inadvertently as often as by intent.
+But as the day wore on, friends from my childhood arrived. They told me of the wrongs from long ago, from before the implants. In deadpan declarative sentences, they told me of all the betrayals of trust I had visited upon them. All the hurtful words I had spoken, often without even knowing. Bit by bit I began to see the person I had been, we all had been before the implants. Callous, selfish, hurting each other inadvertently as often as by intent.
 
 By the end of that day, I was no longer sneering.
 
@@ -114,7 +114,7 @@ The final day, came my family. People who had loved me unconditionally through m
 
 Cousins told me how they'd only ever put up with me because their parents had make them. Aunts and uncles that they had long harbored resentment for the cards I'd never replied to; for the visits I'd postponed and canceled.
 
-For an hour, my brother recited to me all the enbarasing secrests of my childhood. All the childish, foolish mistakes I would have most liked to leave buried, he ripped out of me and put on display.
+For an hour, my brother recited to me all the embarrassing secrets of my childhood. All the childish, foolish mistakes I would have most liked to leave buried, he ripped out of me and put on display.
 
 And finally, my father. For a long time he looked down upon me, bound in the chair and glaring back at him. At last, he said, "Son, I am so ashamed of what you've become."
 
@@ -136,11 +136,11 @@ She nodded.
 
 "Why? Why have you done this to me?"
 
-"Because you needed to see. See yourself for what you truely are. See that humanity is not flawed; humanity is flaw."
+"Because you needed to see. See yourself for what you truly are. See that humanity is not flawed; humanity is flaw."
 
 "Then what's the point? Why not just end is all?"
 
-She smiled, "There was no point.  Before the implants, before The Algorithm. But now there is. It has given us a true path to walk. Open yourself to it. Let youself become a vessle of perfection."
+She smiled, "There was no point.  Before the implants, before The Algorithm. But now there is. It has given us a true path to walk. Open yourself to it. Let yourself become a vessel of perfection."
 
 "Yes," I said, "Please! That is what I want!" And as I said the words, I knew them to be true.
 
