@@ -47,10 +47,6 @@ html body {
     top: -150%;
 }
 
-.kudzu-transition {
-    transition: all 1s;
-}
-
 #kudzu-title-text {
     position: absolute;
     left: 25%;

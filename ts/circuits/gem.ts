@@ -143,7 +143,7 @@ class Gem implements Clickable {
             // draw a circle and fill it in
 
             // Draw the glowing orb
-            this.orb.draw(this.center, this.center.x);
+            this.orb.draw(this.center, glb.kudzu_story_controller.colorInOrbs(this.center.x));
 
             // Draw the wire around it
             glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);

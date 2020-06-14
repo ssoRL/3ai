@@ -96,15 +96,15 @@ class OrthStoryController {
      */
     private async end() {
         this.done = true;
-        const transition_time = TICK_EVERY*(TICKS_AT_START - 1) + TICK_LENGTH;
+        const transition_time = TICK_EVERY*(TICKS_AT_START) + TICK_LENGTH;
         const orth_transition = `all ${transition_time}ms ease-in`;
 
         // activate all the cogs
         for(const cog of glb.driver_cogs) {
             cog.activate(true);
         }
-        // start everything ticking, then wait a tick
-        await this.tick();
+        // start everything ticking
+        this.tick();
 
         // Move the badges and canvas to be in position for the kudzu story
         const orth_badge = getDocumentElementById("orth");

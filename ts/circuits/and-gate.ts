@@ -169,6 +169,6 @@ class AndGate {
                 this.orb.addGlow(glow_ratio*AndGate.MAX_GLOW);
             }
         }
-        this.orb.draw(p(0, -AndGate.RADIUS/2.2), this.p.x);
+        this.orb.draw(p(0, -AndGate.RADIUS/2.2), glb.kudzu_story_controller.colorInOrbs(this.p.x));
     }  
 }

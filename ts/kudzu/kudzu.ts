@@ -1,5 +1,5 @@
 class KudzuStoryController {
-    public done = false;
+    private done = false;
     private wire0: Wire;
     private kudzu_gem: Gem;
 
@@ -22,22 +22,27 @@ class KudzuStoryController {
     }
 
     public async start() {
-        // Move the badges and canvas to be in position for the kudzu story
-        const kudzu_badge = document.getElementById("kudzu");
-        const orth_badge = document.getElementById("orth");
-        const story_section = document.getElementById("kudzu-story-text");
-        kudzu_badge?.classList.add("kudzu-transition");
-        kudzu_badge?.classList.add("repositioned");
-        orth_badge?.classList.add("kudzu-transition");
-        orth_badge?.classList.add("sidelined");
-        story_section?.classList.add("kudzu-transition");
-        story_section?.classList.remove("sidelined");
+        // Define the transition
+        const kudzu_transition = 'all 1s';
+
+        // Get the elements
+        const kudzu_badge = getDocumentElementById("kudzu");
+        const orth_badge = getDocumentElementById("orth");
+        const story_section = getDocumentElementById("kudzu-story-text");
+        // Add the transition logic
+        kudzu_badge.style.transition = kudzu_transition;
+        orth_badge.style.transition = kudzu_transition;
+        story_section.style.transition = kudzu_transition;
+        // Apply the reposition commands
+        kudzu_badge.classList.add("repositioned");
+        orth_badge.classList.add("sidelined");
+        story_section.classList.remove("sidelined");
         await glb.canvas_controller.animateTranslate(
             KudzuStoryController.TRANSLATE, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
         );
 
         // After the movement is complete, fill in the title
-        const head_title = document.getElementById("kudzu-title-text");
+        const head_title = getDocumentElementById("kudzu-title-text");
         if(!head_title) throw "3AI Error: There is no kudzu-title-text element";
         await this.fillInString(head_title, "Vines of Kudzu");
 
@@ -45,19 +50,25 @@ class KudzuStoryController {
     }
 
     public async end() {
+        // Define the transition
+        const kudzu_transition = 'transition: all 1s';
+
         // Move the badges and canvas to be in position for the kudzu story
-        const kudzu_badge = document.getElementById("kudzu");
-        const orth_badge = document.getElementById("orth");
-        const head_title = document.getElementById("kudzu-title-text");
-        const story_section = document.getElementById("kudzu-story-text");
-        kudzu_badge?.classList.add("kudzu-transition");
+        // Get the elements
+        const kudzu_badge = getDocumentElementById("kudzu");
+        const orth_badge = getDocumentElementById("orth");
+        const head_title = getDocumentElementById("kudzu-title-text");
+        const story_section = getDocumentElementById("kudzu-story-text");
+        // Add the transition logic
+        kudzu_badge.style.transition = kudzu_transition;
+        orth_badge.style.transition = kudzu_transition;
+        story_section.style.transition = kudzu_transition;
+        head_title.style.transition = kudzu_transition;
+        // Reposition the elements
         kudzu_badge?.classList.remove("repositioned");
         kudzu_badge?.classList.add("story-done");
-        orth_badge?.classList.add("kudzu-transition");
         orth_badge?.classList.remove("sidelined");
-        head_title?.classList.add("kudzu-transition");
         head_title?.classList.add("story-done");
-        story_section?.classList.add("kudzu-transition");
         story_section?.classList.add("sidelined");
         this.kudzu_gem.powerOut();
         await glb.canvas_controller.animateTranslate(
@@ -142,6 +153,11 @@ class KudzuStoryController {
         }
     }
 
+    public colorInOrbs(x: number): boolean {
+        // Orbs are colored in if they are not on the main screen, or if the reader is thru kudzu
+        return this.done || x > CANVAS_DEFINED_SIZE
+    }
+
     /**
      * Shuffles an array, but biased towards shuffling the end over the start
      * @param a The array to shuffle
@@ -166,7 +182,7 @@ class KudzuStoryController {
 
     private async fillInStory(from_section: number) {
         // get the story section and then clear out the previous text
-        const story_section = document.getElementById("kudzu-story-text");
+        const story_section = getDocumentElementById("kudzu-story-text");
         if(!story_section) throw "3AI Error: There is no kudzu-story-text element";
         story_section.innerHTML = "";
 
@@ -299,7 +315,7 @@ class KudzuStoryController {
         this.done = true;
         this.wire0.power(true);
 
-        const story_section = document.getElementById("kudzu-story-text");
+        const story_section = getDocumentElementById("kudzu-story-text");
         if(!story_section) throw "3AI Error: There is no kudzu-story-text element";
         story_section.innerHTML = "";
 
