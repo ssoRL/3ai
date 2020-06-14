@@ -116,6 +116,7 @@ class Gem implements Clickable {
         // If this gem is turned on, turn on the orb
         if(this.is_on) {
             this.orb.power(true);
+            this.orb.addGlow(10);
         }
     }
 
@@ -140,13 +141,16 @@ class Gem implements Clickable {
         // Do this so that the gem is not drawn more than once
         if(orientation === this.draw_from) {
             // draw a circle and fill it in
+
+            // Draw the glowing orb
+            this.orb.draw(this.center, this.center.x);
+
+            // Draw the wire around it
+            glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
             glb.ctx.beginPath();
-            //glb.ctx.moveTo(this.center.x + this.size, this.center.y);
             glb.ctx.arc(this.center.x, this.center.y, this.size, 0, Math.PI * 2);
             glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
             glb.ctx.stroke();
-
-            this.orb.draw(this.center);
         }
 
         for(const t of this.terminals) {

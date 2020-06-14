@@ -1,5 +1,5 @@
 class KudzuStoryController {
-    private done = false;
+    public done = false;
     private wire0: Wire;
     private kudzu_gem: Gem;
 

@@ -163,13 +163,12 @@ class AndGate {
             const power_time = glb.time - this.time_switched;
             const charge_ratio = power_time/AND_POWER_DOWN_TIME;
             if(charge_ratio < 1) {
-                console.log(`${power_time} => ${charge_ratio}`);
                 // Then there is something happening, set a new glow strength
                 const glow_ratio = 1 - charge_ratio;
                 // Set the strength
                 this.orb.addGlow(glow_ratio*AndGate.MAX_GLOW);
             }
         }
-        this.orb.draw(p(0, -AndGate.RADIUS/2.2));
+        this.orb.draw(p(0, -AndGate.RADIUS/2.2), this.p.x);
     }  
 }
