@@ -17,12 +17,4 @@ const kudzu_story: {classes?: string[], paragraphs: string[]}[] = [
             "I put down the controller. “I'll help. This game sucks anyway.”"
         ]
     },
-    {
-        paragraphs: [
-            "It turned out to be harder than we thought, and Jeff got bored, so we went and got stoned in the park instead. But the idea stuck with me, and I kept chipping away on it in my free time.\
-	Eventually I gave up on memes. The constantly changing formats and in-jokes proved hard for a neural net to handle. Too much variance, too little data.\
-	But then, one day I had to go to Facebook for some reason. I think my mom posted something on my wall and then emailed me telling me to check it out, then texted me telling me to check my email. Anyway, I got scrolling around, trying to find the post my mom wanted me to look at, when I started to notice the sort of articles and stuff that people were sharing, and holy shit was it ever vapid. And repetitive. And formulaic. And perfect for my neural net.\
-	A couple hours later and I had it. My very own clickbait bullshit generator."
-        ]
-    }
 ]

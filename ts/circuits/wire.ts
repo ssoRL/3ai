@@ -37,7 +37,7 @@ class Wire implements Conductor {
 
     /**
      * Creates a new child wire stretching away from this one, choosing a point such
-     * that the lines will be horizonal or vertical
+     * that the lines will be horizontal or vertical
      * @param orientation Whether this is a horizontal or vertical wire
      * @param l The length of the new wire
      */
@@ -50,9 +50,9 @@ class Wire implements Conductor {
 
     /**
      * Creates a new child wire stretching away from this one, choosing a point such
-     * that the lines will be horizonal or vertical
+     * that the lines will be horizontal or vertical
      * @param orientation Whether this is a horizontal or vertical wire
-     * @param target the x or y coord to end on
+     * @param target the x or y coordinate to end on
      */
     public addStraightWireTo(orientation: WireOrientation, target: number): Wire {
         let p = orientation === "horz" ?
@@ -87,7 +87,7 @@ class Wire implements Conductor {
      * Creates two wires running at right angles from this wire's p1
      * to a specified point, 
      * @param terminal_p The point to end at
-     * @param ori Whether this wire should start running horrizonal or vertical
+     * @param ori Whether this wire should start running horizontal or vertical
      * @returns The second wire that was created to hook to as needed
      */
     private addWiresToPoint(terminal_p: Point, ori: WireOrientation): Wire {
@@ -127,30 +127,33 @@ class Wire implements Conductor {
         glb.canvas_controller.setTransform();
         const time_powered = glb.time - this.time_switched;
         const wire_off_color = glb.kudzu_story_controller.getWireColor();
+        const wire_on_color = 'lightGray'
         if(time_powered < this.wire_time){
-            // Determine whice color is new, and which old
-            const newColor = this.is_on ? "red" : wire_off_color;
-            const oldColor = !this.is_on ? "red" : wire_off_color;
+            // Determine which color is new, and which old
+            const newColor = this.is_on ? wire_on_color : wire_off_color;
+            const oldColor = !this.is_on ? wire_on_color : wire_off_color;
             // If the wire is in the middle of being powered...
             const p_half: Point = {
                 x: this.p0.x + this.vec.x * time_powered * SOL,
                 y: this.p0.y + this.vec.y * time_powered * SOL
             }
-            // ...draw this wire in red as far as the power has gotten...
+            // ...draw this wire in white as far as the power has gotten...
             glb.ctx.strokeStyle = newColor;
             glb.ctx.beginPath();
             glb.ctx.moveTo(this.p0.x, this.p0.y);
             glb.ctx.lineTo(p_half.x, p_half.y);
             glb.ctx.stroke();
-            // ...then the rest in black
+            // ...then the rest in wire off color
             glb.ctx.strokeStyle = oldColor;
             glb.ctx.beginPath();
             glb.ctx.moveTo(p_half.x, p_half.y);
             glb.ctx.lineTo(this.p1.x, this.p1.y);
             glb.ctx.stroke();
+            // finally draw a spark where the interface is
+            Spark.draw(p_half);
         } else {
             // If the wire is full on or off, draw with only one color
-            let color = this.is_on ? "red" : wire_off_color;
+            let color = this.is_on ? wire_on_color : wire_off_color;
             glb.ctx.strokeStyle = color;
             glb.ctx.beginPath();
             glb.ctx.moveTo(this.p0.x, this.p0.y);

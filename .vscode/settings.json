@@ -4,6 +4,7 @@
         "Minification",
         "Orleaner",
         "clickables",
-        "evenodd"
+        "evenodd",
+        "horz"
     ]
 }
