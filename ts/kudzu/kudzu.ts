@@ -211,7 +211,12 @@ class KudzuStoryController {
             to_section++;
         }
 
-        // finally, add the "Next" button
+        // Add the flexible center
+        const flex_div = document.createElement("div");
+        flex_div.classList.add('kudzu-flex');
+        story_section.appendChild(flex_div);
+
+        // Add the "Next" button
         const next_button = document.createElement("a");
         next_button.classList.add("kudzu-next");
         next_button.innerText = "Next";
@@ -225,6 +230,15 @@ class KudzuStoryController {
             }
         }
         story_section.appendChild(next_button);
+
+        // Add the skip button
+        const skip_button = document.createElement("a");
+        skip_button.classList.add('kudzu-skip');
+        skip_button.innerText = "Skip to end";
+        skip_button.onclick = () => {
+            this.end_of_story();
+        }
+        story_section.appendChild(skip_button);
     }
 
     /**

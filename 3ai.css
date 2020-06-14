@@ -68,6 +68,9 @@ html body {
     width: 85%;
     height: 60%;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #kudzu-story-text.sidelined {
@@ -82,11 +85,21 @@ html body {
     margin: 0;
 }
 
+.kudzu-flex {
+    flex: auto;
+}
+
 a.kudzu-next {
     margin: 10px;
     padding: 10px 20px;
     color: darkgreen;
     background-color: goldenrod;
+    cursor: pointer;
+}
+
+a.kudzu-skip {
+    margin-bottom: 10px;
+    color: goldenrod;
     cursor: pointer;
 }
 
