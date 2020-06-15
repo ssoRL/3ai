@@ -69,6 +69,11 @@ html body {
     align-items: center;
 }
 
+.kudzu-intro {
+    font-style: italic;
+    text-align: center;
+}
+
 #kudzu-story-text.sidelined {
     left: 215%;
 }
@@ -78,7 +83,7 @@ html body {
 }
 
 .kudzu-story-paragraph {
-    margin: 0;
+    margin: 7px 0;
 }
 
 .kudzu-flex {
@@ -101,6 +106,7 @@ a.kudzu-skip {
 
 .kudzu-text {
     color: goldenrod;
+    font-family: sans-serif;
 }
 
 

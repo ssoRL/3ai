@@ -129,16 +129,17 @@ class OrthStoryController {
     }
 
     private async initializeContent() {
-            try{
-                let contentFetch = await fetch('story/orth.html', {
-                    method: 'get'
-                });
-                let text = await contentFetch.text();
-                getDocumentElementById("orth-story").innerHTML = text;
-            } catch {
-                throw "3AI Error: Could not load orth/orth-story.html";
-            }
-      }
+        const uri = 'story/orth.html'
+        try{
+            let contentFetch = await fetch(uri, {
+                method: 'get'
+            });
+            let text = await contentFetch.text();
+            getDocumentElementById("orth-story").innerHTML = text;
+        } catch {
+            throw `3AI Error: Could not load ${uri}`;
+        }
+    }
 
     public draw() {
         this.drivers.learn_start_cog.draw();

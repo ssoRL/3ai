@@ -3,14 +3,14 @@ class KudzuStoryController {
     private wire0: Wire;
     private kudzu_gem: Gem;
 
+    private kudzu_story: string[][];
+
     /** The time taken to shift from the main screen to the kudzu story screen */
     private static readonly SHIFT_TO_KUDZU_TIME = 1000;
     /** The horizontal transition to this story */
     private static readonly TRANSLATE = 3000;
     /** The speed at which text is filled in. Measures in ms per letter */
     private static readonly TYPING_SPEED = 1;
-    /** The number of letters that fits in a standard 1x1 area */
-    private static readonly LETTERS_PER_PIXEL = 0.008;
 
     public words: Word[] = [];
 
@@ -22,8 +22,11 @@ class KudzuStoryController {
     }
 
     public async start() {
+        // Load up the story from its json file
+        this.kudzu_story = await this.getStory();
+
         // Define the transition
-        const kudzu_transition = 'all 1s';
+        const kudzu_transition = `all ${KudzuStoryController.SHIFT_TO_KUDZU_TIME}ms`;
 
         // Get the elements
         const kudzu_badge = getDocumentElementById("kudzu");
@@ -132,6 +135,19 @@ class KudzuStoryController {
         this.wire0.draw();
     }
 
+    private async getStory() {
+        const uri = 'story/kudzu.json'
+        try{
+            let content = await fetch(uri, {
+                method: 'GET'
+            });
+            const json_content =  await content.json();
+            return <string[][]>json_content
+        } catch {
+            throw `3AI Error: Could not load ${uri}`;
+        }
+    }
+
     public getWireColor(x?: number): string | CanvasGradient {
         if(this.done) {
             return "olive"
@@ -180,51 +196,27 @@ class KudzuStoryController {
         }
     }
 
-    private async fillInStory(from_section: number) {
+    private async fillInStory(next_section: number) {
         // get the story section and then clear out the previous text
         const story_section = getDocumentElementById("kudzu-story-text");
         if(!story_section) throw "3AI Error: There is no kudzu-story-text element";
         story_section.innerHTML = "";
 
-        const capacity = KudzuStoryController.LETTERS_PER_PIXEL * story_section.clientHeight * story_section.clientWidth;
-        // figure our how many sections can fit this cycle
-        let to_section = from_section;
-        let total_contents_length = 0;
-        while(to_section < kudzu_story.length) {
-            // calculate the number of characters in this section
-            const section = kudzu_story[to_section];
-            const section_length = section.paragraphs.reduce<number>(
-                (acc, cur) => acc + cur.length,
-                0
-            )
-            total_contents_length += section_length;
-            // Check if this content will overflow the window, break if so
-            // Ignore this for the to_section, since at least one thing MUST be written
-            if(total_contents_length > capacity && to_section !== from_section) {
-                break
-            }
-            // compensate for bigger section breaks
-            total_contents_length += story_section.clientWidth;
-
-            // Create the new element and add it to the DOM
-            const html_story_section = document.createElement("div");
-            html_story_section.classList.add("kudzu-story-section");
-            if(section.classes) {
-                for(const section_class of section.classes) {
-                    html_story_section.classList.add(section_class);
-                }
-            }
-            story_section.appendChild(html_story_section);
-            // Fill it with content
-            const string_fill_promises: Promise<void>[] = [];
-            for(const paragraph of section.paragraphs) {
-                const html_story_paragraph = document.createElement("div");
-                html_story_paragraph.classList.add("kudzu-story-paragraph");
-                html_story_section.appendChild(html_story_paragraph);
-                string_fill_promises.push(this.fillInString(html_story_paragraph, paragraph));
-            }
-            await Promise.all(string_fill_promises);
-            to_section++;
+        // Create the new element and add it to the DOM
+        const section = this.kudzu_story[next_section];
+        const html_story_section = document.createElement("div");
+        html_story_section.classList.add("kudzu-story-section");
+        // The first sections (the intro) should be italic, add a class
+        if(next_section === 0) {
+            html_story_section.classList.add("kudzu-intro");
+        }
+        story_section.appendChild(html_story_section);
+        // Fill it with content
+        for(const paragraph of section) {
+            const html_story_paragraph = document.createElement("div");
+            html_story_paragraph.classList.add("kudzu-story-paragraph");
+            html_story_section.appendChild(html_story_paragraph);
+            await this.fillInString(html_story_paragraph, paragraph);
         }
 
         // Add the flexible center
@@ -236,13 +228,13 @@ class KudzuStoryController {
         const next_button = document.createElement("a");
         next_button.classList.add("kudzu-next");
         next_button.innerText = "Next";
-        if(to_section >= kudzu_story.length) {
+        if(next_section + 1 >= this.kudzu_story.length) {
             next_button.onclick = () => {
                 this.end_of_story();
             }
         } else {
             next_button.onclick = () => {
-                this.fillInStory(to_section);
+                this.fillInStory(next_section + 1);
             }
         }
         story_section.appendChild(next_button);
