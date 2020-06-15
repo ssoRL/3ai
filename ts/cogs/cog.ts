@@ -197,7 +197,10 @@ class Cog implements Clickable{
             this.driven_cogs[i].draw();
         }
         // If this cog is not in frame don't draw it
-        if(!glb.canvas_controller.boxIsInVerticalFrame(this.y_top, this.height)) return;
+        if(!glb.canvas_controller.boxIsInVerticalFrame(this.y_top, this.height)) {
+            // But first need to draw the wires, since they might run back into frame.
+            this.etched_wire?.draw();
+        }
         glb.canvas_controller.setTransform();
         glb.ctx.translate(this.x, this.y);
         // calculate the rotation
@@ -246,9 +249,7 @@ class Cog implements Clickable{
         }
 
         // Draw its wire if any
-        if(this.etched_wire){
-            this.etched_wire.draw();
-        }
+        this.etched_wire?.draw();
     }
 
     /**

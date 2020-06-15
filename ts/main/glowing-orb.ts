@@ -119,8 +119,8 @@ class GlowingOrb {
                 p.x, p.y, this.size/7,
                 p.x, p.y, this.size - 1
             );
-            grad.addColorStop(0, `rgba(255, 255, 255, 0.7)`);
-            grad.addColorStop(1, `rgba(255, 255, 255, 0.1)`);
+            grad.addColorStop(0, `rgba(0, 0, 0, 0.0)`);
+            grad.addColorStop(1, `rgba(0, 0, 0, 0.4)`);
             glb.ctx.fillStyle = grad;
             glb.ctx.fill();
         }

@@ -2,14 +2,16 @@ class AndTerminal implements Conductor {
     public is_on = false;
     private to: AndGate;
     private is_left_terminal: boolean;
+    private p: Point;
     
     constructor(to_: AndGate, is_left_terminal_: boolean){
         this.to = to_;
         this.is_left_terminal = is_left_terminal_;
+        this.p = this.to.getTerminalPosition(this.is_left_terminal);
     }
 
     public getPosition(): Point {
-        return this.to.getTerminalPosition(this.is_left_terminal);
+        return this.p;
     }
 
     public power(on: boolean): void {
@@ -18,6 +20,11 @@ class AndTerminal implements Conductor {
     }
 
     public draw(): void {
+        if(this.is_on && !this.to.isOn()) {
+            // Draw a spark as the the current is 'waiting' here
+            Spark.draw(this.p);
+        }
+
         if(this.is_left_terminal){
             this.to.draw();
         }
@@ -43,9 +50,9 @@ class AndGate {
 
     constructor(x_: number, y_: number, ori_: CardinalOrientation){
         this.ori = ori_;
+        this.p = {x: x_, y: y_};
         this.left_terminal = new AndTerminal(this, true);
         this.right_terminal = new AndTerminal(this, false);
-        this.p = {x: x_, y: y_};
         this.addPoweringWire();
         this.orb = new GlowingOrb(AndGate.RADIUS/2.4, AndGate.WHITE, false);
     }
@@ -123,6 +130,10 @@ class AndGate {
                 this.is_on ? AND_POWER_UP_TIME : AND_POWER_DOWN_TIME
             )
         }
+    }
+
+    public isOn(){
+        return this.is_on;
     }
 
     public draw() {
