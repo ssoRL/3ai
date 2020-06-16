@@ -52,6 +52,9 @@ class Gem implements Clickable {
         this.size = size_;
         this.color = color_;
 
+        // Do nothing by default
+        this.onclick = () => {};
+
         this.orb = new GlowingOrb(size_, color_);
 
         glb.canvas_controller.registerClickable(this);
