@@ -185,3 +185,22 @@ a.kudzu-skip {
     border: 2px solid;
     box-sizing: border-box;
 }
+
+.pop-up-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(50, 50, 50, .85);
+    z-index: 3;
+    display: flex;
+    align-items: center;
+}
+
+.pop-up-content {
+    background-color: white;
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
+}

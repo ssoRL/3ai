@@ -53,7 +53,9 @@ class Gem implements Clickable {
         this.color = color_;
 
         // Do nothing by default
-        this.onclick = () => {};
+        this.onclick = () => {
+            new Popup("<p>Default message</p>");
+        };
 
         this.orb = new GlowingOrb(size_, color_);
 
