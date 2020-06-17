@@ -9,7 +9,11 @@
   "author": "highvoltageclouds",
   "license": "ISC",
   "dependencies": {
-    "http-server": "^0.12.1",
+    "js-cookie": "^2.2.1"
+  },
+  "devDependencies": {
+    "@types/js-cookie": "^2.2.6",
+    "http-server": "^0.12.3",
     "marked": "^1.0.0",
     "typescript": "^3.8.3"
   }

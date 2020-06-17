@@ -17,7 +17,7 @@ class KudzuStoryController {
     constructor() {
         [this.wire0, this.kudzu_gem] = init_kudzu_wires();
         this.kudzu_gem.onclick = () => {
-            this.end();
+            this.prep_end();
         }
     }
 
@@ -52,9 +52,12 @@ class KudzuStoryController {
         await this.fillInStory(0);
     }
 
-    public async end() {
+    /**
+     * Prepares to return to the main screen
+     */
+    private async prep_end() {
         // Define the transition
-        const kudzu_transition = 'transition: all 1s';
+        const kudzu_transition = `transition: all ${KudzuStoryController.SHIFT_TO_KUDZU_TIME}ms`;
 
         // Move the badges and canvas to be in position for the kudzu story
         // Get the elements
@@ -67,16 +70,34 @@ class KudzuStoryController {
         orth_badge.style.transition = kudzu_transition;
         story_section.style.transition = kudzu_transition;
         head_title.style.transition = kudzu_transition;
+
+        // set the cookie so that if the reader leaves and comes back
+        Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE);
+        this.end();
+        
+        this.kudzu_gem.powerOut();
+        await glb.canvas_controller.animateTranslate(
+            0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
+        );
+    }
+
+    /**
+     * Sets the story as if read, either in this session or in a previous one
+     */
+    public end(){
+        this.done = true;
+
+        // Get the elements
+        const kudzu_badge = getDocumentElementById("kudzu");
+        const orth_badge = getDocumentElementById("orth");
+        const head_title = getDocumentElementById("kudzu-title-text");
+        const story_section = getDocumentElementById("kudzu-story-text");
         // Reposition the elements
         kudzu_badge?.classList.remove("repositioned");
         kudzu_badge?.classList.add("story-done");
         orth_badge?.classList.remove("sidelined");
         head_title?.classList.add("story-done");
         story_section?.classList.add("sidelined");
-        this.kudzu_gem.powerOut();
-        await glb.canvas_controller.animateTranslate(
-            0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
-        );
 
         glb.wire0.power(true);
     }

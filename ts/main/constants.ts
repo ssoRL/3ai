@@ -27,3 +27,8 @@ const CLICK_ACTION: "stop" | "change" = "stop";
 
 /** Hopefully this can be used to debug huge slowdowns :p */
 var TRIP_WIRE = false;
+
+/** Cookie names */
+const ORTH_COOKIE_NAME = "orth_cookie";
+const KUDZU_COOKIE_NAME = "kudzu_cookie";
+const STORY_DONE = "story_done";

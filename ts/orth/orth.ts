@@ -87,17 +87,43 @@ class OrthStoryController {
         }
 
         this.drivers.learn_start_cog.onClick = () => {
-            this.end();
+            this.prep_end();
         }
     }
 
     /**
-     * The actions to take when the story is finished and returning to main screen
+     * The actions to take to prepare moving back to the main screen
      */
-    private async end() {
-        this.done = true;
+    private async prep_end() {
         const transition_time = TICK_EVERY*(TICKS_AT_START) + TICK_LENGTH;
         const orth_transition = `all ${transition_time}ms ease-in`;
+
+        // Move the badges and canvas to be in position for the kudzu story
+        const orth_badge = getDocumentElementById("orth");
+        const kudzu_badge = getDocumentElementById("kudzu");
+        const story_container = getDocumentElementById("orth-story-container");
+        const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
+        // Add the css transition
+        kudzu_badge.style.transition = orth_transition;
+        orth_badge.style.transition = orth_transition;
+        story_container.style.transition = orth_transition;
+        next_button.style.transition = orth_transition;
+
+        // Then execute the ending sequence
+        Cookies.set(ORTH_COOKIE_NAME, STORY_DONE);
+        this.end();
+
+        await glb.canvas_controller.animateTranslate(
+            0, 0, transition_time, glb.tick_easer.easeTickAnimation.bind(glb.tick_easer)
+        );
+    }
+
+    /**
+     * Sets everything like this story is done, either from the user reading in this session
+     * or having a cookie marking orth as read previously
+     */
+    public end() {
+        this.done = true;
 
         // activate all the cogs
         for(const cog of glb.driver_cogs) {
@@ -111,21 +137,12 @@ class OrthStoryController {
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
         const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
-        // Add the css transition
-        kudzu_badge.style.transition = orth_transition;
-        orth_badge.style.transition = orth_transition;
-        story_container.style.transition = orth_transition;
-        next_button.style.transition = orth_transition;
         // and then execute the transitions
         kudzu_badge.classList.remove("sidelined");
         story_container.style.top = "110%";
         orth_badge.classList.remove("repositioned");
         orth_badge.classList.add("story-done");
         next_button.classList.remove("repositioned");
-
-        await glb.canvas_controller.animateTranslate(
-            0, 0, transition_time, glb.tick_easer.easeTickAnimation.bind(glb.tick_easer)
-        );
     }
 
     private async initializeContent() {

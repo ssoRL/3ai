@@ -7,6 +7,13 @@ function init(){
     glb.wire0 = init_wires();
     glb.kudzu_story_controller = new KudzuStoryController();
     glb.orth_story_controller = new OrthStoryController();
+    // Keep Progress
+    if(Cookies.get(KUDZU_COOKIE_NAME) === STORY_DONE) {
+        glb.kudzu_story_controller.end();
+    }
+    if(Cookies.get(ORTH_COOKIE_NAME) === STORY_DONE) {
+        glb.orth_story_controller.end();
+    }
     init_words();
     glb.tick_easer = new TickEaser(1.15, 0.85);
     glb.time = performance.now();
