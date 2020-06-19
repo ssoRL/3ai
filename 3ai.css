@@ -27,6 +27,7 @@ html body {
     z-index: 2;
     border: 3px solid;
     background-color: white;
+    box-sizing: border-box;
 }
 
 #kudzu.repositioned {
@@ -120,6 +121,7 @@ a.kudzu-skip {
     border: 3px solid;
     background-color: white;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 #orth.repositioned {
