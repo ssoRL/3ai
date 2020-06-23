@@ -45,6 +45,8 @@ class AndGate {
 
     /** The radius of the circle describing this AND gate */
     private static readonly RADIUS = 25;
+    /** The terminal will be along the bottom of the AND, half a radius from center */
+    public static readonly TERMINAL_OFFSET = AndGate.RADIUS / 2;
     private static readonly WHITE = {r: 255, g: 255, b: 255};
     private static readonly MAX_GLOW = 45;
 
@@ -82,8 +84,6 @@ class AndGate {
     }
 
     public getTerminalPosition(is_left: boolean): Point {
-        // The terminal will be along the bottom of the AND, half a radius from center
-        const offset = AndGate.RADIUS / 2;
         switch (this.ori) {
             case "N":
             case "S":
@@ -91,13 +91,13 @@ class AndGate {
                 // Uses the ori, and whether this is the left terminal
                 const cardinal_sign_x = this.ori == "N" ? 1 : -1;
                 const is_left_sign_x = is_left ? -1 : 1;
-                const x = this.p.x + cardinal_sign_x*is_left_sign_x*offset;
+                const x = this.p.x + cardinal_sign_x*is_left_sign_x*AndGate.TERMINAL_OFFSET;
                 return {x: x, y: this.p.y};
             case "E":
             case "W":
                 const cardinal_sign_y = this.ori == "E" ? 1 : -1;
                 const is_left_sign_y = is_left ? -1 : 1;
-                const y = this.p.y + cardinal_sign_y*is_left_sign_y*offset;
+                const y = this.p.y + cardinal_sign_y*is_left_sign_y*AndGate.TERMINAL_OFFSET;
                 return {x: this.p.x, y: y};
         }
     }

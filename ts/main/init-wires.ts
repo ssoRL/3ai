@@ -14,6 +14,8 @@ function init_wires(): Wire {
     const ct_p_1000_0 = cog_1000.getCogTerminalPoint(ct(0));
     const cog_3002 = Cog.getCogBySerialNumber(3002);
     const ct_p_3002_2 = cog_3002.getCogTerminalPoint(ct(2));
+    const cog_4000 = Cog.getCogBySerialNumber(4000);
+    const ct_p_4000_5 = cog_4000.getCogTerminalPoint(ct(5));
     // Draw some wires
     const wire0 = new Wire({x: 1000, y: k_pad}, {x: k_left - k_pad, y: k_pad});
     const wire1 = wire0.addStraightWireTo("vert", ct_p_1000_4.y - 20);
@@ -37,7 +39,7 @@ function init_wires(): Wire {
     RunWire.addWireToCog(2003, {index: 0, outer: false}, {index: 1, outer: true});
     RunWire.addWireToCog(2001, {index: 5, outer: true}, {index: 4, outer: false});
 
-    // Draw a wire down towards the bottom right cog
+    // Draw a wire down towards the middle right cog
     const to_mid_right_cog_terminal_0 = ct(3);
     wire2.addPoweredWiresToCogTerminal(3001, "horz", to_mid_right_cog_terminal_0);
     RunWire.addWireToCog(3001, to_mid_right_cog_terminal_0, { index: 9, outer: true });
@@ -49,26 +51,34 @@ function init_wires(): Wire {
 
     // Along the cog line
     // Draw the wire that will carry a charge across most of the cogs if timed right
-    RunWire.betweenCogTerminals(1000, 2, 2002, 2, "vert");
-    RunWire.addWireToCog(2002, {index: 7, outer: true}, {index: 3, outer: true});
-    RunWire.betweenCogTerminalsThreeStep(2002, 6, 2000, 4, "vert")
+    RunWire.betweenCogTerminalsThreeStep(1000, 1, 2002, 4, "vert");
+    RunWire.addWireToCog(2002, {index: 11, outer: true}, {index: 5, outer: true});
+    RunWire.betweenCogTerminalsThreeStep(2002, 10, 2000, 4, "vert")
     RunWire.betweenCogTerminals(2000, 0, 4001, 3, "horz");
     RunWire.addWireToCog(4001, {index: 3, outer: true}, {index: 1, outer: true});
 
     // Run wires to the center right AND gate
-    const center_right_and_gate = new AndGate(700, 350, "E");
+    // The x coordinate is such that the wire will run 20px left of cog 3002
+    const center_right_and_gate_x = ct_p_3002_2.x - 20 + AndGate.TERMINAL_OFFSET;
+    const center_right_and_gate = new AndGate(center_right_and_gate_x, 420, "N");
     RunWire.betweenCogTerminalsThreeStep(2003, 1, 4001, 2, "horz");
     const wire_up_out_of_4001 = RunWire.awayFromCogTerminal(4001, 4);
     wire_up_out_of_4001
         .addStraightWireFor("vert", -70)
-        .addStraightWireFor("horz", -80)
-        .addPoweredWiresToAndTerminal(center_right_and_gate.left_terminal, "vert");
-    const wire_out_of_3002 = RunWire.awayFromCogTerminal(3002, 3);
-    wire_out_of_3002.addPoweredWiresToAndTerminal(center_right_and_gate.right_terminal, "vert");
-    center_right_and_gate.getOutWire().addPoweredWiresToCogTerminal(3000, "horz", {index: 4, outer: true});
+        .addPoweredWiresToAndTerminal(center_right_and_gate.left_terminal, "horz");
+    const wire_out_of_3002 = RunWire.awayFromCogTerminal(3002, 3).addStraightWireFor("vert", -20);
+    wire_out_of_3002.addPoweredWiresToAndTerminal(center_right_and_gate.right_terminal, "horz");
+
+    // Wire up the upper right gem
+    const upper_right_gem = new Gem(p(650, 300), 40, {r:255,g:91,b:0});
+    center_right_and_gate.getOutWire().addPoweredWiresToGemTerminal(
+        upper_right_gem.addTerminal("W"),
+        "vert"
+    );
+    upper_right_gem.getWireOut("E").addPoweredWiresToCogTerminal(3000, "horz", {index: 4, outer: true});
 
     // Run wires to the lower right AND gate
-    const low_right_and_gate = new AndGate(490, 960, "W");
+    const low_right_and_gate = new AndGate(440, ct_p_4000_5.y - AndGate.TERMINAL_OFFSET, "W");
     const wire_out_of_3000 = RunWire.awayFromCogTerminal(3000, 1).addStraightWireTo("vert", 810);
     wire_out_of_3000
         .addStraightWireTo("horz", 950)
