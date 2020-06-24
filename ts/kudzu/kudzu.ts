@@ -72,7 +72,7 @@ class KudzuStoryController {
         head_title.style.transition = kudzu_transition;
 
         // set the cookie so that if the reader leaves and comes back
-        Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE);
+        Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
         this.end();
         
         await glb.canvas_controller.animateTranslate(

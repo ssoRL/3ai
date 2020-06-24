@@ -110,7 +110,7 @@ class OrthStoryController {
         next_button.style.transition = orth_transition;
 
         // Then execute the ending sequence
-        Cookies.set(ORTH_COOKIE_NAME, STORY_DONE);
+        Cookies.set(ORTH_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
         this.end();
 
         await glb.canvas_controller.animateTranslate(
