@@ -75,7 +75,6 @@ class KudzuStoryController {
         Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE);
         this.end();
         
-        this.kudzu_gem.powerOut();
         await glb.canvas_controller.animateTranslate(
             0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
         );

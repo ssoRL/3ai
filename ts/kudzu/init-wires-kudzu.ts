@@ -29,7 +29,7 @@ function init_kudzu_wires(): [Wire, Gem] {
     wire_into_frame_from_right.addPoweredWiresToAndTerminal(and_gate.left_terminal, "vert");
     wire_under_words.addPoweredWiresToAndTerminal(and_gate.right_terminal, "vert");
 
-    const gem = new Gem({x: 3500, y: 925}, 30, {r:160,g:32,b:240});
+    const gem = new Gem({x: 3500, y: 925}, 30, {r:25,g:255,b:255}, true);
     and_gate.getOutWire().addPoweredWiresToGemTerminal(gem.addTerminal("E"), "vert");
 
     const wire_out_of_frame = gem.getWireOut("W").addStraightWireTo("horz", 1500);

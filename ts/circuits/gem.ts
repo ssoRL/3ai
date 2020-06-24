@@ -10,9 +10,7 @@ class GemTerminal implements Conductor {
 
     power(on: boolean): void {
         this.is_on = on;
-        if(on) {
-            this.parent.power();
-        }
+        this.parent.power();
     }
 
     draw(): void {
@@ -29,6 +27,8 @@ class Gem implements Clickable {
     private readonly size: number;
     private draw_from: CardinalOrientation | undefined = undefined;
     private readonly color: {r: number, g: number, b: number};
+    /** If true, this gem won't be powered until it's clicked */
+    private wait_to_power_out: boolean;
     // The orb in the center that glows and flickers
     private orb: GlowingOrb;
     public onclick: () => void;
@@ -40,17 +40,19 @@ class Gem implements Clickable {
     private static readonly JITTER_FREQ = 200;
 
     private is_on = false;
-    // The terminals
+    /** The terminals of this gem. If input, is a GemTerminal if output is a Wire */
     private terminals: Map<CardinalOrientation, GemTerminal | Wire> = new Map();
 
     constructor(
         center_: Point, 
         size_: number, 
-        color_: {r: number, g: number, b: number}
+        color_: {r: number, g: number, b: number},
+        wait_to_power_out_ = false
     ) {
         this.center = center_;
         this.size = size_;
         this.color = color_;
+        this.wait_to_power_out = wait_to_power_out_;
 
         // Do nothing by default
         this.onclick = () => {
@@ -106,9 +108,7 @@ class Gem implements Clickable {
     }
 
     power(){
-        // Once a gem is on, it will stay on;
-        if(this.is_on) return;
-        // Else, turn this gem on if all terminals are powered
+        // Turn this gem on if all terminals are powered
         this.is_on = (() => {
             for(const t of this.terminals) {
                 // if any terminals are not on, return false immediately
@@ -118,6 +118,8 @@ class Gem implements Clickable {
             return true;
         })();
 
+        if(!this.wait_to_power_out) this.powerOut();
+
         // If this gem is turned on, turn on the orb
         if(this.is_on) {
             this.orb.power(true);
@@ -125,7 +127,7 @@ class Gem implements Clickable {
         }
     }
 
-    powerOut() {
+    private powerOut() {
         // power up out wires
         for(const t of this.terminals) {
             if(t[1] instanceof Wire) t[1].power(this.is_on);
@@ -138,8 +140,8 @@ class Gem implements Clickable {
     }
 
     click(): void {
-        console.log("clicked")
         this.onclick();
+        if(this.wait_to_power_out) this.powerOut();
     }
 
     draw(orientation: CardinalOrientation) {
