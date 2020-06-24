@@ -50,9 +50,9 @@ class AndGate {
     private static readonly WHITE = {r: 255, g: 255, b: 255};
     private static readonly MAX_GLOW = 45;
 
-    constructor(x_: number, y_: number, ori_: CardinalOrientation){
+    constructor(p_: Point, ori_: CardinalOrientation){
         this.ori = ori_;
-        this.p = {x: x_, y: y_};
+        this.p = p_;
         this.left_terminal = new AndTerminal(this, true);
         this.right_terminal = new AndTerminal(this, false);
         this.addPoweringWire();

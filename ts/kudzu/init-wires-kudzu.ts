@@ -24,7 +24,7 @@ function init_kudzu_wires(): [Wire, Gem] {
 
     const wire_into_frame_from_right = wire0.addStraightWireFor("horz", -150);
 
-    const and_gate = new AndGate(3800, 925, "W");
+    const and_gate = new AndGate(p(3800, 925), "W");
 
     wire_into_frame_from_right.addPoweredWiresToAndTerminal(and_gate.left_terminal, "vert");
     wire_under_words.addPoweredWiresToAndTerminal(and_gate.right_terminal, "vert");

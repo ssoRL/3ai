@@ -3,23 +3,29 @@
  * @returns The root wire to power
  */
 function init_wires(): Wire {
-    // The coordinates of the kudzu box after story
-    const k_top = 50;
-    const k_size = 100;
-    const k_left = 1000 - 150;
-    const k_pad = k_top/2;
+    // The coordinates of the boxes so wires can run without collisions
+    /** How big the boxes are */
+    const box_size = 100;
+    /** how much space is between the box and the edge of the screen */
+    const box_margin = 50;
+    const box_inner_pad = box_margin/2;
+    const box_outer_pad = box_size + box_margin + box_inner_pad;
+    // const k_top = 50;
+    // const k_left = 1000 - 150;
     // Coordinates of some cog terminals
     const cog_1000 = Cog.getCogBySerialNumber(1000);
     const ct_p_1000_4 = cog_1000.getCogTerminalPoint(ct(4));
     const ct_p_1000_0 = cog_1000.getCogTerminalPoint(ct(0));
+    const ct_p_1003_2 = Cog.getCogBySerialNumber(1003).getCogTerminalPoint(ct(2));
+    const ct_p_2002_2 = Cog.getCogBySerialNumber(2002).getCogTerminalPoint(ct(2));
     const cog_3002 = Cog.getCogBySerialNumber(3002);
     const ct_p_3002_2 = cog_3002.getCogTerminalPoint(ct(2));
     const cog_4000 = Cog.getCogBySerialNumber(4000);
     const ct_p_4000_5 = cog_4000.getCogTerminalPoint(ct(5));
     // Draw some wires
-    const wire0 = new Wire({x: 1000, y: k_pad}, {x: k_left - k_pad, y: k_pad});
+    const wire0 = new Wire({x: 1000, y: box_inner_pad}, {x: 1000 - box_outer_pad, y: box_inner_pad});
     const wire1 = wire0.addStraightWireTo("vert", ct_p_1000_4.y - 20);
-    const wire2 = wire1.addStraightWireTo("vert", k_top + k_size + k_pad);
+    const wire2 = wire1.addStraightWireTo("vert", box_outer_pad);
 
     // TO THE COG LINE
     // Draw a wire to the upper left cogs
@@ -60,7 +66,7 @@ function init_wires(): Wire {
     // Run wires to the center right AND gate
     // The x coordinate is such that the wire will run 20px left of cog 3002
     const center_right_and_gate_x = ct_p_3002_2.x - 20 + AndGate.TERMINAL_OFFSET;
-    const center_right_and_gate = new AndGate(center_right_and_gate_x, 420, "N");
+    const center_right_and_gate = new AndGate(p(center_right_and_gate_x, 420), "N");
     RunWire.betweenCogTerminalsThreeStep(2003, 1, 4001, 2, "horz");
     const wire_up_out_of_4001 = RunWire.awayFromCogTerminal(4001, 4);
     wire_up_out_of_4001
@@ -70,7 +76,7 @@ function init_wires(): Wire {
     wire_out_of_3002.addPoweredWiresToAndTerminal(center_right_and_gate.right_terminal, "horz");
 
     // Wire up the upper right gem
-    const upper_right_gem = new Gem(p(650, 300), 40, {r:255,g:91,b:0});
+    const upper_right_gem = new Gem(p(650, 300), 20, {r:255,g:91,b:0});
     center_right_and_gate.getOutWire().addPoweredWiresToGemTerminal(
         upper_right_gem.addTerminal("W"),
         "vert"
@@ -78,7 +84,7 @@ function init_wires(): Wire {
     upper_right_gem.getWireOut("E").addPoweredWiresToCogTerminal(3000, "horz", {index: 4, outer: true});
 
     // Run wires to the lower right AND gate
-    const low_right_and_gate = new AndGate(440, ct_p_4000_5.y - AndGate.TERMINAL_OFFSET, "W");
+    const low_right_and_gate = new AndGate(p(440, ct_p_4000_5.y - AndGate.TERMINAL_OFFSET), "W");
     const wire_out_of_3000 = RunWire.awayFromCogTerminal(3000, 1).addStraightWireTo("vert", 810);
     wire_out_of_3000
         .addStraightWireTo("horz", 950)
@@ -91,16 +97,33 @@ function init_wires(): Wire {
     const wire_out_of_low_right_and_gate = low_right_and_gate.getOutWire().addStraightWireTo("horz", 290);
 
     // Run wires to the lower left AND gate
-    const low_left_and_gate = new AndGate(250, 800, "W");
-    wire_out_of_low_right_and_gate.addPoweredWiresToAndTerminal(low_left_and_gate.left_terminal, "vert");
-    const  wire_out_of_2001 = RunWire.awayFromCogTerminal(2001, 1).addStraightWireFor("vert", 50);
-    wire_out_of_2001.addStraightWireTo("horz", 290).addPoweredWiresToAndTerminal(low_left_and_gate.right_terminal, "vert");
+    const low_left_and_gate = new AndGate(p(ct_p_1003_2.x, 775), "N");
+    wire_out_of_low_right_and_gate
+        .addStraightWireTo("horz", box_outer_pad)
+        .addStraightWireTo('vert', 1000 - box_outer_pad)
+        .addPoweredWiresToAndTerminal(low_left_and_gate.left_terminal, "horz");
+    const  wire_out_of_2001 = RunWire
+        .awayFromCogTerminal(2001, 1)
+        .addStraightWireTo("vert", 1000 - box_outer_pad - 20);
+    wire_out_of_2001.addPoweredWiresToAndTerminal(low_left_and_gate.right_terminal, "horz");
+
+    // Run wires to the upper left AND gate
+    const upper_left_and_gate = new AndGate(p(ct_p_1003_2.x + 20, ct_p_2002_2.y), "E");
+    RunWire
+        .awayFromCogTerminal(1003, 2)
+        .addPoweredWiresToAndTerminal(upper_left_and_gate.left_terminal, "vert");
+    low_left_and_gate
+        .getOutWire()
+        .addPoweredWiresToAndTerminal(upper_left_and_gate.right_terminal, "vert");
 
     // Hook up the big gem
-    const big_gem = new Gem({x: 50, y: 650}, 40, {r:255,g:91,b:0});
-    const wire_out_of_1003 = RunWire.awayFromCogTerminal(1003, 2);
-    wire_out_of_1003.addPoweredWiresToGemTerminal(big_gem.addTerminal("N"), "vert");
-    low_left_and_gate.getOutWire().addPoweredWiresToGemTerminal(big_gem.addTerminal("S"), "horz");
+    const big_gem = new Gem(p(450, 580), 40, {r:255,g:91,b:0});
+    upper_left_and_gate.getOutWire().addPoweredWiresToCogTerminal(2002, "horz", ct(2));
+    RunWire
+        .awayFromCogTerminal(2002, 8)
+        .addPoweredWiresToGemTerminal(big_gem.addTerminal("N"), "horz");
+    // wire_out_of_1003.addPoweredWiresToGemTerminal(big_gem.addTerminal("N"), "vert");
+    // low_left_and_gate.getOutWire().addPoweredWiresToGemTerminal(big_gem.addTerminal("S"), "horz");
 
     return wire0;
 }
