@@ -1,6 +1,6 @@
 // Functions for setting up the gems
 function makeOrangeGem(p: Point) : Gem {
-    const orange = {r:255,g:91,b:0}
+    const orange = {r:255,g:91,b:0};
     const orange_gem = new Gem(p, 20, orange);
     // orange_gem.onclick = () => {
     //     new Popup("<p>Default message</p>");
@@ -8,8 +8,26 @@ function makeOrangeGem(p: Point) : Gem {
     return orange_gem;
 }
 
+function makeBlueGem(p: Point) : Gem {
+    const blue = {r:135,g:206,b:250};
+    const blue_gem = new Gem(p, 20, blue);
+    // orange_gem.onclick = () => {
+    //     new Popup("<p>Default message</p>");
+    // }
+    return blue_gem;
+}
+
+function makeGreenGem(p: Point) : Gem {
+    const green = {r:0,g:255,b:127};
+    const green_gem = new Gem(p, 20, green);
+    // orange_gem.onclick = () => {
+    //     new Popup("<p>Default message</p>");
+    // }
+    return green_gem;
+}
+
 function makeBigGem(p: Point) : Gem {
-    const white = {r:255,g:255,b:255}
+    const white = {r:255,g:255,b:255};
     const big_gem = new Gem(p, 40, white);
     return big_gem;
 }
@@ -99,11 +117,15 @@ function init_wires(): Wire {
     );
     upper_right_gem.getWireOut("E").addPoweredWiresToCogTerminal(3000, "horz", {index: 4, outer: true});
 
+    // power to the lower right gem
+    const lower_right_gem = makeBlueGem(p(955, 890));
+    const wire_out_of_3000 = RunWire.awayFromCogTerminal(3000, 1).addStraightWireTo("vert", 810);
+    wire_out_of_3000.addPoweredWiresToGemTerminal(lower_right_gem.addTerminal("N"), "horz");
+
     // Run wires to the lower right AND gate
     const low_right_and_gate = new AndGate(p(440, ct_p_4000_5.y - AndGate.TERMINAL_OFFSET), "W");
-    const wire_out_of_3000 = RunWire.awayFromCogTerminal(3000, 1).addStraightWireTo("vert", 810);
-    wire_out_of_3000
-        .addStraightWireTo("horz", 950)
+    lower_right_gem
+        .getWireOut("S")
         .addPoweredWiresToCogTerminal(4000, "vert", ct(11));
     RunWire.addWireToCog(4000, {index: 5, outer: true}, {index: 11, outer: true});
     const wire_out_of_4000 = RunWire.awayFromCogTerminal(4000, 5).addStraightWireFor("horz", -20);
@@ -123,18 +145,27 @@ function init_wires(): Wire {
         .addStraightWireTo("vert", 1000 - box_outer_pad - 20);
     wire_out_of_2001.addPoweredWiresToAndTerminal(low_left_and_gate.right_terminal, "horz");
 
+    // Hook up the left gem
+    const left_gem = makeGreenGem(p(ct_p_1003_2.x, 600));
+    low_left_and_gate
+        .getOutWire()
+        .addPoweredWiresToGemTerminal(left_gem.addTerminal("S"), "vert");
+
     // Run wires to the upper left AND gate
     const upper_left_and_gate = new AndGate(p(ct_p_1003_2.x + 20, ct_p_2002_2.y), "E");
     RunWire
         .awayFromCogTerminal(1003, 2)
         .addPoweredWiresToAndTerminal(upper_left_and_gate.left_terminal, "vert");
-    low_left_and_gate
-        .getOutWire()
+    left_gem
+        .getWireOut("N")
         .addPoweredWiresToAndTerminal(upper_left_and_gate.right_terminal, "vert");
 
     // Hook up the big gem
     const big_gem = makeBigGem(p(450, 580));
-    upper_left_and_gate.getOutWire().addPoweredWiresToCogTerminal(2002, "horz", ct(1));
+    upper_left_and_gate
+        .getOutWire()
+        .addStraightWireFor("horz", 7)
+        .addPoweredWiresToCogTerminal(2002, "vert", ct(1));
     RunWire
         .awayFromCogTerminal(2002, 7)
         .addPoweredWiresToGemTerminal(big_gem.addTerminal("N"), "horz");
