@@ -39,7 +39,10 @@ class Gem implements Clickable {
     /** How ofter the glow jitters in milliseconds */
     private static readonly JITTER_FREQ = 200;
 
-    private is_on = false;
+    /** True while there is current flowing thru the gem */
+    public is_on = false;
+    /** True after there has ever been current flowing thru */
+    private is_active = false;
     /** The terminals of this gem. If input, is a GemTerminal if output is a Wire */
     private terminals: Map<CardinalOrientation, GemTerminal | Wire> = new Map();
 
@@ -121,7 +124,8 @@ class Gem implements Clickable {
         if(!this.wait_to_power_out) this.powerOut();
 
         // If this gem is turned on, turn on the orb
-        if(this.is_on) {
+        if(this.is_on && !this.is_active) {
+            this.is_active = true;
             this.orb.power(true);
             this.orb.addGlow(10);
         }
@@ -135,6 +139,8 @@ class Gem implements Clickable {
     }
 
     isClicked(p: Point): boolean {
+        // If the gem's not on, it can't be clicked
+        if(!this.is_active) return false;
         const length_and_unit_vector = getLengthAndUnitVector(p, this.center);
         return length_and_unit_vector[0] < this.size;
     }
