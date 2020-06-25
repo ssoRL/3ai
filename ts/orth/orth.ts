@@ -24,10 +24,9 @@ class OrthStoryController {
 
     constructor(){
         this.drivers = init_cogs_orth();
-        this.initializeContent();
         const orth_badge = getDocumentElementById("orth");
         orth_badge.onclick = this.start.bind(this);
-
+        this.initializeContent();
         // Define the gradient of the cog fill at the start
         const cog_fill_gradient = glb.ctx.createLinearGradient(0, 0, 0, 200);
         cog_fill_gradient.addColorStop(0, "silver");
@@ -146,16 +145,8 @@ class OrthStoryController {
     }
 
     private async initializeContent() {
-        const uri = 'story/orth.html'
-        try{
-            let contentFetch = await fetch(uri, {
-                method: 'get'
-            });
-            let text = await contentFetch.text();
-            getDocumentElementById("orth-story").innerHTML = text;
-        } catch {
-            throw `3AI Error: Could not load ${uri}`;
-        }
+        const story_text = await fetchContent('story/orth.html');
+        getDocumentElementById("orth-story").innerHTML = story_text;
     }
 
     public draw() {

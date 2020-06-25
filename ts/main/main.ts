@@ -39,9 +39,18 @@ function draw() {
         cog.draw();
     }
     glb.wire0.draw();
-    const t = performance.now()
-    // console.log(`t: ${glb.time},d: ${t - glb.time}`);
     window.requestAnimationFrame(draw.bind(this));
+}
+
+async function fetchContent(uri: string): Promise<string> {
+    try{
+        let contentFetch = await fetch(uri, {
+            method: 'get'
+        });
+        return await contentFetch.text();
+    } catch {
+        throw `3AI Error: Could not load ${uri}`;
+    }
 }
 
 window.addEventListener("DOMContentLoaded", () => {
