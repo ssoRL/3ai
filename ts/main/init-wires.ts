@@ -65,19 +65,17 @@ function init_wires(): Wire {
     // Draw a wire to the upper left cogs
     const to_up_left_wire = wire1.addStraightWireTo("horz", ct_p_1000_0.x + 100);
     to_up_left_wire.addPoweredWiresToCogTerminal(1000, "vert", ct(0));
-    to_up_left_wire.addPoweredWiresToCogTerminal(1000, "horz", ct(4)); 
-    const up_right_cog_terminal_1 = ct(3);
-    RunWire.addWireToCog(1000, ct(0), up_right_cog_terminal_1);
-    RunWire.addWireToCog(1001, {index: 0, outer: false}, {index: 1, outer: true});
-    RunWire.addWireToCog(1003, {index: 0, outer: false}, {index: 2, outer: true});
+    to_up_left_wire.addPoweredWiresToCogTerminal(1000, "horz", ct(4));
+    RunWire.addWireToCog(1000, ct(1), ct(4));
+    RunWire.addWireToCog(1001, ct_i(5), ct(0));
+    RunWire.addWireToCog(1003, ct_i(1), ct(3));
 
     // Draw wires towards the center
     const to_center_wire_1 = wire2.addStraightWireTo("horz", ct_p_3002_2.x - 40);
-    const to_center_cog_terminal = ct(5);
-    to_center_wire_1.addPoweredWiresToCogTerminal(2000, "vert", to_center_cog_terminal);
-    RunWire.addWireToCog(2000, to_center_cog_terminal, {index: 1, outer: true});
-    RunWire.addWireToCog(2003, {index: 0, outer: false}, {index: 1, outer: true});
-    RunWire.addWireToCog(2001, {index: 5, outer: true}, {index: 4, outer: false});
+    to_center_wire_1.addPoweredWiresToCogTerminal(2000, "vert", ct(5));
+    RunWire.addWireToCog(2000, ct(3), ct(5));
+    RunWire.addWireToCog(2003, ct_i(2), ct(3));
+    RunWire.addWireToCog(2001, ct(1), ct_i(0));
 
     // Draw a wire down towards the middle right cog
     const to_mid_right_cog_terminal_0 = ct(3);
@@ -92,7 +90,7 @@ function init_wires(): Wire {
     // Along the cog line
     // Draw the wire that will carry a charge across most of the cogs if timed right
     RunWire.betweenCogTerminalsThreeStep(1000, 1, 2002, 4, "vert");
-    RunWire.addWireToCog(2002, {index: 11, outer: true}, {index: 5, outer: true});
+    RunWire.addWireToCog(2002, ct(9), ct(3));
     RunWire.betweenCogTerminalsThreeStep(2002, 10, 2000, 4, "vert")
     RunWire.betweenCogTerminals(2000, 0, 4001, 3, "horz");
     RunWire.addWireToCog(4001, {index: 3, outer: true}, {index: 1, outer: true});

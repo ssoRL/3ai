@@ -1,32 +1,32 @@
 class Word {
-    public words: string;
-    public style: string
-    public size: number;
-    public font: string;
-    public position: Point;
-    private isRightAligned = false;
+    private words: string;
+    private style: string
+    private size: number;
+    private font: string;
+    private position: Point;
+    private align: CanvasTextAlign;
 
-    constructor(words_: string, position_: Point, style_ = "", size_?: number, font_?: string) {
+    constructor(
+        words_: string,
+        position_: Point,
+        style_ = "",
+        size_?: number,
+        font_?: string,
+        align_?: CanvasTextAlign
+    ) {
         this.words = words_;
         this.position = position_;
 
         this.style = style_;
         this.size = size_ ?? 30;
         this.font = font_ ?? "serif";
+        this.align = align_ ?? "left";
     }
 
     draw() {
         glb.ctx.font = `${this.style} ${this.size}px ${this.font}`;
-        if(this.isRightAligned){
-            glb.ctx.textAlign = "right"
-        } else {
-            glb.ctx.textAlign = "left"
-        }
+        glb.ctx.textAlign = this.align;
+        glb.ctx.textBaseline = "middle";
         glb.ctx.fillText(this.words, this.position.x, this.position.y);
-    }
-
-    right() {
-        this.isRightAligned = true;
-        return this;
     }
 } 
