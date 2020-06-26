@@ -127,7 +127,7 @@ class Wire implements Conductor {
         glb.canvas_controller.setTransform();
         const time_powered = glb.time - this.time_switched;
         const wire_off_color = glb.kudzu_story_controller.getWireColor();
-        const wire_on_color = 'lightGray'
+        const wire_on_color = 'rgb(250,196,196)'
         if(time_powered < this.wire_time){
             // Determine which color is new, and which old
             const newColor = this.is_on ? wire_on_color : wire_off_color;

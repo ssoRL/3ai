@@ -22,7 +22,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
                 source[0].addTickWatcher(this);
             }
         }
-        this.endTick();
+
         if(this.in_power instanceof Wire) {
             if(this.out_power instanceof Wire) {
                 throw "3AI Error: terminal should NOT be between two wires";
@@ -74,9 +74,8 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     }
 
     public power(on: boolean): void {
-        if(this.in_power instanceof Wire) {
-            //console.log(`power from wire ${on}`);
-        }
+        this.in_connected = this.isConnected(this.in_power);
+        this.out_connected = this.isConnected(this.out_power);
         this.is_on = on;
         this.sendPowerIfConnected();
     }
@@ -96,13 +95,12 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     }
     
     endTick(): void {
-        this.in_connected = this.isConnected(this.in_power);
-        this.out_connected = this.isConnected(this.out_power);
-        this.sendPowerIfConnected();
+        // Trigger a power call here to check connections and send power if warranted
+        this.power(this.is_on);
     }
     
     draw(): void {
-        if(SHOW_HELP_GRAPHICS){
+        if(SHOW_HELP_GRAPHICS) {
             // Only mark terminal locations with the dev flag on
             glb.canvas_controller.setTransform();
             // Draw a red circle if on
@@ -135,6 +133,11 @@ class CogTerminalConnector implements Conductor, TickWatcher {
             glb.ctx.moveTo(this.p.x + 7, this.p.y);
             glb.ctx.arc(this.p.x, this.p.y, 7, 0, 2*Math.PI);
             glb.ctx.stroke();
+        } else {
+            // If this is a wire not connected to a cog wire, draw a spark
+            if(this.in_power instanceof Wire && !this.out_connected && this.is_on) {
+                Spark.draw(this.p);
+            }
         }
         // only draw if wire. Cogs take care of their own drawing
         if(this.out_power instanceof Wire) this.out_power.draw();
