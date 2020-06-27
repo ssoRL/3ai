@@ -153,22 +153,37 @@ a.kudzu-skip {
     padding: 20px;
 }
 
-#orth-next {
+.orth-button {
     position: absolute;
-    top: 101%;
     color: white;
     background-color: black;
-    --width: 70px;
-    width: var(--width);
-    left: calc(50% - var(--width)/2);
     text-align: center;
     padding: 10px 0;
     font-size: 20px;
     border: 0;
+    transition: all 500ms;
 }
 
-#orth-next.repositioned {
+#orth-return {
+    --width: 80px;
+    width: var(--width);
+    left: calc(50% - var(--width)/2);
+    bottom: 90%;
+}
+
+#orth-return.sidelined {
+    bottom: 101%;
+}
+
+#orth-next {
     top: 90%;
+    --width: 70px;
+    width: var(--width);
+    left: calc(50% - var(--width)/2);
+}
+
+#orth-next.sidelined {
+    top: 101%;
 }
 
 .read {

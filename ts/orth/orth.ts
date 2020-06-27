@@ -6,7 +6,7 @@ class OrthStoryController {
     /** A pair of cogs, one the reader will stop, the other they will start */
     private drivers: {learn_stop_cog: Cog, learn_start_cog: Cog};
     /** A number between 0 and 1 that represents the fraction of the story passed */
-    private scroll = 0;
+    private scroll: number;
     // Things to control the glowing centers of the cogs
     /** The glow amount, between 0 and 1 */
     private glow = 0;
@@ -35,6 +35,7 @@ class OrthStoryController {
 
     public async start() {
         // Move the badges and canvas to be in position for the kudzu story
+        this.scroll = 0;
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
@@ -45,12 +46,11 @@ class OrthStoryController {
         kudzu_badge.style.transition = orth_transition;
         orth_badge.style.transition = orth_transition;
         story_container.style.transition = orth_transition;
-        next_button.style.transition = orth_transition;
         // and then execute the transitions
-        kudzu_badge?.classList.add("sidelined");
-        orth_badge?.classList.add("repositioned");
+        kudzu_badge.classList.add("sidelined");
+        orth_badge.classList.remove("story-done")
+        orth_badge.classList.add("repositioned");
         story_container.style.top = "10%";
-        next_button.classList.add("repositioned");
 
         // Set the next button behavior
         next_button.onclick = (async () => {
@@ -60,13 +60,16 @@ class OrthStoryController {
         })
 
         this.tick(TICKS_AT_START);
-        this.tick_learn_stop();
+        this.tickLearnStop();
 
         // Move the story into view
         const easer = glb.tick_easer
         await glb.canvas_controller.animateTranslate(
             0, OrthStoryController.TRANSLATE_DOWN, transition_time, easer.easeTickAnimation.bind(easer)
         );
+
+        next_button.classList.remove('sidelined');
+
 
         // Set the transition on the story container to handle the shorter scroll transitions
         const scroll_transition_time = TICK_EVERY + TICK_LENGTH;
@@ -97,16 +100,14 @@ class OrthStoryController {
         const transition_time = TICK_EVERY*(TICKS_AT_START) + TICK_LENGTH;
         const orth_transition = `all ${transition_time}ms ease-in`;
 
-        // Move the badges and canvas to be in position for the kudzu story
+        // Move the badges and canvas to be in position for the orth story
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
-        const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
         // Add the css transition
         kudzu_badge.style.transition = orth_transition;
         orth_badge.style.transition = orth_transition;
         story_container.style.transition = orth_transition;
-        next_button.style.transition = orth_transition;
 
         // Then execute the ending sequence
         Cookies.set(ORTH_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
@@ -115,6 +116,9 @@ class OrthStoryController {
         await glb.canvas_controller.animateTranslate(
             0, 0, transition_time, glb.tick_easer.easeTickAnimation.bind(glb.tick_easer)
         );
+
+        // Make the story readable again
+        orth_badge.onclick = this.start.bind(this);
     }
 
     /**
@@ -122,26 +126,31 @@ class OrthStoryController {
      * or having a cookie marking orth as read previously
      */
     public end() {
+        // start everything ticking
+        // if the story is already marked as 'done' don't restart the main cogs
+        if(!this.done) this.tickForever();
+        this.tick(TICKS_AT_START);
+
         this.done = true;
 
         // activate all the cogs
         for(const cog of glb.driver_cogs) {
             cog.activate(true);
         }
-        // start everything ticking
-        this.tick();
 
         // Move the badges and canvas to be in position for the kudzu story
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
         const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
+        const re_button = getDocumentElementById("orth-return");
         // and then execute the transitions
         kudzu_badge.classList.remove("sidelined");
         story_container.style.top = "110%";
         orth_badge.classList.remove("repositioned");
         orth_badge.classList.add("story-done");
-        next_button.classList.remove("repositioned");
+        next_button.classList.add("sidelined");
+        re_button.classList.add("sidelined");
     }
 
     private async initializeContent() {
@@ -221,9 +230,9 @@ class OrthStoryController {
 
     /**
      * Starts the cogs ticking
-     * @param n How many times to tick. By default will tick forever
+     * @param n How many times to tick
      */
-    public async tick(n = Number.POSITIVE_INFINITY) {
+    public async tick(n: number) {
         // Base case
         if(n <= 0) return;
         let time = performance.now();
@@ -234,9 +243,13 @@ class OrthStoryController {
                     resolve();
                 },
                 TICK_EVERY);
-        })
-        for(const cog of glb.driver_cogs) {
-            cog.startTick(time);
+        });
+        if(!this.done) {
+            // don't have to tick the main screen cogs after the story is over
+            // they're already ticking forever
+            for(const cog of glb.driver_cogs) {
+                cog.startTick(time);
+            }
         }
         this.drivers.learn_start_cog.startTick(time);
 
@@ -244,30 +257,66 @@ class OrthStoryController {
     }
 
     /**
+     * Starts the main screen cogs turning for good.
+     */
+    public tickForever() {
+        window.setTimeout(
+            () => {
+                this.tickForever();
+            },
+            TICK_EVERY
+        );
+        let time = performance.now();
+        for(const cog of glb.driver_cogs) {
+            cog.startTick(time);
+        }
+    }
+
+    /**
      * This controls the ticking of the cog that teaches the reader to stop cogs
      * It starts out ticking constantly from the start
      */
-    private tick_learn_stop() {
+    private tickLearnStop() {
         let time = performance.now();
-        window.setTimeout(this.tick_learn_stop.bind(this), TICK_EVERY);
+        window.setTimeout(this.tickLearnStop.bind(this), TICK_EVERY);
         this.drivers.learn_stop_cog.startTick(time);
     }
 
-    private async scrollStory() {
+    private async scrollStory(to_end = false) {
         const main_container = getDocumentElementById("container");
         const story_container = getDocumentElementById("orth-story-container");
 
         const story_h = story_container.clientHeight;
         const main_h = main_container.clientHeight;
+        // The percent to buffer the page by
+        const buffer_pct = 0.1;
 
-        // scroll the story down by 70% of the main height
-        const scroll_h = 0.7*main_h;
-        this.scroll = Math.min(1, this.scroll + scroll_h/story_h);
+        const scroll_to = (() => {
+            if(to_end) {
+                // if the user specifically asking to go to the end of the story
+                return 1;
+            } else {
+                // scroll the story down by 70% of the main height
+                const scroll_h = 0.6*main_h;
+                // Otherwise, move the page up a bit, but always fill the page
+                // max scroll is the number needed to leave only a buffer at the bottom
+                const max_scroll = 1 - (1-2*buffer_pct)*main_h/story_h;
+                const added_scroll = this.scroll + scroll_h/story_h;
+                if(max_scroll <= added_scroll) {
+                    // The story has scrolled as far as it can, allow the user to return to the main screen
+                    this.showReturnOption();
+                    return max_scroll;
+                } else {
+                    return added_scroll;
+                }
+            }
+        })();
+        this.scroll = scroll_to;
 
         // The amount inn px needed to put the story in position
         const top_offset = -1*this.scroll*story_h;
-        // Add a 10% buffer to the top of the page
-        const top_buffer = 0.1*main_h;
+        // Add a buffer to the top of the page
+        const top_buffer = buffer_pct*main_h;
 
         // Calculate what position to move the background to
         let background_offset_y = OrthStoryController.TRANSLATE_DOWN + this.scroll*OrthStoryController.FURTHER_TRANSLATE_DOWN;
@@ -278,5 +327,17 @@ class OrthStoryController {
         return glb.canvas_controller.animateTranslate(
             0, background_offset_y, TICK_EVERY + TICK_LENGTH
         );
+    }
+
+    private showReturnOption() {
+        const re_button = getDocumentElementById("orth-return");
+        // attach a click action to the return button
+        re_button.onclick = this.done ?
+            // If the story was already read, just return immediately
+            this.prep_end.bind(this) :
+            // Otherwise, teach the user how cogs work
+            this.scrollStory.bind(this, true);
+        // move the button into view
+        re_button.classList.remove("sidelined");
     }
 }

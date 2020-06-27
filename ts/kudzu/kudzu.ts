@@ -37,6 +37,7 @@ class KudzuStoryController {
         orth_badge.style.transition = kudzu_transition;
         story_section.style.transition = kudzu_transition;
         // Apply the reposition commands
+        kudzu_badge.classList.remove("story-done");
         kudzu_badge.classList.add("repositioned");
         orth_badge.classList.add("sidelined");
         story_section.classList.remove("sidelined");
@@ -73,17 +74,19 @@ class KudzuStoryController {
 
         // set the cookie so that if the reader leaves and comes back
         Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
-        this.end();
         
-        await glb.canvas_controller.animateTranslate(
+        const transform_promise =  glb.canvas_controller.animateTranslate(
             0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
         );
+
+        this.end(transform_promise);
     }
 
     /**
      * Sets the story as if read, either in this session or in a previous one
+     * @param before_power a promise that must resolve before the main wires are powered
      */
-    public end(){
+    public async end(before_power?: Promise<any>){
         this.done = true;
 
         // Get the elements
@@ -97,6 +100,11 @@ class KudzuStoryController {
         orth_badge?.classList.remove("sidelined");
         head_title?.classList.add("story-done");
         story_section?.classList.add("sidelined");
+
+        if(before_power) {
+            // if passed a promise, wait until it resolves to power up the wires
+            await before_power;
+        }
 
         glb.wire0.power(true);
     }
