@@ -21,6 +21,10 @@ class KudzuStoryController {
         }
     }
 
+    public isDone() {
+        return this.done;
+    }
+
     public async start() {
         // Load up the story from its json file
         this.kudzu_story = await this.getStory();

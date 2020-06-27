@@ -47,7 +47,7 @@ class AndGate {
     private static readonly RADIUS = 25;
     /** The terminal will be along the bottom of the AND, half a radius from center */
     public static readonly TERMINAL_OFFSET = AndGate.RADIUS / 2;
-    private static readonly WHITE = {r: 255, g: 255, b: 255};
+    private static readonly ORB_COLOR = {r: 200, g: 200, b: 0};
     private static readonly MAX_GLOW = 45;
 
     constructor(p_: Point, ori_: CardinalOrientation){
@@ -56,7 +56,7 @@ class AndGate {
         this.left_terminal = new AndTerminal(this, true);
         this.right_terminal = new AndTerminal(this, false);
         this.addPoweringWire();
-        this.orb = new GlowingOrb(AndGate.RADIUS/2.4, AndGate.WHITE, false);
+        this.orb = new GlowingOrb(AndGate.RADIUS/2.4, AndGate.ORB_COLOR, false);
     }
 
     /**
@@ -156,7 +156,6 @@ class AndGate {
             }
         })();
         glb.ctx.rotate(rotation);
-        glb.ctx.strokeStyle = this.left_terminal.is_on ? "red" : off_wire_color;
 
         // Draw the AND shape
         glb.ctx.beginPath();
@@ -165,8 +164,13 @@ class AndGate {
         glb.ctx.lineTo(-AndGate.RADIUS, 0);
         // Draw the semi-circle top
         glb.ctx.arc(0, 0, AndGate.RADIUS, Math.PI, 2*Math.PI);
-        glb.ctx.fillStyle = off_wire_color;
-        glb.ctx.fill();
+        if(glb.kudzu_story_controller.isDone()) {
+            glb.ctx.fillStyle = off_wire_color;
+            glb.ctx.fill();
+        } else {
+            glb.ctx.strokeStyle = off_wire_color;
+            glb.ctx.stroke();
+        }
 
         // Then place an orb in the center
         if(!this.is_on) {
