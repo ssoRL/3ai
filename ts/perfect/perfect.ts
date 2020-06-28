@@ -12,8 +12,9 @@ class PerfectStoryController {
     }
 
     private async initializeContent(): Promise<HTMLDivElement> {
-        const story_text = await fetchContent('story/orth.html');
+        const story_text = await fetchContent('story/perfect.html');
         const story = document.createElement('div');
+        story.id = "perfect-story";
         story.innerHTML = story_text;
         return story;
     }
@@ -49,17 +50,29 @@ class PerfectStoryController {
             this.screen.ontransitionend = resolve;
             this.screen.classList.add("white-out");
         });
-        // wait a couple seconds
+        // wait a seconds
         await new Promise((resolve) => {
-            window.setTimeout(resolve, 2000);
+            window.setTimeout(resolve, 1000);
         })
         // Remove glow
         gem.addGlow(0);
         // Add the perfect title card
+        this.badge.onclick = this.startStory.bind(this);
         this.badge.classList.remove('hide');
         await new Promise((resolve) => {
             this.screen.ontransitionend = resolve;
             this.screen.classList.remove("white-out");
         });
+    }
+
+    private async startStory() {
+        // white out again
+        await new Promise((resolve) => {
+            this.screen.ontransitionend = resolve;
+            this.screen.classList.add("white-out");
+        });
+        // create the story div
+        this.story = await this.initializeContent();
+        this.screen.appendChild(this.story);
     }
 }

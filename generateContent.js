@@ -6,6 +6,11 @@ var orthContent = marked(readOrth);
 
 fs.writeFileSync('./story/orth.html', orthContent);
 
+var readPerfect = fs.readFileSync('story/perfect.md', 'utf-8');
+var perfectContent = marked(readPerfect);
+
+fs.writeFileSync('./story/perfect.html', perfectContent);
+
 var readKudzu = fs.readFileSync('story/kudzu.md', 'utf-8');
 // Split the ensuing file by kudzusectionbreak
 var kudzuSections = readKudzu.split('\n\nkudzusectionbreak\n\n');

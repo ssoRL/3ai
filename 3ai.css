@@ -216,10 +216,35 @@ a.kudzu-skip {
     transition: all 3s;
     pointer-events: none;
     z-index: 3;
+    overflow-y: scroll;
 }
 
 #perfect-screen.white-out {
     opacity: 1;
+    pointer-events: auto;
+}
+
+@keyframes fadeIn {
+    from {color:white;}
+    to {color:black;}
+}
+
+#perfect-story {
+    margin: 10%;
+    text-align: justify;
+    animation: fadeIn 2s;
+}
+
+#perfect-story.visible {
+    color: black;
+}
+
+#perfect-story h1 {
+    text-align: center;
+}
+
+#perfect-story em {
+    text-align: center;
 }
 
 .read {
