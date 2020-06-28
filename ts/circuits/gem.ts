@@ -14,7 +14,7 @@ class GemTerminal implements Conductor {
     }
 
     draw(): void {
-        this.parent.draw(this.orientation);
+        this.parent.draw_thru();
     }
 
     getPosition(): Point {
@@ -140,7 +140,7 @@ class Gem implements Clickable {
 
     isClicked(p: Point): boolean {
         // If the gem's not on, it can't be clicked
-        if(!this.is_active) return false;
+        //if(!this.is_active) return false;
         const length_and_unit_vector = getLengthAndUnitVector(p, this.center);
         return length_and_unit_vector[0] < this.size;
     }
@@ -150,26 +150,28 @@ class Gem implements Clickable {
         if(this.wait_to_power_out) this.powerOut();
     }
 
-    draw(orientation: CardinalOrientation) {
-        // Do this so that the gem is not drawn more than once
-        if(orientation === this.draw_from) {
-            // draw a circle and fill it in
+    addGlow(glow: number){
+        this.orb.addGlow(glow);
+    }
 
-            // Draw the glowing orb
-            this.orb.draw(this.center, glb.kudzu_story_controller.colorInOrbs(this.center.x));
-
-            // Draw the wire around it
-            glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
-            glb.ctx.beginPath();
-            glb.ctx.arc(this.center.x, this.center.y, this.size, 0, Math.PI * 2);
-            glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
-            glb.ctx.stroke();
-        }
-
+    /** Draw the wires running out of this gem */
+    draw_thru() {
         for(const t of this.terminals) {
             if(t[1] instanceof Wire) {
                 t[1].draw();
             }
         }
+    }
+
+    draw() {
+        // Draw the wire around the gem
+        glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
+        glb.ctx.beginPath();
+        glb.ctx.arc(this.center.x, this.center.y, this.size, 0, Math.PI * 2);
+        glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
+        glb.ctx.stroke();
+
+        // Draw the glowing orb
+        this.orb.draw(this.center, glb.kudzu_story_controller.colorInOrbs(this.center.x));
     }
 }

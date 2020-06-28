@@ -165,6 +165,8 @@ class KudzuStoryController {
         }
 
         this.wire0.draw();
+        glb.canvas_controller.setTransform();
+        this.kudzu_gem.draw();
     }
 
     private async getStory() {

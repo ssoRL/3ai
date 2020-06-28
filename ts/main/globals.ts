@@ -6,13 +6,19 @@ class ThreeAIGlobals {
     /** The root wire of the main page */
     public wire0: Wire;
 
+    /** The gems that glow */
+    public gems: Gem[];
+
     /** The object used to position the canvas */
     public readonly canvas_controller: CanvasController;
 
     /** Controls elements relating to the kudzu story */
     public kudzu_story_controller: KudzuStoryController;
 
-    /** Controls elements related to the orthoganal machines story */
+    /** Controls elements relating to the perfect story */
+    public perfect_story_controller: PerfectStoryController;
+
+    /** Controls elements related to the orthogonal machines story */
     public orth_story_controller: OrthStoryController;
 
     /** A class used to calculate the easing progress of the cogs on the ticks */

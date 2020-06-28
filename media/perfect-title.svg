@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)"
+   sodipodi:docname="perfect-title.svg"
+   id="svg850"
+   version="1.1"
+   viewBox="0 0 180 50">
+  <metadata
+     id="metadata856">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs854" />
+  <sodipodi:namedview
+     inkscape:current-layer="svg850"
+     inkscape:window-maximized="0"
+     inkscape:window-y="23"
+     inkscape:window-x="0"
+     inkscape:cy="25"
+     inkscape:cx="43.793814"
+     inkscape:zoom="2.6944444"
+     showgrid="false"
+     id="namedview852"
+     inkscape:window-height="673"
+     inkscape:window-width="1267"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     inkscape:document-rotation="0"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <style
+     id="style842">
+    .common { text-anchor: middle; fill: black; }
+    .read { font: italic 15px serif; }
+    .vo { font: bold italic 20px serif; }
+    .perfect  { font: bold 25px sans-serif; }
+  </style>
+  <text
+     style="font-style:italic;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:20px;line-height:normal;font-family:serif"
+     id="text846"
+     class="common vo"
+     y="21"
+     x="90">Vessels of</text>
+  <text
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:25px;line-height:normal;font-family:sans-serif"
+     id="text848"
+     class="common perfect"
+     y="47"
+     x="90">Perfection</text>
+</svg>

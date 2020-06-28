@@ -4,9 +4,12 @@ function init(){
     // Set up the global object
     glb = new ThreeAIGlobals();
     glb.driver_cogs = init_cogs();
-    glb.wire0 = init_wires();
+    const wires_and_gems = init_wires();
+    glb.wire0 = wires_and_gems.wire;
+    glb.gems = wires_and_gems.gems;
     glb.kudzu_story_controller = new KudzuStoryController();
     glb.orth_story_controller = new OrthStoryController();
+    glb.perfect_story_controller = new PerfectStoryController();
     // Keep Progress
     if(Cookies.get(KUDZU_COOKIE_NAME) === STORY_DONE) {
         glb.kudzu_story_controller.end();
@@ -39,6 +42,9 @@ function draw() {
         cog.draw();
     }
     glb.wire0.draw();
+    for(const gem of glb.gems) {
+        gem.draw();
+    }
     window.requestAnimationFrame(draw.bind(this));
 }
 

@@ -186,6 +186,42 @@ a.kudzu-skip {
     top: 101%;
 }
 
+#perfect {
+    position: absolute;
+    --width: 40%;
+    --height: 54%;
+    width: var(--width);
+    height: var(--height);
+    left: calc(50% - var(--width)/2);
+    top: calc(50% - var(--height)/2);
+    z-index: 2;
+    border: 3px solid;
+    background-color: white;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+#perfect.hide {
+    display: none;
+}
+
+#perfect-screen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: white;
+    opacity: 0;
+    transition: all 3s;
+    pointer-events: none;
+    z-index: 3;
+}
+
+#perfect-screen.white-out {
+    opacity: 1;
+}
+
 .read {
     font-style: italic;
     font-size: large;

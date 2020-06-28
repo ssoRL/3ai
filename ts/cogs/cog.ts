@@ -192,13 +192,13 @@ class Cog implements Clickable{
     public draw() {
         // Check if this cog is still ticking or not
         this.tickStatus(glb.time);
-        // First draw its driven cogs
-        for(let i=0; i<this.driven_cogs.length; i++){
-            this.driven_cogs[i].draw();
-        }
+
         // If this cog is not in frame don't draw it
         if(!glb.canvas_controller.boxIsInVerticalFrame(this.y_top, this.height)) {
-            // But first need to draw the wires, since they might run back into frame.
+            // But first need to draw the wires and driven cogs, since they might run back into frame.
+            for(let i=0; i<this.driven_cogs.length; i++){
+                this.driven_cogs[i].draw();
+            }
             this.etched_wire?.draw();
         }
         glb.canvas_controller.setTransform();
@@ -248,8 +248,11 @@ class Cog implements Clickable{
             glb.ctx.restore();
         }
 
-        // Draw its wire if any
+        // Draw its driven cogs and wires
         this.etched_wire?.draw();
+        for(let i=0; i<this.driven_cogs.length; i++){
+            this.driven_cogs[i].draw();
+        }
     }
 
     /**

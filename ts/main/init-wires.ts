@@ -29,6 +29,9 @@ function makeGreenGem(p: Point) : Gem {
 function makeBigGem(p: Point) : Gem {
     const white = {r:255,g:255,b:255};
     const big_gem = new Gem(p, 40, white);
+    big_gem.onclick = () => {
+        glb.perfect_story_controller.start(big_gem);
+    }
     return big_gem;
 }
 
@@ -36,7 +39,7 @@ function makeBigGem(p: Point) : Gem {
  * Sets up the wires and other "powered" components
  * @returns The root wire to power
  */
-function init_wires(): Wire {
+function init_wires(): {wire: Wire, gems: Gem[]} {
     // The coordinates of the boxes so wires can run without collisions
     /** How big the boxes are */
     const box_size = 100;
@@ -60,6 +63,11 @@ function init_wires(): Wire {
     const wire0 = new Wire({x: 1000, y: box_inner_pad}, {x: 1000 - box_outer_pad, y: box_inner_pad});
     const wire1 = wire0.addStraightWireTo("vert", ct_p_1000_4.y - 20);
     const wire2 = wire1.addStraightWireTo("vert", box_outer_pad);
+
+    const returns = {
+        wire: wire0,
+        gems: <Gem[]>[]
+    } 
 
     // TO THE COG LINE
     // Draw a wire to the upper left cogs
@@ -109,6 +117,7 @@ function init_wires(): Wire {
 
     // Wire up the upper right gem
     const upper_right_gem = makeOrangeGem(p(650, 300));
+    returns.gems.push(upper_right_gem);
     center_right_and_gate.getOutWire().addPoweredWiresToGemTerminal(
         upper_right_gem.addTerminal("W"),
         "vert"
@@ -117,6 +126,7 @@ function init_wires(): Wire {
 
     // power to the lower right gem
     const lower_right_gem = makeBlueGem(p(955, 890));
+    returns.gems.push(lower_right_gem);
     const wire_out_of_3000 = RunWire.awayFromCogTerminal(3000, 1).addStraightWireTo("vert", 810);
     wire_out_of_3000.addPoweredWiresToGemTerminal(lower_right_gem.addTerminal("N"), "horz");
 
@@ -145,6 +155,7 @@ function init_wires(): Wire {
 
     // Hook up the left gem
     const left_gem = makeGreenGem(p(ct_p_1003_2.x, 600));
+    returns.gems.push(left_gem);
     low_left_and_gate
         .getOutWire()
         .addPoweredWiresToGemTerminal(left_gem.addTerminal("S"), "vert");
@@ -160,6 +171,7 @@ function init_wires(): Wire {
 
     // Hook up the big gem
     const big_gem = makeBigGem(p(450, 580));
+    returns.gems.push(big_gem);
     upper_left_and_gate
         .getOutWire()
         .addStraightWireFor("horz", 7)
@@ -170,5 +182,5 @@ function init_wires(): Wire {
     // wire_out_of_1003.addPoweredWiresToGemTerminal(big_gem.addTerminal("N"), "vert");
     // low_left_and_gate.getOutWire().addPoweredWiresToGemTerminal(big_gem.addTerminal("S"), "horz");
 
-    return wire0;
+    return returns;
 }

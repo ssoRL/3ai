@@ -8,7 +8,7 @@ const TICK_EVERY = 1000
 const AND_POWER_UP_TIME = 10;
 
 /** How long it keeps providing power after a connection is cut */
-const AND_POWER_DOWN_TIME = 1500;
+const AND_POWER_DOWN_TIME = 1200;
 
 /** The length from the cog wheel to the edge of each tooth in the cog */
 const TOOTH_LENGTH = 22;
