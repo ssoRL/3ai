@@ -8,8 +8,12 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "outFile": "./out/3ai.js",
-        "target": "ES2015"
+        "target": "ES2015",
+        "allowJs": true
     },
+    "files": [
+        "./node_modules/js-cookie/src/js.cookie.js"
+    ],
     "include": [
         "./ts/**/*"
     ],
