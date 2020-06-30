@@ -6,7 +6,6 @@
         "strictNullChecks": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true,
         "outFile": "./out/3ai.js",
         "target": "ES2015",
         "allowJs": true
