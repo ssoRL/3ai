@@ -4,17 +4,16 @@
   "description": "Three Visions of Artificial Apocalypse",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "watch-ts": "tsc --watch --outFile 3ai/3ai.js"
   },
   "author": "highvoltageclouds",
   "license": "ISC",
   "dependencies": {
     "js-cookie": "^2.2.1",
-    "typescript": "^3.8.3"
-  },
-  "devDependencies": {
+    "typescript": "^3.8.3",
     "@types/js-cookie": "^2.2.6",
     "http-server": "^0.12.3",
-    "marked": "^1.0.0"
+    "marked": "^1.0.0",
+    "uglify-js": "^3.10.0"
   }
 }

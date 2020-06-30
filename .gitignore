@@ -1,2 +1,5 @@
 node_modules/**
 out/**
+3ai/3ai.js
+3ai/3ai.js.map
+3ai/story/**
