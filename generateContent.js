@@ -1,6 +1,9 @@
 var marked = require('marked');
 var fs = require('fs');
 
+// Create story directory
+fs.mkdirSync('./3ai/story');
+
 // Generate "The Orthogonal Machines"
 var readOrth = fs.readFileSync('story/orth.md', 'utf-8');
 var orthContent = marked(readOrth);
