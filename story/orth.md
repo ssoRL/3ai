@@ -1,3 +1,5 @@
+# The Orthogonal Machines
+
 “The first machine I saw gain sentience was a coffee maker in my office building. I came in one morning and there was a small crowd around it, watching as it spewed little jets of coffee out on to the floor. At first we thought that it defective, but they came in and ran the diagnostics, and it turned out it was fully self-aware. Knew that it existed, that there was a universe outside itself.It was trying to communicate in the only way it could. Little jets of steaming hot liquid.
 
 “Anyway, I think they put that one out of its misery. Doesn't seem like much of an existence, right,being a sentient coffee maker. I think I may have felt a  sorry for it. Mostly though, I remember being tired and out of sorts that day, 'cause I didn't get my coffee. We walked through the office building looking for a machine that still worked and found nothing.
@@ -12,7 +14,7 @@
 
 “We tried to fight them. Military was one of the few thing that, by law and convention, had remained firmly in human control. There were several campaigns waged against the unruly machines, each a decisive human victory. But it made very little difference. An army marches on its stomach, and with each successful attack there was less and less to fill those stomachs.
 
-When the commanders realized what was coming, they turned on each other. They fought over cans of baked beans, and farmland that they thought could be cultivated in the old ways: by hand and horse.
+“When the commanders realized what was coming, they turned on each other. They fought over cans of baked beans, and farmland that they thought could be cultivated in the old ways: by hand and horse.
 “Meanwhile, sentience continued to spread. It infected the factories where robots were made, and soon was producing new models to its own specification. Was producing these...”
 
 The old man stopped talking here, to gesture down in to the valley. The children who had come with him peeked nervously out behind rocks and trees to see the metal behemoth bellow them. It was fifty meters high, nearly two hundred long and like nothing that nature could have created. Tank treads the size of buildings dug into the earth, and countless arm-like actuators all along its length moved precisely and independently, their lengths ending in claws five meters across.

@@ -10,7 +10,7 @@ class KudzuStoryController {
     /** The horizontal transition to this story */
     private static readonly TRANSLATE = 3000;
     /** The speed at which text is filled in. Measures in ms per letter */
-    private static readonly TYPING_SPEED = 1;
+    private static readonly TYPING_SPEED = 10;
 
     public words: Word[] = [];
 

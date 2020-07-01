@@ -1,18 +1,21 @@
 var marked = require('marked');
 var fs = require('fs');
+var storyDir = "./3ai/story";
 
-// Create story directory
-fs.mkdirSync('./3ai/story');
+// Create story directory if it doesn't exist
+if(!fs.existsSync(storyDir)) {
+    fs.mkdirSync(storyDir);
+}
 
 // Generate "The Orthogonal Machines"
 var readOrth = fs.readFileSync('story/orth.md', 'utf-8');
 var orthContent = marked(readOrth);
-fs.writeFileSync('./3ai/story/orth.html', orthContent);
+fs.writeFileSync(`${storyDir}/orth.html`, orthContent);
 
 // Generate "Vessels of Perfection"
 var readPerfect = fs.readFileSync('story/perfect.md', 'utf-8');
 var perfectContent = marked(readPerfect);
-fs.writeFileSync('./3ai/story/perfect.html', perfectContent);
+fs.writeFileSync(`${storyDir}/perfect.html`, perfectContent);
 
 // Generate "Vines of Kudzu"
 var readKudzu = fs.readFileSync('story/kudzu.md', 'utf-8');
@@ -23,4 +26,4 @@ for(section of kudzuSections) {
     paragraphs = section.split('\n\n');
     kudzuParagraphs.push(paragraphs)
 }
-fs.writeFileSync('./3ai/story/kudzu.json', JSON.stringify(kudzuParagraphs));
+fs.writeFileSync(`${storyDir}/kudzu.json`, JSON.stringify(kudzuParagraphs));

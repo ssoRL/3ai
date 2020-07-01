@@ -50,8 +50,10 @@ html body {
 
 #kudzu-title-text {
     position: absolute;
-    left: 25%;
-    top: 10%;
+    left: 24%;
+    top: 9%;
+    margin: 0;
+    font-size: 8vmin;
 }
 
 #kudzu-title-text.story-done {
@@ -68,7 +70,12 @@ html body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: large;
+}
+
+@media (max-device-width: 600px), (max-device-height: 600px) {
+    #kudzu-story-text {
+        font-size: 30px;
+    }
 }
 
 .kudzu-intro {
@@ -155,8 +162,13 @@ a.kudzu-skip {
 }
 
 #orth-story {
-    font-size: large;
     font-family: serif;
+}
+
+@media (max-device-width: 600px), (max-device-height: 600px) {
+    #orth-story {
+        font-size: 30px;
+    }
 }
 
 .orth-button {
@@ -238,8 +250,13 @@ a.kudzu-skip {
 #perfect-story {
     margin: 10%;
     text-align: justify;
-    font-size: large;
     animation: fadeIn 2s;
+}
+
+@media (max-device-width: 600px), (max-device-height: 600px) {
+    #perfect-story {
+        font-size: 30px;
+    }
 }
 
 #perfect-story.visible {
@@ -252,16 +269,6 @@ a.kudzu-skip {
 
 #perfect-story em {
     text-align: center;
-}
-
-.read {
-    font-style: italic;
-    font-size: large;
-}
-
-.title {
-    font-weight: bold;
-    font-size: larger;
 }
 
 .illustration {
