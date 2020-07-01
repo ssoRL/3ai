@@ -68,6 +68,7 @@ html body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: large;
 }
 
 .kudzu-intro {
@@ -153,6 +154,11 @@ a.kudzu-skip {
     padding: 20px;
 }
 
+#orth-story {
+    font-size: large;
+    font-family: serif;
+}
+
 .orth-button {
     position: absolute;
     color: white;
@@ -232,6 +238,7 @@ a.kudzu-skip {
 #perfect-story {
     margin: 10%;
     text-align: justify;
+    font-size: large;
     animation: fadeIn 2s;
 }
 
