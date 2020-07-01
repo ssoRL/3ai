@@ -67,13 +67,14 @@ class CanvasController {
         })
     }
 
-    public updateScale(){
+    private updateScale(){
         const w = document.documentElement.clientWidth;
         const h = document.documentElement.clientHeight;
         const canvas_size = Math.min(w, h) - 20;
         this.scale = canvas_size / CANVAS_DEFINED_SIZE;
         this.canvas_container.style.width = `${canvas_size}px`;
         this.canvas_container.style.height = `${canvas_size}px`;
+        this.canvas_container.style.margin = `calc((100vh - ${canvas_size}px)/2) auto`;
     }
 
     public setTransform(){

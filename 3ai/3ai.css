@@ -4,7 +4,6 @@ html body {
 }
 
 #container {
-    margin: 10px auto;
     outline: darkslategray 1px solid;
     box-sizing: border-box;
     position: relative;
