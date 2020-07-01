@@ -312,11 +312,7 @@ class KudzuStoryController {
         this.partialShuffle(numbers, 0.5, 6);
 
         const addChar = (index: number, resolve: () => void) => {
-            // Get the next number from the shuffled list of numbers, add it to the list
-            const char_index = numbers[index];
-            const add_char = content.charAt(char_index);
-            chars_added[char_index] = add_char;
-            element.innerText = chars_added.reduce<string>(toStringReducer, "");
+            // First set a timeout for the next char to be added
             window.setTimeout(
                 () => {
                     const next_index = index + 1;
@@ -329,6 +325,11 @@ class KudzuStoryController {
                 },
                 KudzuStoryController.TYPING_SPEED
             );
+            // Get the next number from the shuffled list of numbers, add it to the list
+            const char_index = numbers[index];
+            const add_char = content.charAt(char_index);
+            chars_added[char_index] = add_char;
+            element.innerText = chars_added.reduce<string>(toStringReducer, "");
         }
 
         // Return the promise that will resolve once filling in the string
