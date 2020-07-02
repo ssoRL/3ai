@@ -1,6 +1,6 @@
 # Vessels of Perfection
 
-*To err is human;*
+<p class="quote">To err is human;</p>
 
 First we tamed fire, to control our present. That our weak eyes could see in the dark. That our naked bodies could live in the cold. That our voracious appetites could feed on the game that should have gone to the lions and the wolves.
 
@@ -8,7 +8,7 @@ Then we invented language, invented writing, to claim the past. With these, we b
 
 And so we developed the maths and sciences. Made models that showed us a fuzzy image of the future, of what we would reap from any of today's hypothetical sowing. And so, bit by bit, we began to get a handle on the future.
 
-The Algorithm was a natural continuation of this progression. Just the next small step in the path we'd been walking for tens of millennium. The inevitable outcome of the erring in our nature, and our implacable drive to excise it completely. To access The Algorithm, unobtrusive devices were implanted via a simple surgery near the top of the spine. From that moment, our brain were connected directly to a catalog of all the knowledge of humanity. Nevermore did one wonder: the facts simply fell into place before you. The barriers of language and education and skill fell away. And we saw that it was good.
+The Algorithm was a natural continuation of this progression. Just the next small step in the path we'd been walking for tens of millennium. The inevitable outcome of the erring in our nature, and our implacable drive to excise it completely. To access The Algorithm, unobtrusive devices were implanted via a simple surgery near the top of the spine. From that moment, our brains were connected directly to a catalog of all the knowledge of humanity. Nevermore did one wonder: the facts simply fell into place before you. The barriers of language and education and skill fell away. And we saw that it was good.
 
 But not perfect. And so The Algorithm was updated. Now the implant not only gave any information about the past, but it also struck out ahead, predicting the probable shape of the future. One had only to think of an action and the implant would show its likely outcomes, its rewards and dangers, calculated by the best models available. It lighted our paths forward as they had never been lit before. And we saw it was good.
 
@@ -22,11 +22,11 @@ The walls closed in slowly, so slowly that at first I didn't notice. Here and th
 
 And so I followed it. The Algorithm proved true. It brought me love and companionship. It rewarded my labors and won me the esteem of my peers. But it felt wrong. Hollow.
 
-Inside me, my mind was coming apart. Certainly I found things to keep me busy, but deep inside, it screamed out in boredom. It had been crafted by billions of years of evolution to *think* to *control*. And now that was taken away, and our brains, our decisive organs, had nothing left to decide.
+Inside me, my mind was coming apart. Certainly I found things to keep me busy, but deep inside, it screamed out in boredom. It had been crafted by billions of years of evolution to *think*, to *control*. And now that was taken away, and our brains, our decisive organs, had nothing left to decide.
 
-My life was perfect, but it wasn't my life. I hadn't built it, thought it, wanted it.
+My life was perfect, but it wasn't my life. I hadn't built it, thought it, wanted it. So I turned off the implant. It was as simple as pressing the small metal device at the base of my skull, and the stream of directions ended. I was cut off from the algorithm, left for this first time in a decade completely on my own.
 
-So I turned my back on perfect and walked the other way.
+I turned my back on perfect and walked the other way.
 
 <div class="perfect-break"></div>
 
@@ -110,7 +110,7 @@ By the end of that day, I was no longer sneering.
 
 <div class="perfect-break"></div>
 
-The final day, came my family. People who had loved me unconditionally through my whole life arrived and, one by one, cut me to pieces.
+The final day, came my family. People who had loved me unconditionally my whole life arrived and, one by one, cut me to pieces.
 
 Cousins told me how they'd only ever put up with me because their parents had make them. Aunts and uncles that they had long harbored resentment for the cards I'd never replied to; for the visits I'd postponed and canceled.
 
@@ -138,14 +138,14 @@ She nodded.
 
 "Because you needed to see. See yourself for what you truly are. See that humanity is not flawed; humanity is flaw."
 
-"Then what's the point? Why not just end is all?"
+"Then what's the point? Why not just end it all?"
 
 She smiled, "There was no point.  Before the implants, before The Algorithm. But now there is. It has given us a true path to walk. Open yourself to it. Let yourself become a vessel of perfection."
 
 "Yes," I said, "Please! That is what I want!" And as I said the words, I knew them to be true.
 
-She untied the bonds from my feet, then my hands. Finally, she ran her hand thru my hair, and I felt my implant come on, saw my path unroll once again, as shining, as beautiful as the first day I'd seen it stretching before me.
+She untied the bonds from my feet, then my hands. Finally, she ran her hand thru my hair, and I felt the light pressure of her fingers at the base of my skull. Instantly, my implant came back on. I saw my path unroll once again. As shining, as beautiful, as the first day I'd seen it stretching before me.
 
 Her arms wrapped me in a sweet embrace and I felt tears running down my face. But they were tears of relief. Tears of joy. They had taken me back. She had taken me back. It had taken me back. Praise be!
 
-*; to forgive, divine.*
+<p class="quote">; to forgive, divine.</p>

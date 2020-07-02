@@ -161,7 +161,7 @@ kudzusectionbreak
 
 But things fell apart quickly after that. At first we thought what we needed to fear was a government crackdown. There was talk of passing a law that would require any site with automatically written stories to show disclaimers. Europe looked like they were going to move in that direction in a matter of months.
 
-But what really killed us was the competition. Suddenly everyone realized that shit-bots were possible, and profitable. What had once been a wide open cash grab for us turned into a very crowded field, with us up against some of the biggest tech and media companies on the planet.
+hat really killed us though, was the competition. Suddenly everyone realized that shit-bots were possible, and profitable. What had once been a wide open cash grab for us turned into a very crowded field, with us up against some of the biggest tech and media companies on the planet.
 
 It didn't end well. Well funded corporations full of PhDs quickly blew past us technically and expanded from shitty click-baity articles to nearly all forms of written media, and then, with almost terrifying velocity, into video.
 

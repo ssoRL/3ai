@@ -267,8 +267,9 @@ a.kudzu-skip {
     text-align: center;
 }
 
-#perfect-story em {
+#perfect-story .quote {
     text-align: center;
+    font-style: italic;
 }
 
 .illustration {
