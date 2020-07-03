@@ -2,27 +2,27 @@
 function makeOrangeGem(p: Point) : Gem {
     const orange = {r:255,g:91,b:0};
     const orange_gem = new Gem(p, 20, orange);
-    // orange_gem.onclick = () => {
-    //     new Popup("<p>Default message</p>");
-    // }
+    orange_gem.onclick = () => {
+        new Popup("popups/wheels-of-progress.html");
+    }
     return orange_gem;
 }
 
 function makeBlueGem(p: Point) : Gem {
     const blue = {r:135,g:206,b:250};
     const blue_gem = new Gem(p, 20, blue);
-    // orange_gem.onclick = () => {
-    //     new Popup("<p>Default message</p>");
-    // }
+    blue_gem.onclick = () => {
+        new Popup("popups/tangle-of-wires.html");
+    }
     return blue_gem;
 }
 
 function makeGreenGem(p: Point) : Gem {
     const green = {r:0,g:255,b:127};
     const green_gem = new Gem(p, 20, green);
-    // orange_gem.onclick = () => {
-    //     new Popup("<p>Default message</p>");
-    // }
+    green_gem.onclick = () => {
+        new Popup("popups/promise-of-perfection.html");
+    }
     return green_gem;
 }
 

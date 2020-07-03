@@ -304,4 +304,17 @@ a.kudzu-skip {
     margin: auto;
     padding: 20px;
     border-radius: 5px;
+    max-width: 70%;
+}
+
+.popup-flavor {
+    font-style: italic;
+    text-align: center;
+}
+
+.popup-break {
+    width: 40%;
+    height: 0;
+    border: 1px solid black;
+    margin: 30px auto;
 }
