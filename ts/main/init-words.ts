@@ -18,8 +18,8 @@ function init_words() {
     glb.kudzu_story_controller.words.push(new Word(
         "of how the", p(280, 250), "", 25, "sans-serif"
     ));
-    Cog.getCogBySerialNumber(2002).addWord(new Word(
-        "Robots", p(80, -90), "bold", 30, "monospace", "right"
+    glb.kudzu_story_controller.words.push(new Word(
+        "Robots", p(330, 290), "bold", 35, "monospace"
     ))
     glb.kudzu_story_controller.words.push(new Word(
         "WIN", p(390, 350), "bold", 50, "math"
@@ -35,7 +35,7 @@ function init_words() {
     ));
     const cog_of_blood_spilled = Cog.getCogBySerialNumber(4000);
     cog_of_blood_spilled.addWord(new Word(
-        "of", p(0, -115), "", 25, "monospace", "center"
+        "of", p(0, -115), "bold", 30, undefined, "center"
     ));
     cog_of_blood_spilled.addWord(new Word(
         "Blood", p(0, -55), "bold italic", 30, undefined, "center"
@@ -43,6 +43,16 @@ function init_words() {
     cog_of_blood_spilled.addWord(new Word(
         "SPILLED", p(0, -25), "bold", 35, undefined, "center"
     ));
+
+    Cog.getCogBySerialNumber(3000).addWord(new Word(
+        "by", p(23, -15), "italic"
+    ))
+    Cog.getCogBySerialNumber(3001).addWord(new Word(
+        "Skyler", p(-110, 60), "bold italic"
+    ))
+    Cog.getCogBySerialNumber(3001).addWord(new Word(
+        "Olson", p(-90, 90), "bold italic"
+    ))
 }
 
 function init_orth_words() {
@@ -64,4 +74,6 @@ function init_orth_words() {
         "click on the glowing red center",
         p(325, 2300), "", 25, "monospace"
     ));
+
+
 }
