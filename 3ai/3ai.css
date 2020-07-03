@@ -272,6 +272,14 @@ a.kudzu-skip {
     font-style: italic;
 }
 
+#perfect-story .perfect-break {
+    height: 30px;
+    background-image: url("./media/perfect-break.svg");
+    background-size: 150px auto;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
 .illustration {
     margin: 5%;
     width: 90%;
