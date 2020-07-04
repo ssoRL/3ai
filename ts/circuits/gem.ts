@@ -140,7 +140,7 @@ class Gem implements Clickable {
 
     isClicked(p: Point): boolean {
         // If the gem's not on, it can't be clicked
-        //if(!this.is_active) return false;
+        if(!this.is_active) return false;
         const length_and_unit_vector = getLengthAndUnitVector(p, this.center);
         return length_and_unit_vector[0] < this.size;
     }
