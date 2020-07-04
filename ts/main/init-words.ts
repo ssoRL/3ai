@@ -55,25 +55,34 @@ function init_words() {
     ))
 }
 
-function init_orth_words() {
+/** Instructions for stopping a spinning cog */
+function init_orth_words_stopping() {
     // The words that give the instructions for the starting and stopping of cogs
     glb.kudzu_story_controller.words.push(new Word(
-        "To stop a cog from turning:",
+        "If a cog is spinning:",
         p(300, 1875), "", 25, "monospace"
     ));
     glb.kudzu_story_controller.words.push(new Word(
-        "click on the glowing green center",
+        "You can stop it by clicking",
         p(325, 1900), "", 25, "monospace"
     ));
-
     glb.kudzu_story_controller.words.push(new Word(
-        "To start a cog spinning:",
+        "on the green center",
+        p(350, 1925), "", 25, "monospace"
+    ));
+}
+
+function init_orth_words_starting() {
+    glb.kudzu_story_controller.words.push(new Word(
+        "If a cog is stopped:",
         p(300, 2275), "", 25, "monospace"
     ));
     glb.kudzu_story_controller.words.push(new Word(
-        "click on the glowing red center",
+        "You can start it by clicking",
         p(325, 2300), "", 25, "monospace"
     ));
-
-
+    glb.kudzu_story_controller.words.push(new Word(
+        "on the red center",
+        p(350, 2325), "", 25, "monospace"
+    ));
 }

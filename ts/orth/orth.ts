@@ -81,10 +81,11 @@ class OrthStoryController {
         // Activate the learn stop cog
         this.drivers.learn_stop_cog.activate(true);
 
-        init_orth_words();
+        init_orth_words_stopping();
 
         // Add the actions that will happen when the cog is clicked
         this.drivers.learn_stop_cog.onClick = () => {
+            init_orth_words_starting();
             this.drivers.learn_start_cog.activate(false);
         }
 
@@ -294,7 +295,7 @@ class OrthStoryController {
         const scroll_to = (() => {
             if(to_end) {
                 // if the user specifically asking to go to the end of the story
-                return 1;
+                return { scroll: 1, addReturn: false };
             } else {
                 // scroll the story down by 70% of the main height
                 const scroll_h = 0.6*main_h;
@@ -302,16 +303,13 @@ class OrthStoryController {
                 // max scroll is the number needed to leave only a buffer at the bottom
                 const max_scroll = 1 - (1-2*buffer_pct)*main_h/story_h;
                 const added_scroll = this.scroll + scroll_h/story_h;
-                if(max_scroll <= added_scroll) {
-                    // The story has scrolled as far as it can, allow the user to return to the main screen
-                    this.showReturnOption();
-                    return max_scroll;
-                } else {
-                    return added_scroll;
-                }
+                return {
+                    scroll: Math.min(added_scroll, max_scroll),
+                    addReturn: added_scroll >= max_scroll
+                };
             }
         })();
-        this.scroll = scroll_to;
+        this.scroll = scroll_to.scroll;
 
         // The amount inn px needed to put the story in position
         const top_offset = -1*this.scroll*story_h;
@@ -324,9 +322,13 @@ class OrthStoryController {
         // Then do the moving
         this.tick(2);
         story_container.style.top = `${top_offset + top_buffer}px`
-        return glb.canvas_controller.animateTranslate(
+        await glb.canvas_controller.animateTranslate(
             0, background_offset_y, TICK_EVERY + TICK_LENGTH
         );
+
+        if(scroll_to.addReturn) {
+            this.showReturnOption();
+        }
     }
 
     private showReturnOption() {
