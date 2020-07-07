@@ -36,7 +36,7 @@ class GhostTypist {
             this.shuffled_numbers[i] = i;
         }
         // then shuffle it 
-        this.partialShuffle(this.shuffled_numbers, 0.5, 6);
+        this.partialShuffle(this.shuffled_numbers, 0.5, 20);
 
         // start the loop of adding letter
         this.addLetter();

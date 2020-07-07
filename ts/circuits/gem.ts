@@ -131,10 +131,10 @@ class Gem implements Clickable {
         }
     }
 
-    private powerOut() {
+    private powerOut(force_power = false) {
         // power up out wires
         for(const t of this.terminals) {
-            if(t[1] instanceof Wire) t[1].power(this.is_on);
+            if(t[1] instanceof Wire) t[1].power(this.is_on || force_power);
         }
     }
 
@@ -147,7 +147,11 @@ class Gem implements Clickable {
 
     click(): void {
         this.onclick();
-        if(this.wait_to_power_out) this.powerOut();
+    }
+
+    public powerThru(force_power = false) {
+        this.wait_to_power_out = false;
+        if(this.is_on || force_power) this.powerOut(force_power);
     }
 
     addGlow(glow: number){

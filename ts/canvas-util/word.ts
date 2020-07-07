@@ -6,6 +6,9 @@ class Word {
     private position: Point;
     private align: CanvasTextAlign;
 
+    private ghost: GhostTypist | null = null;
+    private resolve_typing: () => void;
+
     constructor(
         words_: string,
         position_: Point,
@@ -24,9 +27,14 @@ class Word {
     }
 
     draw() {
+        const current_string = this.ghost ? this.ghost.getCurrentString() : this.words;
         glb.ctx.font = `${this.style} ${this.size}px ${this.font}`;
         glb.ctx.textAlign = this.align;
         glb.ctx.textBaseline = "middle";
-        glb.ctx.fillText(this.words, this.position.x, this.position.y);
+        glb.ctx.fillText(current_string, this.position.x, this.position.y);
+    }
+
+    addGhostTypist(speed: number, per_iteration: number) {
+        this.ghost = new GhostTypist(this.words, speed, per_iteration);
     }
 } 

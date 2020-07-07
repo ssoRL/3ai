@@ -9,15 +9,12 @@ class KudzuStoryController {
     /** The horizontal transition to this story */
     private static readonly TRANSLATE = 3000;
     /** The speed at which text is filled in. Measures in ms per letter */
-    private static readonly TYPING_SPEED = 50;
+    private static readonly TYPING_SPEED = 100;
 
     public words: Word[] = [];
 
     constructor() {
         this.tutorial = new KudzuTutorial;
-        this.tutorial.big_gem.onclick = () => {
-            this.prep_end();
-        }
     }
 
     public isDone() {
@@ -49,9 +46,13 @@ class KudzuStoryController {
         );
 
         // After the movement is complete, fill in the title
-        const head_title = getDocumentElementById("kudzu-title-text");
-        if(!head_title) throw "3AI Error: There is no kudzu-title-text element";
-        await this.fillInString(head_title, "Vines of Kudzu", 1);
+        const title_string = "Vines of Kudzu";
+        const title = new Word(title_string, p(3215, 125), "", 100, "sans-serif");
+        title.addGhostTypist(KudzuStoryController.TYPING_SPEED, 1);
+        this.words.push(title);
+        await new Promise((resolve) => {
+            window.setTimeout(resolve, title_string.length * KudzuStoryController.TYPING_SPEED)
+        });
 
         await this.fillInStory(0);
     }
@@ -59,7 +60,7 @@ class KudzuStoryController {
     /**
      * Prepares to return to the main screen
      */
-    private async prep_end() {
+    async prep_end() {
         // Define the transition
         const kudzu_transition = `transition: all ${KudzuStoryController.SHIFT_TO_KUDZU_TIME}ms`;
 
@@ -225,7 +226,7 @@ class KudzuStoryController {
             const html_story_paragraph = document.createElement("div");
             html_story_paragraph.classList.add("kudzu-story-paragraph");
             html_story_section.appendChild(html_story_paragraph);
-            await this.fillInString(html_story_paragraph, paragraph, 10);
+            await this.fillInString(html_story_paragraph, paragraph, 15);
         }
 
         // Add the flexible center
@@ -290,20 +291,11 @@ class KudzuStoryController {
 
     private end_of_story() {
         this.done = true;
-        this.tutorial.wire.power(true);
 
         const story_section = getDocumentElementById("kudzu-story-text");
-        if(!story_section) throw "3AI Error: There is no kudzu-story-text element";
         story_section.innerHTML = "";
-
-        const html_story_section = document.createElement("div");
-        html_story_section.classList.add("kudzu-story-section");
-        story_section.appendChild(html_story_section);
-
-        const html_final_message_div = document.createElement("div");
-        html_final_message_div.classList.add("kudzu-story-paragraph");
-        html_story_section.appendChild(html_final_message_div);
-
-        this.fillInString(html_final_message_div, `You have completed "Vines of Kudzu". Wires will now be powered. Click on glowing terminal to return to the main page.`, 3)
+        story_section.classList.add("sidelined");
+        
+        this.tutorial.start();
     }
 }

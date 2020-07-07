@@ -7,13 +7,15 @@ class KudzuTutorial {
     public readonly cogs_y = this.in_y + 3*this.step;
     public readonly out_y = this.in_y + 4*this.step;
 
+    private readonly typing_speed = 20;
+
     // objects
-    wire: Wire;
-    cog: Cog;
-    click_gem: Gem;
-    conjunction_gem: Gem;
-    cog_gem: Gem;
-    big_gem: Gem;
+    private wire: Wire;
+    private cog: Cog;
+    private click_gem: Gem;
+    private conjunction_gem: Gem;
+    private cog_gem: Gem;
+    private big_gem: Gem;
 
     // state
     is_initialized = false;
@@ -21,7 +23,7 @@ class KudzuTutorial {
 
     constructor() {
         // create the cogs
-        this.cog = new Cog(4150, 830, 12, SpinDirection.CLOCKWISE, Math.PI/12, 4500);
+        this.cog = new Cog(4150, 830, 12, SpinDirection.COUNTER_CLOCKWISE, Math.PI/12, 4500);
         const wired_cog = this.cog.addDrivenCog(6, 6);
         RunWire.addWireToCog(4501, ct(2), ct(4));
 
@@ -84,7 +86,7 @@ class KudzuTutorial {
         lower_and_gate
             .getOutWire()
             .addPoweredWiresToGemTerminal(this.big_gem.getTerminal("E"), "horz");
-            
+
         // wire run back to the main screen
         this.big_gem
             .getWireOut("W")
@@ -93,6 +95,81 @@ class KudzuTutorial {
             .addStraightWireTo('horz', 1000);
 
         this.is_initialized = true;
+    }
+
+    public start() {
+        this.wire.power(true);
+
+        this.click_gem.onclick = () => {
+            this.click_gem.powerThru();
+            this.gemClicked();
+        }
+
+        const first_y = (this.in_y + this.click_gem_y)/2;
+        const first_direction = new Word(
+            "Nodes can be clicked once power reaches them",
+            p(3500, first_y), "", 30, "sans-serif", "center"
+        );
+        first_direction.addGhostTypist(this.typing_speed, 1);
+        glb.kudzu_story_controller.words.push(first_direction);
+    }
+
+    private gemClicked() {
+        this.conjunction_gem.onclick = () => {
+            this.conjunction_gem.powerThru();
+            this.conjunctionPowered();
+        }
+
+        const second_y = (this.click_gem_y + this.conjunction_y)/2;
+        const second_direction = new Word(
+            "A conjunction requires two lines of power in",
+            p(3500, second_y), "", 30, "sans-serif", "center"
+        );
+        second_direction.addGhostTypist(this.typing_speed, 1);
+        glb.kudzu_story_controller.words.push(second_direction);
+    }
+
+    private conjunctionPowered() {
+        this.cog_gem.onclick = () => {
+            this.cog_gem.powerThru();
+            this.cog.activate(true);
+            this.tick();
+            this.prepEnd();
+        }
+
+        const third_y = (this.conjunction_y + this.cogs_y)/2;
+        const third_direction = new Word(
+            "Power passes over cogs in the right position",
+            p(3500, third_y), "", 30, "sans-serif", "center"
+        );
+        third_direction.addGhostTypist(this.typing_speed, 1);
+        glb.kudzu_story_controller.words.push(third_direction);
+    }
+
+    private prepEnd() {
+        this.big_gem.onclick = () => {
+            new Popup(
+                'popups/story-at.html',
+                () => {
+                    this.big_gem.powerThru();
+                    glb.kudzu_story_controller.prep_end();
+                }    
+            )
+        }
+
+        const last_y = (this.cogs_y + this.out_y)/2;
+        const last_direction = new Word(
+            "Some nodes have extra content",
+            p(3500, last_y), "", 30, "sans-serif", "center"
+        );
+        last_direction.addGhostTypist(this.typing_speed, 1);
+        glb.kudzu_story_controller.words.push(last_direction);
+
+    }
+
+    private tick() {
+        this.cog.startTick(performance.now());
+        window.setTimeout(this.tick.bind(this), TICK_EVERY);
     }
 
     draw() {
