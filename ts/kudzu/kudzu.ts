@@ -9,7 +9,7 @@ class KudzuStoryController {
     /** The horizontal transition to this story */
     private static readonly TRANSLATE = 3000;
     /** The speed at which text is filled in. Measures in ms per letter */
-    private static readonly TYPING_SPEED = 10;
+    private static readonly TYPING_SPEED = 50;
 
     public words: Word[] = [];
 
@@ -51,7 +51,7 @@ class KudzuStoryController {
         // After the movement is complete, fill in the title
         const head_title = getDocumentElementById("kudzu-title-text");
         if(!head_title) throw "3AI Error: There is no kudzu-title-text element";
-        await this.fillInString(head_title, "Vines of Kudzu");
+        await this.fillInString(head_title, "Vines of Kudzu", 1);
 
         await this.fillInStory(0);
     }
@@ -205,28 +205,6 @@ class KudzuStoryController {
         return this.done || x > CANVAS_DEFINED_SIZE
     }
 
-    /**
-     * Shuffles an array, but biased towards shuffling the end over the start
-     * @param a The array to shuffle
-     */
-    private partialShuffle (a: any[], shuffle_chance: number, max_shift: number) {
-        const l = a.length;
-        for (let i = 0; i < l; i++) {
-            // Randomly skip this index shuffle_chance of the time
-            if(Math.random() > shuffle_chance) {
-                continue;
-            } else {
-                // j is some number between i and l - 1
-                const shift = Math.min(Math.floor(Math.random() * (l - 1 - i)), max_shift);
-                const j = i + shift;
-                // swap position of i and j
-                const temp = a[i];
-                a[i] = a[j];
-                a[j] = temp;
-            }
-        }
-    }
-
     private async fillInStory(next_section: number) {
         // get the story section and then clear out the previous text
         const story_section = getDocumentElementById("kudzu-story-text");
@@ -247,7 +225,7 @@ class KudzuStoryController {
             const html_story_paragraph = document.createElement("div");
             html_story_paragraph.classList.add("kudzu-story-paragraph");
             html_story_section.appendChild(html_story_paragraph);
-            await this.fillInString(html_story_paragraph, paragraph);
+            await this.fillInString(html_story_paragraph, paragraph, 10);
         }
 
         // Add the flexible center
@@ -285,53 +263,28 @@ class KudzuStoryController {
      * @param element 
      * @param content 
      */
-    private async fillInString(element: HTMLElement, content: string): Promise<void> {
-        // This is an array that holds the characters that have been "typed"
-        const chars_added: (string | null)[] = new Array(content.length);
-        chars_added.fill(null);
-        // A reducer function that converts the chars added array into a string
-        const toStringReducer = (accumulator: string, char: (string | null)) => {
-            if(char !== null) {
-                return accumulator + char;
-                //return accumulator + 1;
-            } else {
-                return accumulator;
-            }
-        }
-
-        // Define a list of ordered numbers
-        // Eg if the string is of length three numbers = [0, 1, 2]
-        const numbers: number[] = new Array(content.length);
-        for (let i=0; i<numbers.length; i++) {
-            numbers[i] = i;
-        }
-        // then shuffle it 
-        this.partialShuffle(numbers, 0.5, 6);
-
-        const addChar = (index: number, resolve: () => void) => {
-            // First set a timeout for the next char to be added
-            window.setTimeout(
-                () => {
-                    const next_index = index + 1;
-                    if(next_index < content.length) {
-                        addChar(next_index, resolve);
-                    } else {
-                        // No more chars to add, resolve
-                        resolve();
-                    }
-                },
-                KudzuStoryController.TYPING_SPEED
-            );
-            // Get the next number from the shuffled list of numbers, add it to the list
-            const char_index = numbers[index];
-            const add_char = content.charAt(char_index);
-            chars_added[char_index] = add_char;
-            element.innerText = chars_added.reduce<string>(toStringReducer, "");
-        }
+    private async fillInString(element: HTMLElement, content: string, per: number): Promise<void> {
+        // create a ghost typist to add to the string
+        const ghost_typist = new GhostTypist(content, KudzuStoryController.TYPING_SPEED, per);
 
         // Return the promise that will resolve once filling in the string
         return new Promise((resolve) => {
-            addChar(0, resolve);
+            const fill = () => {
+                if(!ghost_typist.isDone()) {
+                    // not done, add the partial string
+                    element.innerText = ghost_typist.getCurrentString();
+                    // then set up a event for the next animation
+                    window.requestAnimationFrame(fill);
+
+                } else {
+                    // done, add the full string and end this loop
+                    element.innerText = content;
+                    resolve();
+                }
+            }
+            
+            // start filling
+            fill();
         });
     }
 
@@ -351,6 +304,6 @@ class KudzuStoryController {
         html_final_message_div.classList.add("kudzu-story-paragraph");
         html_story_section.appendChild(html_final_message_div);
 
-        this.fillInString(html_final_message_div, `You have completed "Vines of Kudzu". Wires will now be powered. Click on glowing terminal to return to the main page.`)
+        this.fillInString(html_final_message_div, `You have completed "Vines of Kudzu". Wires will now be powered. Click on glowing terminal to return to the main page.`, 3)
     }
 }
