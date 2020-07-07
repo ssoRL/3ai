@@ -1,7 +1,6 @@
 class KudzuStoryController {
     private done = false;
-    private wire0: Wire;
-    private kudzu_gem: Gem;
+    private tutorial: KudzuTutorial;
 
     private kudzu_story: string[][];
 
@@ -15,8 +14,8 @@ class KudzuStoryController {
     public words: Word[] = [];
 
     constructor() {
-        [this.wire0, this.kudzu_gem] = init_kudzu_wires();
-        this.kudzu_gem.onclick = () => {
+        this.tutorial = new KudzuTutorial;
+        this.tutorial.big_gem.onclick = () => {
             this.prep_end();
         }
     }
@@ -164,9 +163,7 @@ class KudzuStoryController {
             word.draw();
         }
 
-        this.wire0.draw();
-        glb.canvas_controller.setTransform();
-        this.kudzu_gem.draw();
+        this.tutorial.draw();
     }
 
     private async getStory() {
@@ -340,7 +337,7 @@ class KudzuStoryController {
 
     private end_of_story() {
         this.done = true;
-        this.wire0.power(true);
+        this.tutorial.wire.power(true);
 
         const story_section = getDocumentElementById("kudzu-story-text");
         if(!story_section) throw "3AI Error: There is no kudzu-story-text element";

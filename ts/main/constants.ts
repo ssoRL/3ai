@@ -16,6 +16,9 @@ const TOOTH_LENGTH = 22;
 /** The amount of space between the teeth at the pitch circle */
 const GAP_WIDTH = 40;
 
+/** The color to draw wires that are on */
+const WIRE_ON_COLOR = 'rgb(250,196,196)';
+
 /** Show graphics that are helpful for debugging, but not in final */
 const SHOW_HELP_GRAPHICS = false;
 

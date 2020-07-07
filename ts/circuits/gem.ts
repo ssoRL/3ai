@@ -71,7 +71,7 @@ class Gem implements Clickable {
      * Adds a new terminal at the specified gem point
      * @param orientation 
      */
-    addTerminal(orientation: CardinalOrientation): GemTerminal {
+    getTerminal(orientation: CardinalOrientation): GemTerminal {
         if(this.terminals.get(orientation)){
             throw "3AI Error: cannot add the same terminal twice"
         }

@@ -127,11 +127,10 @@ class Wire implements Conductor {
         glb.canvas_controller.setTransform();
         const time_powered = glb.time - this.time_switched;
         const wire_off_color = glb.kudzu_story_controller.getWireColor();
-        const wire_on_color = 'rgb(250,196,196)'
         if(time_powered < this.wire_time){
             // Determine which color is new, and which old
-            const newColor = this.is_on ? wire_on_color : wire_off_color;
-            const oldColor = !this.is_on ? wire_on_color : wire_off_color;
+            const newColor = this.is_on ? WIRE_ON_COLOR : wire_off_color;
+            const oldColor = !this.is_on ? WIRE_ON_COLOR : wire_off_color;
             // If the wire is in the middle of being powered...
             const p_half: Point = {
                 x: this.p0.x + this.vec.x * time_powered * SOL,
@@ -153,7 +152,7 @@ class Wire implements Conductor {
             Spark.draw(p_half);
         } else {
             // If the wire is full on or off, draw with only one color
-            let color = this.is_on ? wire_on_color : wire_off_color;
+            let color = this.is_on ? WIRE_ON_COLOR : wire_off_color;
             glb.ctx.strokeStyle = color;
             glb.ctx.beginPath();
             glb.ctx.moveTo(this.p0.x, this.p0.y);

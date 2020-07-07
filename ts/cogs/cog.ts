@@ -111,6 +111,8 @@ class Cog implements Clickable{
         }
     }
 
+    public getCenter = () => p(this.x, this.y);
+
     /** Sets terminal connections to all this cog's neighbors */
     public setOutgoingConnections() {
         if(this.driver instanceof Cog){

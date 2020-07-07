@@ -60,12 +60,14 @@ html body {
     left: 225%;
 }
 
-#kudzu-story-text {
-    position: absolute;
-    left: 5%;
-    top: 25%;
-    width: 85%;
-    height: 60%;
+#kudzu-story-text {position: absolute;
+    left: 6%;
+    top: 26%;
+    width: 84%;
+    height: 58%;
+    border: 2px rgb(70,70,70) outset;
+    box-sizing: border-box;
+    background-color: rgba(50, 50, 50, .8);
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
@@ -186,22 +188,22 @@ a.kudzu-skip {
     --width: 80px;
     width: var(--width);
     left: calc(50% - var(--width)/2);
-    bottom: 90%;
+    top: 5%;
 }
 
 #orth-return.sidelined {
-    bottom: 101%;
+    top: -100%;
 }
 
 #orth-next {
-    top: 90%;
+    bottom: 5%;
     --width: 70px;
     width: var(--width);
     left: calc(50% - var(--width)/2);
 }
 
 #orth-next.sidelined {
-    top: 101%;
+    bottom: -100%;
 }
 
 #perfect {

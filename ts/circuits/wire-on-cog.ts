@@ -133,11 +133,10 @@ class WireOnCog {
     draw(): void {
         const time_powered = glb.time - this.time_on;
         const total_wire_time = this.en_wire_time + this.arc_wire_time + this.ex_wire_time;
-        const wire_off_color = glb.kudzu_story_controller.getWireColor();
-        const wire_on_color = 'lightGray';
+        const wire_off_color = glb.kudzu_story_controller.getWireColor(this.cog.getCenter().x);
         if(!this.is_on || time_powered > total_wire_time) {
             // if the wire is off, or fully on
-            glb.ctx.strokeStyle = this.is_on ? wire_on_color : wire_off_color;
+            glb.ctx.strokeStyle = this.is_on ? WIRE_ON_COLOR : wire_off_color;
             glb.ctx.beginPath();
             glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
             glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
@@ -147,8 +146,8 @@ class WireOnCog {
         } else {
             // only going to draw some in the on color
             // determine the color that is at the en and ex points
-            const en_color = this.power_from === "en" ? wire_on_color : wire_off_color;
-            const ex_color = this.power_from === "ex" ? wire_on_color : wire_off_color;
+            const en_color = this.power_from === "en" ? WIRE_ON_COLOR : wire_off_color;
+            const ex_color = this.power_from === "ex" ? WIRE_ON_COLOR : wire_off_color;
             // determine the powered time equivalent. this is just powered time
             // if starting from the en, but from ex, it will be the inverse since
             // the red line needs to move "backwards"
