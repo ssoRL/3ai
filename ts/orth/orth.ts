@@ -126,7 +126,7 @@ class OrthStoryController {
      * Sets everything like this story is done, either from the user reading in this session
      * or having a cookie marking orth as read previously
      */
-    public end() {
+    public async end() {
         // start everything ticking
         // if the story is already marked as 'done' don't restart the main cogs
         if(!this.done) this.tickForever();
@@ -152,6 +152,15 @@ class OrthStoryController {
         orth_badge.classList.add("story-done");
         next_button.classList.add("sidelined");
         re_button.classList.add("sidelined");
+
+        // wait until this transition is done
+        await new Promise((resolve) => {
+            orth_badge.ontransitionend = resolve;
+        })
+
+        // then remove the custom transitions
+        kudzu_badge.style.transition = '';
+        orth_badge.style.transition = '';
     }
 
     private async initializeContent() {

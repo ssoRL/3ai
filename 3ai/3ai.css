@@ -28,6 +28,15 @@ html body {
     border: 3px solid;
     background-color: white;
     box-sizing: border-box;
+    transition: all 300ms;
+    cursor: pointer;
+}
+
+#kudzu:hover {
+    width: calc(1.2*40%);
+    height: calc(1.2*53%);
+    top: 3%;
+    right: 3%;
 }
 
 #kudzu.repositioned {
@@ -42,6 +51,13 @@ html body {
     height: 10%;
     top: 5%;
     right: 5%;
+}
+
+#kudzu.story-done:hover {
+    width: 15%;
+    height: 15%;
+    top: 3%;
+    right: 3%;
 }
 
 #kudzu.sidelined {
@@ -132,6 +148,15 @@ a.kudzu-skip {
     background-color: white;
     overflow: hidden;
     box-sizing: border-box;
+    transition: all 300ms;
+    cursor: pointer;
+}
+
+#orth:hover {
+    width: calc(1.2*40%);
+    height: calc(1.2*54%);
+    bottom: 3%;
+    left: 3%;
 }
 
 #orth.repositioned {
@@ -146,6 +171,13 @@ a.kudzu-skip {
     height: 10%;
     bottom: 5%;
     left: 5%;
+}
+
+#orth.story-done:hover {
+    width: 15%;
+    height: 15%;
+    bottom: 3%;
+    left: 3%;
 }
 
 #orth.sidelined {

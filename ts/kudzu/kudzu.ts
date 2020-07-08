@@ -99,11 +99,11 @@ class KudzuStoryController {
         const head_title = getDocumentElementById("kudzu-title-text");
         const story_section = getDocumentElementById("kudzu-story-text");
         // Reposition the elements
-        kudzu_badge?.classList.remove("repositioned");
-        kudzu_badge?.classList.add("story-done");
-        orth_badge?.classList.remove("sidelined");
-        head_title?.classList.add("story-done");
-        story_section?.classList.add("sidelined");
+        kudzu_badge.classList.remove("repositioned");
+        kudzu_badge.classList.add("story-done");
+        orth_badge.classList.remove("sidelined");
+        head_title.classList.add("story-done");
+        story_section.classList.add("sidelined");
 
         if(before_power) {
             // if passed a promise, wait until it resolves to power up the wires
@@ -111,6 +111,10 @@ class KudzuStoryController {
         }
 
         glb.wire0.power(true);
+
+        // Reset the badges' transition property so that they react right
+        kudzu_badge.style.transition = '';
+        orth_badge.style.transition = '';
     }
 
     /** The size of the gradient's inner radius */
