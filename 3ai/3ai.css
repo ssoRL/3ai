@@ -301,12 +301,27 @@ a.kudzu-skip {
     align-items: center;
 }
 
-.pop-up-content {
+.popup {
     background-color: white;
     margin: auto;
     padding: 20px;
     border-radius: 5px;
     max-width: 70%;
+}
+
+.pop-up-content {
+    width: 100%;
+}
+
+.popup-close {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    font-family: sans-serif;
+    display: block;
+    width: max-content;
+    margin: 20px auto 0;
+    cursor: pointer;    
 }
 
 .popup-flavor {

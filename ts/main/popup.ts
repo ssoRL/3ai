@@ -19,11 +19,22 @@ class Popup {
         this.screen.onclick  = (me) => this.destroy(me);
         container.appendChild(this.screen);
 
+        const popup = document.createElement('div');
+        popup.classList.add('popup');
+        this.screen.appendChild(popup);
+
         // Make the content box
         this.content_box = document.createElement('div');
         this.content_box.classList.add('pop-up-content');
-        this.content_box.onclick  = (me) => this.destroy(me);
-        this.screen.appendChild(this.content_box);
+        //this.content_box.onclick  = (me) => this.destroy(me);
+        popup.appendChild(this.content_box);
+
+        // Make the close button
+        const close = document.createElement('a');
+        close.classList.add('popup-close');
+        close.innerText = "Close";
+        popup.appendChild(close);
+
 
         this.initializeContent(uri);
     }
