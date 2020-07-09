@@ -60,7 +60,7 @@ class KudzuStoryController {
     /**
      * Prepares to return to the main screen
      */
-    async prep_end() {
+    public async prep_end() {
         // Define the transition
         const kudzu_transition = `transition: all ${KudzuStoryController.SHIFT_TO_KUDZU_TIME}ms`;
 
@@ -68,13 +68,11 @@ class KudzuStoryController {
         // Get the elements
         const kudzu_badge = getDocumentElementById("kudzu");
         const orth_badge = getDocumentElementById("orth");
-        const head_title = getDocumentElementById("kudzu-title-text");
         const story_section = getDocumentElementById("kudzu-story-text");
         // Add the transition logic
         kudzu_badge.style.transition = kudzu_transition;
         orth_badge.style.transition = kudzu_transition;
         story_section.style.transition = kudzu_transition;
-        head_title.style.transition = kudzu_transition;
 
         // set the cookie so that if the reader leaves and comes back
         Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
@@ -86,23 +84,29 @@ class KudzuStoryController {
         this.end(transform_promise);
     }
 
+    /** called when the story was already completed in a previous session */
+    public async quick_end() {
+        // transitions should be instant in this case
+        const kudzu_badge = getDocumentElementById("kudzu");
+        kudzu_badge.style.transition = "all 0s";
+        this.end();
+    }
+
     /**
      * Sets the story as if read, either in this session or in a previous one
      * @param before_power a promise that must resolve before the main wires are powered
      */
-    public async end(before_power?: Promise<any>){
+    private async end(before_power?: Promise<any>){
         this.done = true;
 
         // Get the elements
         const kudzu_badge = getDocumentElementById("kudzu");
         const orth_badge = getDocumentElementById("orth");
-        const head_title = getDocumentElementById("kudzu-title-text");
         const story_section = getDocumentElementById("kudzu-story-text");
         // Reposition the elements
         kudzu_badge.classList.remove("repositioned");
         kudzu_badge.classList.add("story-done");
         orth_badge.classList.remove("sidelined");
-        head_title.classList.add("story-done");
         story_section.classList.add("sidelined");
 
         if(before_power) {
@@ -113,6 +117,9 @@ class KudzuStoryController {
         glb.wire0.power(true);
 
         // Reset the badges' transition property so that they react right
+        await new Promise((resolve) => {
+            kudzu_badge.ontransitionend = resolve;
+        })
         kudzu_badge.style.transition = '';
         orth_badge.style.transition = '';
     }

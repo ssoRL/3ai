@@ -12,10 +12,10 @@ function init(){
     glb.perfect_story_controller = new PerfectStoryController();
     // Keep Progress
     if(Cookies.get(KUDZU_COOKIE_NAME) === STORY_DONE) {
-        glb.kudzu_story_controller.end();
+        glb.kudzu_story_controller.quick_end();
     }
     if(Cookies.get(ORTH_COOKIE_NAME) === STORY_DONE) {
-        glb.orth_story_controller.end();
+        glb.orth_story_controller.quick_end();
     }
     init_words();
     glb.tick_easer = new TickEaser(1.15, 0.85);

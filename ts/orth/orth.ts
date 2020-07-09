@@ -122,11 +122,19 @@ class OrthStoryController {
         orth_badge.onclick = this.start.bind(this);
     }
 
+    /** called when the story was already completed in a previous session */
+    public async quick_end() {
+        // transitions should be instant in this case
+        const orth_badge = getDocumentElementById("orth");
+        orth_badge.style.transition = "all 0s";
+        this.end();
+    }
+
     /**
      * Sets everything like this story is done, either from the user reading in this session
      * or having a cookie marking orth as read previously
      */
-    public async end() {
+    private async end() {
         // start everything ticking
         // if the story is already marked as 'done' don't restart the main cogs
         if(!this.done) this.tickForever();
@@ -159,6 +167,9 @@ class OrthStoryController {
         })
 
         // then remove the custom transitions
+        await new Promise((resolve) => {
+            orth_badge.ontransitionend = resolve;
+        })
         kudzu_badge.style.transition = '';
         orth_badge.style.transition = '';
     }
