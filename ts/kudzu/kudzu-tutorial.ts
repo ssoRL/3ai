@@ -35,7 +35,7 @@ class KudzuTutorial {
         const wire_into_frame_from_right = this.wire.addStraightWireTo("horz", right_down_x);
     
         // Wires to first gem
-        this.click_gem = new Gem(p(3500, this.click_gem_y), 25, {r:238,g:130,b:238}, true);
+        this.click_gem = new Gem(p(3500, this.click_gem_y), 25, {r:255, g:198, b:76}, true);
         wire_into_frame_from_right
             .addStraightWireTo("vert", this.in_y)
             .addStraightWireTo("horz", left_down_x)
@@ -44,7 +44,7 @@ class KudzuTutorial {
         // AND gate
         const conjunction = new AndGate(p(3333, this.conjunction_y), "W");
         // wires to its right terminal
-        this.conjunction_gem = new Gem(p(3666, this.conjunction_y), 25, {r:238,g:130,b:238}, true);
+        this.conjunction_gem = new Gem(p(3666, this.conjunction_y), 25, {r:255, g:171, b:76}, true);
         this.click_gem
             .getWireOut("E")
             .addStraightWireTo("horz", center_right_down_x)
@@ -60,7 +60,7 @@ class KudzuTutorial {
             .addPoweredWiresToAndTerminal(conjunction.left_terminal, "vert");
 
         // wires to the cog gem
-        this.cog_gem = new Gem(p(3500, this.cogs_y), 25, {r:238,g:130,b:238}, true);
+        this.cog_gem = new Gem(p(3500, this.cogs_y), 25, {r:255, g:103, b:76}, true);
         conjunction
             .getOutWire()
             .addStraightWireTo("horz", left_down_x)
@@ -82,7 +82,7 @@ class KudzuTutorial {
             .addPoweredWiresToAndTerminal(lower_and_gate.left_terminal, "vert")
 
         // Final gem
-        this.big_gem = new Gem(p(3333, this.out_y), 35, {r:238,g:130,b:238}, true);
+        this.big_gem = new Gem(p(3333, this.out_y), 35, {r:255, g:76, b:76}, true);
         lower_and_gate
             .getOutWire()
             .addPoweredWiresToGemTerminal(this.big_gem.getTerminal("E"), "horz");
@@ -107,7 +107,7 @@ class KudzuTutorial {
 
         const first_y = (this.in_y + this.click_gem_y)/2;
         const first_direction = new Word(
-            "Nodes can be clicked once power reaches them",
+            "Nodes: Illuminated, invite interaction",
             p(3500, first_y), "", 30, "sans-serif", "center"
         );
         first_direction.addGhostTypist(this.typing_speed, 1);
@@ -122,7 +122,7 @@ class KudzuTutorial {
 
         const second_y = (this.click_gem_y + this.conjunction_y)/2;
         const second_direction = new Word(
-            "A conjunction requires two lines of power in",
+            "Conjunctions: A pair of powered lines prerequisite to pass",
             p(3500, second_y), "", 30, "sans-serif", "center"
         );
         second_direction.addGhostTypist(this.typing_speed, 1);
@@ -137,9 +137,9 @@ class KudzuTutorial {
             this.prepEnd();
         }
 
-        const third_y = (this.conjunction_y + this.cogs_y)/2;
+        const third_y = (this.conjunction_y + this.cogs_y)/2 + 20;
         const third_direction = new Word(
-            "Power passes over cogs in the right position",
+            "Gears: Correctly convolved, carry current",
             p(3500, third_y), "", 30, "sans-serif", "center"
         );
         third_direction.addGhostTypist(this.typing_speed, 1);
@@ -151,7 +151,7 @@ class KudzuTutorial {
             new Popup(
                 'popups/story-at.html',
                 () => {
-                    this.big_gem.powerThru();
+                    this.big_gem.powerThru(true);
                     glb.kudzu_story_controller.prep_end();
                 }    
             )
@@ -159,7 +159,7 @@ class KudzuTutorial {
 
         const last_y = (this.cogs_y + this.out_y)/2;
         const last_direction = new Word(
-            "Some nodes have extra content",
+            "More: behind the brilliance",
             p(3500, last_y), "", 30, "sans-serif", "center"
         );
         last_direction.addGhostTypist(this.typing_speed, 1);

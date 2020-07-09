@@ -1,11 +1,11 @@
 // Functions for setting up the gems
-function makeOrangeGem(p: Point) : Gem {
-    const orange = {r:255,g:91,b:0};
-    const orange_gem = new Gem(p, 20, orange);
-    orange_gem.onclick = () => {
+function makePurpleGem(p: Point) : Gem {
+    const purple = {r:238,g:130,b:238};
+    const purple_gem = new Gem(p, 20, purple);
+    purple_gem.onclick = () => {
         new Popup("popups/wheels-of-progress.html");
     }
-    return orange_gem;
+    return purple_gem;
 }
 
 function makeBlueGem(p: Point) : Gem {
@@ -116,7 +116,7 @@ function init_wires(): {wire: Wire, gems: Gem[]} {
     wire_out_of_3002.addPoweredWiresToAndTerminal(center_right_and_gate.right_terminal, "horz");
 
     // Wire up the upper right gem
-    const upper_right_gem = makeOrangeGem(p(650, 300));
+    const upper_right_gem = makePurpleGem(p(650, 300));
     returns.gems.push(upper_right_gem);
     center_right_and_gate.getOutWire().addPoweredWiresToGemTerminal(
         upper_right_gem.getTerminal("W"),
