@@ -367,3 +367,7 @@ a.kudzu-skip {
     border: 1px solid black;
     margin: 30px auto;
 }
+
+.popup-acknowledgement {
+    font-family: sans-serif;
+}
