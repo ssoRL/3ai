@@ -167,9 +167,8 @@ class OrthStoryController {
         })
 
         // then remove the custom transitions
-        await new Promise((resolve) => {
-            orth_badge.ontransitionend = resolve;
-        })
+        // call offsetHeight to flush css transition change
+        orth_badge.offsetHeight;
         kudzu_badge.style.transition = '';
         orth_badge.style.transition = '';
     }

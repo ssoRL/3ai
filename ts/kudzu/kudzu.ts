@@ -88,7 +88,7 @@ class KudzuStoryController {
     public async quick_end() {
         // transitions should be instant in this case
         const kudzu_badge = getDocumentElementById("kudzu");
-        kudzu_badge.style.transition = "all 0s";
+        kudzu_badge.style.transition = "none";
         this.end();
     }
 
@@ -117,9 +117,8 @@ class KudzuStoryController {
         glb.wire0.power(true);
 
         // Reset the badges' transition property so that they react right
-        await new Promise((resolve) => {
-            kudzu_badge.ontransitionend = resolve;
-        })
+        // call offsetHeight to flush css transition change
+        kudzu_badge.offsetHeight;
         kudzu_badge.style.transition = '';
         orth_badge.style.transition = '';
     }
