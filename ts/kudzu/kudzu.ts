@@ -38,6 +38,8 @@ class KudzuStoryController {
         story_section.style.transition = kudzu_transition;
         // Apply the reposition commands
         kudzu_badge.classList.remove("story-done");
+        kudzu_badge.classList.remove("big-card");
+        kudzu_badge.classList.add("small-card");
         kudzu_badge.classList.add("repositioned");
         orth_badge.classList.add("sidelined");
         story_section.classList.remove("sidelined");
@@ -105,6 +107,8 @@ class KudzuStoryController {
         const story_section = getDocumentElementById("kudzu-story-text");
         // Reposition the elements
         kudzu_badge.classList.remove("repositioned");
+        kudzu_badge.classList.remove("big-card");
+        kudzu_badge.classList.add("small-card");
         kudzu_badge.classList.add("story-done");
         orth_badge.classList.remove("sidelined");
         story_section.classList.add("sidelined");

@@ -48,7 +48,9 @@ class OrthStoryController {
         story_container.style.transition = orth_transition;
         // and then execute the transitions
         kudzu_badge.classList.add("sidelined");
-        orth_badge.classList.remove("story-done")
+        orth_badge.classList.remove("story-done");
+        orth_badge.classList.remove("big-card");
+        orth_badge.classList.add("small-card");
         orth_badge.classList.add("repositioned");
         story_container.style.top = "10%";
 
@@ -157,6 +159,8 @@ class OrthStoryController {
         kudzu_badge.classList.remove("sidelined");
         story_container.style.top = "110%";
         orth_badge.classList.remove("repositioned");
+        orth_badge.classList.remove("big-card");
+        orth_badge.classList.add("small-card");
         orth_badge.classList.add("story-done");
         next_button.classList.add("sidelined");
         re_button.classList.add("sidelined");

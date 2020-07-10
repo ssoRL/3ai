@@ -18,44 +18,26 @@ html body {
 }
 
 #kudzu {
-    position: absolute;
-    width: 40%;
-    height: 53%;
     top: 5%;
     right: 5%;
-    overflow: hidden;
-    z-index: 2;
-    border: 3px solid;
-    background-color: white;
-    box-sizing: border-box;
-    transition: all 300ms;
-    cursor: pointer;
 }
 
 #kudzu:hover {
-    width: calc(1.2*40%);
-    height: calc(1.2*53%);
     top: 3%;
     right: 3%;
 }
 
 #kudzu.repositioned {
-    width: 10%;
-    height: 10%;
     top: 7%;
     right: 80%;
 }
 
 #kudzu.story-done {
-    width: 10%;
-    height: 10%;
     top: 5%;
     right: 5%;
 }
 
 #kudzu.story-done:hover {
-    width: 15%;
-    height: 15%;
     top: 3%;
     right: 3%;
 }
@@ -138,44 +120,26 @@ a.kudzu-skip {
 
 
 #orth {
-    position: absolute;
-    width: 40%;
-    height: 54%;
     bottom: 5%;
     left: 5%;
-    z-index: 2;
-    border: 3px solid;
-    background-color: white;
-    overflow: hidden;
-    box-sizing: border-box;
-    transition: all 300ms;
-    cursor: pointer;
 }
 
 #orth:hover {
-    width: calc(1.2*40%);
-    height: calc(1.2*54%);
     bottom: 3%;
     left: 3%;
 }
 
 #orth.repositioned {
-    width: 10%;
-    height: 10%;
     bottom: 87%;
     left: 6%;
 }
 
 #orth.story-done {
-    width: 10%;
-    height: 10%;
     bottom: 5%;
     left: 5%;
 }
 
 #orth.story-done:hover {
-    width: 15%;
-    height: 15%;
     bottom: 3%;
     left: 3%;
 }
@@ -314,11 +278,52 @@ a.kudzu-skip {
     background-position: center;
 }
 
-.illustration {
-    margin: 5%;
-    width: 90%;
-    border: 2px solid;
+.card {
+    position: absolute;
+    overflow: hidden;
+    z-index: 2;
     box-sizing: border-box;
+    transition: all 300ms;
+    cursor: pointer;
+}
+
+.big-card {
+    width: 40%;
+    height: 53%;
+    border: 4px solid;
+    padding: 3%;
+    background-color: white;
+}
+
+.big-card:hover {
+    width: calc(1.2*40%);
+    height: calc(1.2*53%);
+}
+
+.small-card {
+    width: 10%;
+    height: 10%;
+    border: 0;
+    padding: 0;
+    background-color: rgba(0,0,0,0);
+}
+
+.story-done:hover {
+    width: 15%;
+    height: 15%;
+}
+
+.illustration {
+    margin-bottom: 5%;
+    width: 100%;
+    border: 2px solid;
+    border-radius: 3%;
+    box-sizing: border-box;
+    background-color: white;
+}
+
+.small-card .illustration {
+    border-radius: 10%;
 }
 
 .pop-up-screen {

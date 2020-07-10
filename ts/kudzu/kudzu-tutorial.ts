@@ -30,7 +30,6 @@ class KudzuTutorial {
         // lay the initial wires
         this.wire = new Wire({x: 4200, y: 300}, {x: 4100, y: 300});
         const right_down_x: number = wired_cog.getCogTerminalPoint(ct(3)).x;
-        const center_right_down_x = right_down_x - 100;
         const left_down_x = 3000 + (4000 - right_down_x);
         const wire_into_frame_from_right = this.wire.addStraightWireTo("horz", right_down_x);
     
@@ -47,7 +46,7 @@ class KudzuTutorial {
         this.conjunction_gem = new Gem(p(3666, this.conjunction_y), 25, {r:255, g:171, b:76}, true);
         this.click_gem
             .getWireOut("E")
-            .addStraightWireTo("horz", center_right_down_x)
+            .addStraightWireTo("horz", right_down_x - 50)
             .addPoweredWiresToGemTerminal(this.conjunction_gem.getTerminal("E"), "vert");
         this.conjunction_gem
             .getWireOut("W")
@@ -74,7 +73,7 @@ class KudzuTutorial {
         // to the right side
         this.cog_gem
             .getWireOut("E")
-            .addStraightWireTo("horz", center_right_down_x)
+            .addStraightWireTo("horz", right_down_x - 100)
             .addPoweredWiresToAndTerminal(lower_and_gate.right_terminal, "vert");
         // To the left side
         RunWire
@@ -122,7 +121,7 @@ class KudzuTutorial {
 
         const second_y = (this.click_gem_y + this.conjunction_y)/2;
         const second_direction = new Word(
-            "Conjunctions: A pair of powered lines prerequisite to pass",
+            "Conjunctions: Powered pair prerequisite to pass",
             p(3500, second_y), "", 30, "sans-serif", "center"
         );
         second_direction.addGhostTypist(this.typing_speed, 1);
