@@ -19,6 +19,7 @@ class KudzuTutorial {
 
     // state
     is_initialized = false;
+    is_started = false;
 
 
     constructor() {
@@ -97,11 +98,19 @@ class KudzuTutorial {
     }
 
     public start() {
+        if(this.is_started) {
+            // don't allow restart
+            return;
+        } else {
+            this.is_started = true;
+        }
+
         this.wire.power(true);
 
         this.click_gem.onclick = () => {
             this.click_gem.powerThru();
             this.gemClicked();
+            this.click_gem.onclick = () => {};
         }
 
         const first_y = (this.in_y + this.click_gem_y)/2;
@@ -117,6 +126,7 @@ class KudzuTutorial {
         this.conjunction_gem.onclick = () => {
             this.conjunction_gem.powerThru();
             this.conjunctionPowered();
+            this.conjunction_gem.onclick = () => {};
         }
 
         const second_y = (this.click_gem_y + this.conjunction_y)/2;
@@ -134,6 +144,7 @@ class KudzuTutorial {
             this.cog.activate(true);
             this.tick();
             this.prepEnd();
+            this.cog_gem.onclick = () => {};
         }
 
         const third_y = (this.conjunction_y + this.cogs_y)/2 + 20;

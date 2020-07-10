@@ -1,5 +1,6 @@
 class KudzuStoryController {
     private done = false;
+    private title_written = false;
     private tutorial: KudzuTutorial;
 
     private kudzu_story: string[][];
@@ -47,14 +48,17 @@ class KudzuStoryController {
             KudzuStoryController.TRANSLATE, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
         );
 
-        // After the movement is complete, fill in the title
-        const title_string = "Vines of Kudzu";
-        const title = new Word(title_string, p(3215, 125), "", 100, "sans-serif");
-        title.addGhostTypist(KudzuStoryController.TYPING_SPEED, 1);
-        this.words.push(title);
-        await new Promise((resolve) => {
-            window.setTimeout(resolve, title_string.length * KudzuStoryController.TYPING_SPEED)
-        });
+        // After the movement is complete, fill in the title if not already written
+        if(!this.title_written) {
+            const title_string = "Vines of Kudzu";
+            const title = new Word(title_string, p(3215, 125), "", 100, "sans-serif");
+            title.addGhostTypist(KudzuStoryController.TYPING_SPEED, 1);
+            this.words.push(title);
+            await new Promise((resolve) => {
+                window.setTimeout(resolve, title_string.length * KudzuStoryController.TYPING_SPEED)
+            });
+            this.title_written = true;
+        }
 
         await this.fillInStory(0);
     }
