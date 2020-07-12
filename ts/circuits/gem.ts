@@ -31,9 +31,12 @@ class Gem implements Clickable {
     private wait_to_power_out: boolean;
     // The orb in the center that glows and flickers
     private orb: GlowingOrb;
-    public onclick: () => void;
-    /** The glow amount, between 0 and 1 */
-    private glow = 0;
+
+    /** Function will be called when the gem is clicked */
+    public onclick = () => {};
+
+    /** Function will be called when the gem is activated (powered for the first time) */
+    onactivated = () => {};
     /** The amount the the glow jitters by */
     private static readonly GLOW_JITTER = 0.05;
     /** How ofter the glow jitters in milliseconds */
@@ -56,11 +59,6 @@ class Gem implements Clickable {
         this.size = size_;
         this.color = color_;
         this.wait_to_power_out = wait_to_power_out_;
-
-        // Do nothing by default
-        this.onclick = () => {
-            new Popup('popups/default.html');
-        };
 
         this.orb = new GlowingOrb(size_, color_);
 
@@ -126,6 +124,7 @@ class Gem implements Clickable {
         // If this gem is turned on, turn on the orb
         if(this.is_on && !this.is_active) {
             this.is_active = true;
+            this.onactivated();
             this.orb.power(true);
             this.orb.addGlow(10);
         }

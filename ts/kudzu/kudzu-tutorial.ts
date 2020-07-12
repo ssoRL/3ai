@@ -113,13 +113,15 @@ class KudzuTutorial {
             this.click_gem.onclick = () => {};
         }
 
-        const first_y = (this.in_y + this.click_gem_y)/2;
-        const first_direction = new Word(
-            "Nodes: Illuminated, invite interaction",
-            p(3500, first_y), "", 30, "sans-serif", "center"
-        );
-        first_direction.addGhostTypist(this.typing_speed, 1);
-        glb.kudzu_story_controller.words.push(first_direction);
+        this.click_gem.onactivated = () => {
+            const first_y = (this.in_y + this.click_gem_y)/2;
+            const first_direction = new Word(
+                "Nodes: Illuminated, invite interaction",
+                p(3500, first_y), "", 30, "sans-serif", "center"
+            );
+            first_direction.addGhostTypist(this.typing_speed, 1);
+            glb.kudzu_story_controller.words.push(first_direction);
+        }
     }
 
     private gemClicked() {
@@ -129,13 +131,15 @@ class KudzuTutorial {
             this.conjunction_gem.onclick = () => {};
         }
 
-        const second_y = (this.click_gem_y + this.conjunction_y)/2;
-        const second_direction = new Word(
-            "Conjunctions: Powered pair prerequisite to pass",
-            p(3500, second_y), "", 30, "sans-serif", "center"
-        );
-        second_direction.addGhostTypist(this.typing_speed, 1);
-        glb.kudzu_story_controller.words.push(second_direction);
+        this.conjunction_gem.onactivated = () => {
+            const second_y = (this.click_gem_y + this.conjunction_y)/2;
+            const second_direction = new Word(
+                "Conjunctions: Powered pair prerequisite to pass",
+                p(3500, second_y), "", 30, "sans-serif", "center"
+            );
+            second_direction.addGhostTypist(this.typing_speed, 1);
+            glb.kudzu_story_controller.words.push(second_direction);
+        }
     }
 
     private conjunctionPowered() {
@@ -147,13 +151,15 @@ class KudzuTutorial {
             this.cog_gem.onclick = () => {};
         }
 
-        const third_y = (this.conjunction_y + this.cogs_y)/2 + 20;
-        const third_direction = new Word(
-            "Gears: Correctly convolved, carry current",
-            p(3500, third_y), "", 30, "sans-serif", "center"
-        );
-        third_direction.addGhostTypist(this.typing_speed, 1);
-        glb.kudzu_story_controller.words.push(third_direction);
+        this.cog_gem.onactivated = () => {
+            const third_y = (this.conjunction_y + this.cogs_y)/2 + 20;
+            const third_direction = new Word(
+                "Gears: Correctly convolved, carry current",
+                p(3500, third_y), "", 30, "sans-serif", "center"
+            );
+            third_direction.addGhostTypist(this.typing_speed, 1);
+            glb.kudzu_story_controller.words.push(third_direction);
+        }
     }
 
     private prepEnd() {
@@ -167,13 +173,15 @@ class KudzuTutorial {
             )
         }
 
-        const last_y = (this.cogs_y + this.out_y)/2;
-        const last_direction = new Word(
-            "More: behind the brilliance",
-            p(3500, last_y), "", 30, "sans-serif", "center"
-        );
-        last_direction.addGhostTypist(this.typing_speed, 1);
-        glb.kudzu_story_controller.words.push(last_direction);
+        this.big_gem.onactivated = () => {
+            const last_y = (this.cogs_y + this.out_y)/2;
+            const last_direction = new Word(
+                "More: behind the brilliance",
+                p(3500, last_y), "", 30, "sans-serif", "center"
+            );
+            last_direction.addGhostTypist(this.typing_speed, 1);
+            glb.kudzu_story_controller.words.push(last_direction);
+        }
 
     }
 

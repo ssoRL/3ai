@@ -8,6 +8,7 @@
         "highvoltageclouds",
         "horz",
         "kudzusectionbreak",
+        "onactivated",
         "ontransitionend"
     ]
 }
