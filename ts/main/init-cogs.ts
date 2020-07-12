@@ -18,7 +18,8 @@ function init_cogs(): Cog[]{
     center_driver.addDrivenCog(1, 6);
     
     // Cogs in the middle right
-    const low_right_driver = new Cog(750, 680, 6, SpinDirection.CLOCKWISE, 0.2, 3000);
+    /** Fun fact: if base_rotate is 0.2, Chrome has a bug where it screws up the gradient of the cog, hence 0.21 */
+    const low_right_driver = new Cog(750, 680, 6, SpinDirection.CLOCKWISE, 0.21, 3000);
     driver_cogs.push(low_right_driver);
     low_right_driver.addDrivenCog(5, 12);
     low_right_driver.addDrivenCog(3, 6);
