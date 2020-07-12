@@ -153,7 +153,6 @@ class OrthStoryController {
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
-        const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
         const re_button = getDocumentElementById("orth-return");
         // and then execute the transitions
         kudzu_badge.classList.remove("sidelined");
@@ -162,7 +161,7 @@ class OrthStoryController {
         orth_badge.classList.remove("big-card");
         orth_badge.classList.add("small-card");
         orth_badge.classList.add("story-done");
-        next_button.classList.add("sidelined");
+        const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
         re_button.classList.add("sidelined");
 
         // wait until this transition is done
@@ -318,7 +317,7 @@ class OrthStoryController {
         const scroll_to = (() => {
             if(to_end) {
                 // if the user specifically asking to go to the end of the story
-                return { scroll: 1, addReturn: false };
+                return { scroll: 1, no_more: false };
             } else {
                 // scroll the story down by 70% of the main height
                 const scroll_h = 0.6*main_h;
@@ -328,10 +327,16 @@ class OrthStoryController {
                 const added_scroll = this.scroll + scroll_h/story_h;
                 return {
                     scroll: Math.min(added_scroll, max_scroll),
-                    addReturn: added_scroll >= max_scroll
+                    no_more: added_scroll >= max_scroll
                 };
             }
         })();
+
+        if(scroll_to.no_more) {
+            // remove the more button
+            getDocumentElementById("orth-next").classList.add("sidelined");
+        }
+
         this.scroll = scroll_to.scroll;
 
         // The amount inn px needed to put the story in position
@@ -349,7 +354,7 @@ class OrthStoryController {
             0, background_offset_y, TICK_EVERY + TICK_LENGTH
         );
 
-        if(scroll_to.addReturn) {
+        if(scroll_to.no_more) {
             this.showReturnOption();
         }
     }
