@@ -1,5 +1,9 @@
 let glb: ThreeAIGlobals;
 
+/** Keeps track of the images loaded */
+let kudzu_img_loaded = false;
+let orth_img_loaded = false;
+
 function init(){
     // Set up the global object
     glb = new ThreeAIGlobals();
@@ -31,14 +35,14 @@ function init(){
 function img_loaded(img: "kudzu" | "orth") {
     if(img === "kudzu") {
         // kudzu is loaded
-        glb.img_loaded.kudzu = true;
+        kudzu_img_loaded = true;
     } else {
         // orth is loaded
-        glb.img_loaded.orth = true;
+        orth_img_loaded = true;
     }
 
     // if both are loaded, slide them in
-    if (glb.img_loaded.kudzu && glb.img_loaded.orth) {
+    if (kudzu_img_loaded && orth_img_loaded) {
         const kudzu_badge = getDocumentElementById("kudzu");
         const orth_badge = getDocumentElementById("orth");
 
