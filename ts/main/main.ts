@@ -28,6 +28,25 @@ function init(){
     kudzu.onclick = () => {glb.kudzu_story_controller.start()};
 }
 
+function img_loaded(img: "kudzu" | "orth") {
+    if(img === "kudzu") {
+        // kudzu is loaded
+        glb.img_loaded.kudzu = true;
+    } else {
+        // orth is loaded
+        glb.img_loaded.orth = true;
+    }
+
+    // if both are loaded, slide them in
+    if (glb.img_loaded.kudzu && glb.img_loaded.orth) {
+        const kudzu_badge = getDocumentElementById("kudzu");
+        const orth_badge = getDocumentElementById("orth");
+
+        kudzu_badge.classList.remove("sidelined");
+        orth_badge.classList.remove("sidelined");
+    }
+}
+
 function draw() {
     glb.time = performance.now();
     glb.ctx.setTransform(1, 0, 0, 1, 0, 0);

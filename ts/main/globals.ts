@@ -31,6 +31,12 @@ class ThreeAIGlobals {
     /** The current system time when the most recent draw started */
     public time: number;
 
+    /** Keeps track of the images loaded */
+    public img_loaded = {
+        kudzu: false,
+        orth: false
+    }
+
     // Sets up the ctx and canvas controller
     constructor() {
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');
