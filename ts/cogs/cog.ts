@@ -20,6 +20,8 @@ class Cog implements Clickable{
     /** The cogs that this cog drives */
     private driven_cogs: Cog[] = [];
     public etched_wire: WireOnCog | null;
+    /** List of terminals this gets power from */
+    public in_terminals: CogTerminalConnector[] = [];
     /** 
      * The force that determines the spin direction of this cog. Either another cog,
      * or a spin direction if it's self-driven
@@ -28,7 +30,6 @@ class Cog implements Clickable{
     /** If set true, the cog will change direction for it's next tick */
     private change_direction = false;
     private parent_index: number;
-    private tick_watchers: TickWatcher[] = [];
     private is_ticking = false;
     private stopped = false;
     /** A value that is true if this cog is activated and clickable */
@@ -148,12 +149,12 @@ class Cog implements Clickable{
         const terminal_connection = (
             driver_cog.serial_number === this.serial_number ?
             new CogTerminalConnector(
-                [driver_cog, driver_terminal],
-                [driven_cog, driven_terminal]
+                ctp(driver_cog, driver_terminal),
+                ctp(driven_cog, driven_terminal)
             ) :
             new CogTerminalConnector(
-                [driven_cog, driven_terminal],
-                [driver_cog, driver_terminal]
+                ctp(driven_cog, driven_terminal),
+                ctp(driver_cog, driver_terminal)
             )
         );
 
@@ -181,11 +182,10 @@ class Cog implements Clickable{
                 this.current_tooth = this.getSpinDirection() === SpinDirection.CLOCKWISE ?
                     (this.current_tooth + 1) % this.tooth_count :
                     (this.current_tooth + this.tooth_count - 1) % this.tooth_count;
-                // Notify all watchers that the tick is done
+                // Notify all incoming terminals
                 this.is_ticking = false;
-                for(const watcher of this.tick_watchers) {
-                    // Notify tick watchers that a tick has started
-                    watcher.endTick();
+                for(const in_terminal of this.in_terminals) {
+                    in_terminal.endTick(time);
                 }
             }
         }
@@ -271,9 +271,9 @@ class Cog implements Clickable{
 
     /**
      * This will cause the cog to start a new movement cycle at the given time
-     * @param startTime When the tick starts. Can be in the future
+     * @param start_time When the tick starts. Can be in the future
      */
-    public startTick(startTime: number){
+    public startTick(start_time: number){
         // If the cog is changing direction, don't tick this cycle
         if(this.change_direction){
             // remove the change direction flag and then flip the direction of travel
@@ -285,15 +285,13 @@ class Cog implements Clickable{
             }
         } else if(!this.stopped) {
             this.is_ticking = true;
-            this.tick_start = startTime;
+            this.tick_start = start_time;
             // Tell driven cogs to start ticking then too
             for(let driven_cog of this.driven_cogs){
-                driven_cog.startTick(startTime);
+                driven_cog.startTick(start_time);
             }
-            // Notify tick watchers that a tick has started
-            for(const watcher of this.tick_watchers) {
-                watcher.startTick();
-            }
+            // Notify the etched wire
+            this.etched_wire?.startTick(start_time);
         }
     }
 
@@ -323,10 +321,6 @@ class Cog implements Clickable{
         this.driven_cogs.push(new_cog);
         new_cog.parent_index = at_index;
         return new_cog;
-    }
-
-    public addTickWatcher(watcher: TickWatcher) {
-        this.tick_watchers.push(watcher);
     }
 
     /**

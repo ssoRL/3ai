@@ -1,6 +1,19 @@
-type PowerSource = [Cog, CogTerminal] | Wire;
+class CogTerminalPair {
+    public cog: Cog;
+    public terminal: CogTerminal;
 
-class CogTerminalConnector implements Conductor, TickWatcher {
+    constructor(cog:Cog, terminal: CogTerminal) {
+        this.cog = cog;
+        this.terminal = terminal;
+    }
+}
+type PowerSource = CogTerminalPair | Wire;
+
+function ctp(cog: Cog, terminal: CogTerminal): CogTerminalPair {
+    return new CogTerminalPair(cog, terminal);
+}
+
+class CogTerminalConnector implements Conductor {
     is_on = false;
     private p: Point;
     /** The wire or cog that power comes from */
@@ -16,38 +29,27 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     constructor(in_power_: PowerSource, out_power_: PowerSource) {
         this.in_power = in_power_;
         this.out_power = out_power_;
-        // Add self to watch ticks
-        for(const source of [this.in_power, this.out_power]) {
-            if(!(source instanceof Wire)) {
-                source[0].addTickWatcher(this);
-            }
-        }
 
         if(this.in_power instanceof Wire) {
             if(this.out_power instanceof Wire) {
                 throw "3AI Error: terminal should NOT be between two wires";
             }
-            this.p = this.out_power[0].getCogTerminalPoint(this.out_power[1]);
+            this.p = this.out_power.cog.getCogTerminalPoint(this.out_power.terminal);
         } else {
-            this.p = this.in_power[0].getCogTerminalPoint(this.in_power[1]);
+            this.p = this.in_power.cog.getCogTerminalPoint(this.in_power.terminal);
         }
 
         // Add this cog terminal connection to the etched wire's list if there is one
         if(this.in_power instanceof Wire) {
             this.in_power.addTerminalConnectionToChildren(this);
         } else {
-            if(this.in_power[0].etched_wire){
-                this.in_power[0].etched_wire.out_terminals.push(this);
-            }
+            this.in_power.cog.etched_wire?.out_terminals.push(this);
         }
-    }
 
-    public getInTerminal(): CogTerminal {
-        if(this.in_power instanceof Wire){
-            throw "3AI Error: Wire's have no terminal definition"
+        // add to the incoming for etched wires this terminals powers
+        if(this.out_power instanceof CogTerminalPair) {
+            this.out_power.cog.in_terminals.push(this);
         }
-         return this.in_power[1];
-        
     }
 
     isConnected(source: PowerSource): boolean {
@@ -55,11 +57,11 @@ class CogTerminalConnector implements Conductor, TickWatcher {
             return true;
         }
         // Check if the cog is in position for this terminal to hit a wire
-        const cog_wire = source[0].etched_wire;
+        const cog_wire = source.cog.etched_wire;
         if(!cog_wire){
             return false;
         }
-        return cog_wire.isConnectedWith(source[1]);
+        return cog_wire.isConnectedWith(source.terminal);
     }
 
     private sendPowerIfConnected(switch_time: number){
@@ -67,8 +69,8 @@ class CogTerminalConnector implements Conductor, TickWatcher {
             if(this.out_power instanceof Wire) {
                 this.out_power.power(this.is_on, switch_time);
             } else {
-                const cog_wire = this.out_power[0].etched_wire;
-                cog_wire?.power(this.is_on, this.out_power[1]);
+                const cog_wire = this.out_power.cog.etched_wire;
+                cog_wire?.power(this.is_on, this.out_power.terminal, switch_time);
             }
         }
     }
@@ -80,23 +82,22 @@ class CogTerminalConnector implements Conductor, TickWatcher {
         this.sendPowerIfConnected(switch_time);
     }
 
-    // Break all connections when a tick starts
-    startTick(): void {
+    /** Actions to take when the underlying cog starts a tick */
+    startTick(start_tick_time: number): void {
+        // Break all connections when a tick starts
         this.in_connected = false;
         this.out_connected = false;
-        if(!(this.in_power instanceof Wire)) {
-            this.is_on = false;
-        }
+        this.is_on = false;
+
+        // if output is a wire, turn it off
         if(this.out_power instanceof Wire) {
-            this.out_power.power(false, glb.time);
-        }else{
-            this.out_power[0].etched_wire?.power(false, this.out_power[1]);
+            this.out_power.power(false, start_tick_time);
         }
     }
     
-    endTick(): void {
+    endTick(end_tick_time: number): void {
         // Trigger a power call here to check connections and send power if warranted
-        this.power(this.is_on, glb.time);
+        this.power(this.is_on, end_tick_time);
     }
     
     draw(): void {

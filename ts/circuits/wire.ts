@@ -72,7 +72,7 @@ class Wire implements Conductor {
         const cog = Cog.getCogBySerialNumber(cog_sn);
         const terminal_p = cog.getCogTerminalPoint(terminal);
         const wire = this.addWiresToPoint(terminal_p, ori);
-        const terminal_connector =  new CogTerminalConnector(wire, [cog, terminal]);
+        const terminal_connector =  new CogTerminalConnector(wire, ctp(cog, terminal));
         wire.powering.push(terminal_connector);
     }
 
@@ -109,11 +109,8 @@ class Wire implements Conductor {
     }
 
     power(on: boolean, switch_time: number): void {
-        if(
-            on && this.power_state === Power.OFF || 
-            !on && this.power_state === Power.ON
-        ) {
-            this.time_switched = glb.time;
+        if(isOn(this.power_state) !== on) {
+            this.time_switched = switch_time;
             this.power_state = on ? Power.UP : Power.DOWN;
         }
     }
@@ -166,10 +163,10 @@ class Wire implements Conductor {
                 // finally draw a spark where the interface is
                 Spark.draw(p_half);
             } else {
-                this.draw_solid_color(wire_off_color);
+                this.drawSolidColor(wire_off_color);
             }
         } else {
-            this.draw_solid_color(wire_off_color);
+            this.drawSolidColor(wire_off_color);
         }
 
         for(let i=0; i<this.powering.length; i++) {
@@ -178,7 +175,7 @@ class Wire implements Conductor {
     }
 
     /** Call this to draw the wire in one solid color */
-    private draw_solid_color(wire_off_color: string | CanvasGradient) {
+    private drawSolidColor(wire_off_color: string | CanvasGradient) {
         let color = this.power_state === Power.ON ? WIRE_ON_COLOR : wire_off_color;
         glb.ctx.strokeStyle = color;
         glb.ctx.beginPath();

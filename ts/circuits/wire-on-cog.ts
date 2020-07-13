@@ -26,14 +26,18 @@ class WireOnCog {
     private arc_length: number;
     /** The time it takes the power to move thru the arc part of the wire */
     private arc_wire_time: number;
+    /** The total time taken to pass this wire */
+    private wire_time: number;
+
+    /** List of the cog terminals this pushes power to */
     public out_terminals: CogTerminalConnector[] = [];
 
 
     /** where the power is coming from, or no if it's off */
     private power_from: "en" | "ex" | "no";
-    /** When power first got to this wire */
-    private time_on = 0;
-    private is_on = false;
+    /** Time when the wire was last switched on */
+    private switch_time = 0;
+    private power_state = Power.OFF;
 
     /** The radius of the circle that the wire inscribes in the arc */
     private mid_r: number;
@@ -77,39 +81,59 @@ class WireOnCog {
         this.ex_vec = ex_wire_info[1];
         this.en_wire_time = en_wire_info[0]/SOL;
         this.ex_wire_time = ex_wire_info[0]/SOL;
+        this.wire_time = this.en_wire_time + this.ex_wire_time + this.arc_wire_time;
     }
 
-    power(on: boolean, from: CogTerminal): void {
-        if(on){
-            this.time_on = performance.now();
+    /** Call this when the underlying cog starts ticking */
+    startTick(start_tick_time: number) {
+        this.power_state = Power.OFF;
+        this.power_from = "no";
+        // Send the end tick signal to all out terminals
+        for(const out_terminal of this.out_terminals) {
+            out_terminal.startTick(start_tick_time);
         }
-        // Check if the power is coming from the en or ex terminal
+    }
+
+    private power_from_end(from_cog_terminal: CogTerminal): "en" | "ex" | "no" {
+        // Is it from the en side?
         const current_en_index = this.cog.getIndexOfTooth(this.enter.index);
-        const current_power_from = from.index === current_en_index ? "en" : "ex";
-        if(!on && this.power_from != current_power_from) {
-            // Prevent a cog wire from being shut down by a lack of power from the un-powered side
+        if(current_en_index === from_cog_terminal.index){
+            return "en"
+        }
+
+        // Is it from the ex side?
+        const current_ex_index = this.cog.getIndexOfTooth(this.exit.index);
+        if(current_ex_index === from_cog_terminal.index){
+            return "ex"
+        }
+
+        return "no";
+    }
+
+    power(on: boolean, from: CogTerminal, switch_time: number): void {
+        if(isOn(this.power_state) === on) {
+            // ignore redundant signal
+            return
+        }
+
+        const powered_end = this.power_from_end(from);
+        if(powered_end === "no") {
+            // Not from a connected terminal, ignore it
             return;
+        }
+
+        if(on) {
+            this.power_from = powered_end;
+            this.switch_time = switch_time;
+            this.power_state = Power.UP;
         } else {
-            this.is_on = on;
-            if(!on) {
-                this.power_from = "no";
-            } else {
-                this.power_from = current_power_from;
+            this.power_from = "no";
+            this.power_state = Power.OFF;
+            // in this case, propagate the off message instantly
+            for(const out_terminal of this.out_terminals) {
+                out_terminal.power(false, switch_time);
             }
         }
-        // Wait for as long as the charge needs to pass thru the wire, then power children
-        window.setTimeout(
-            () => {
-                const power_from = this.power_from === "en" ? this.exit : this.enter;
-                for(const out_terminal of this.out_terminals) {
-                    if(this.terminalConnectedWith(out_terminal.getInTerminal(), power_from)){
-                        out_terminal.power(this.is_on, performance.now());
-                    }
-                }
-                if(!this.is_on) this.power_from = "no";
-            },
-            this.en_wire_time + this.arc_wire_time + this.ex_wire_time
-        )
     }
 
     /**
@@ -130,97 +154,123 @@ class WireOnCog {
             this.terminalConnectedWith(terminal, this.exit);
     }
 
-    draw(): void {
-        const time_powered = glb.time - this.time_on;
-        const total_wire_time = this.en_wire_time + this.arc_wire_time + this.ex_wire_time;
-        const wire_off_color = glb.kudzu_story_controller.getWireColor(this.cog.getCenter().x);
-        if(!this.is_on || time_powered > total_wire_time) {
-            // if the wire is off, or fully on
-            glb.ctx.strokeStyle = this.is_on ? WIRE_ON_COLOR : wire_off_color;
-            glb.ctx.beginPath();
-            glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
-            glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
-            glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
-            glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-            glb.ctx.stroke();
-        } else {
-            // only going to draw some in the on color
-            // determine the color that is at the en and ex points
-            const en_color = this.power_from === "en" ? WIRE_ON_COLOR : wire_off_color;
-            const ex_color = this.power_from === "ex" ? WIRE_ON_COLOR : wire_off_color;
-            // determine the powered time equivalent. this is just powered time
-            // if starting from the en, but from ex, it will be the inverse since
-            // the red line needs to move "backwards"
-            const pte = this.power_from === "en" ? time_powered : total_wire_time - time_powered;
-            if(pte < this.en_wire_time){
-                // The split happens on the en wire
-                const mid_p: Point = {
-                    x: this.en_p0.x - this.en_vec.x * pte * SOL,
-                    y: this.en_p0.y - this.en_vec.y * pte * SOL,
-                }
-                glb.ctx.strokeStyle = en_color;
-                glb.ctx.beginPath();
-                glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
-                glb.ctx.lineTo(mid_p.x, mid_p.y);
-                glb.ctx.stroke();
-                // Then draw the rest
-                glb.ctx.strokeStyle = ex_color;
-                glb.ctx.beginPath();
-                glb.ctx.moveTo(mid_p.x, mid_p.y);
-                glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
-                glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
-                glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-                glb.ctx.stroke();
-                Spark.draw(mid_p);
-            } else if (pte < this.en_wire_time + this.arc_wire_time) {
-                // split the arc
-                const arc_time = pte - this.en_wire_time;
-                // the portion of the arc passed thru
-                const arc_fraction = arc_time / this.arc_wire_time;
-                // Find the point where the power split happens
-                const arc_split = this.en_arc + this.arc_length * arc_fraction;
-                // Draw it
-                glb.ctx.strokeStyle = en_color;
-                glb.ctx.beginPath();
-                glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
-                glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
-                glb.ctx.arc(0, 0, this.mid_r, this.en_arc, arc_split);
-                glb.ctx.stroke();
-                // Then draw the rest
-                // First find the point to start from
-                const start_p = getPoint(this.mid_r, arc_split);
-                glb.ctx.strokeStyle = ex_color;
-                glb.ctx.beginPath();
-                glb.ctx.moveTo(start_p.x, start_p.y);
-                glb.ctx.arc(0, 0, this.mid_r, arc_split, this.ex_arc);
-                glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-                glb.ctx.stroke();
-                Spark.draw(start_p);
-            } else {
-                // The split is in the exit wire
-                const wire_time = pte - this.en_wire_time - this.arc_wire_time;
-                const mid_p: Point = {
-                    x: this.ex_p1.x - this.ex_vec.x * wire_time * SOL,
-                    y: this.ex_p1.y - this.ex_vec.y * wire_time * SOL,
-                }
-                glb.ctx.strokeStyle = en_color;
-                glb.ctx.beginPath();
-                glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
-                glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
-                glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
-                glb.ctx.lineTo(mid_p.x, mid_p.y);
-                glb.ctx.stroke();
-                // Then draw the rest
-                glb.ctx.strokeStyle = ex_color;
-                glb.ctx.beginPath();
-                glb.ctx.moveTo(mid_p.x, mid_p.y);
-                glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
-                glb.ctx.stroke();
-                Spark.draw(mid_p);
+    checkPowerStatus(time_since_switch: number) {
+        // If the power has had time to propagate
+        if(time_since_switch >= this.wire_time) {
+            // is this wire now on?
+            const on = isOn(this.power_state)
+            // send the signal to the next conductors in line
+            // The time that the wire was powered thru (can be in the past)
+            const switch_time = glb.time - (time_since_switch - this.wire_time);
+            for(let outs of this.out_terminals){
+                outs.power(on, switch_time);
             }
+            // Set power_state of this wire
+            this.power_state = on ? Power.ON : Power.OFF;
+        }
+    }
+
+    draw(): void {
+        const wire_off_color = glb.kudzu_story_controller.getWireColor(this.cog.getCenter().x);
+        if(isTransition(this.power_state)) {
+            // Determine if the wire should switch to full on
+            const time_since_switch = glb.time - this.switch_time;
+            this.checkPowerStatus(time_since_switch);
+            // ensure this is still in transition
+            if(isTransition(this.power_state)){
+                // only going to draw some in the on color
+                // determine the color that is at the en and ex points
+                const en_color = this.power_from === "en" ? WIRE_ON_COLOR : wire_off_color;
+                const ex_color = this.power_from === "ex" ? WIRE_ON_COLOR : wire_off_color;
+                // determine the powered time equivalent. this is just powered time
+                // if starting from the en, but from ex, it will be the inverse since
+                // the red line needs to move "backwards"
+                const pte = this.power_from === "en" ? time_since_switch : this.wire_time - time_since_switch;
+                if(pte < this.en_wire_time){
+                    // The split happens on the en wire
+                    const mid_p: Point = {
+                        x: this.en_p0.x - this.en_vec.x * pte * SOL,
+                        y: this.en_p0.y - this.en_vec.y * pte * SOL,
+                    }
+                    glb.ctx.strokeStyle = en_color;
+                    glb.ctx.beginPath();
+                    glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                    glb.ctx.lineTo(mid_p.x, mid_p.y);
+                    glb.ctx.stroke();
+                    // Then draw the rest
+                    glb.ctx.strokeStyle = ex_color;
+                    glb.ctx.beginPath();
+                    glb.ctx.moveTo(mid_p.x, mid_p.y);
+                    glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                    glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+                    glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                    glb.ctx.stroke();
+                    Spark.draw(mid_p);
+                } else if (pte < this.en_wire_time + this.arc_wire_time) {
+                    // split the arc
+                    const arc_time = pte - this.en_wire_time;
+                    // the portion of the arc passed thru
+                    const arc_fraction = arc_time / this.arc_wire_time;
+                    // Find the point where the power split happens
+                    const arc_split = this.en_arc + this.arc_length * arc_fraction;
+                    // Draw it
+                    glb.ctx.strokeStyle = en_color;
+                    glb.ctx.beginPath();
+                    glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                    glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                    glb.ctx.arc(0, 0, this.mid_r, this.en_arc, arc_split);
+                    glb.ctx.stroke();
+                    // Then draw the rest
+                    // First find the point to start from
+                    const start_p = getPoint(this.mid_r, arc_split);
+                    glb.ctx.strokeStyle = ex_color;
+                    glb.ctx.beginPath();
+                    glb.ctx.moveTo(start_p.x, start_p.y);
+                    glb.ctx.arc(0, 0, this.mid_r, arc_split, this.ex_arc);
+                    glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                    glb.ctx.stroke();
+                    Spark.draw(start_p);
+                } else {
+                    // The split is in the exit wire
+                    const wire_time = pte - this.en_wire_time - this.arc_wire_time;
+                    const mid_p: Point = {
+                        x: this.ex_p1.x - this.ex_vec.x * wire_time * SOL,
+                        y: this.ex_p1.y - this.ex_vec.y * wire_time * SOL,
+                    }
+                    glb.ctx.strokeStyle = en_color;
+                    glb.ctx.beginPath();
+                    glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+                    glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+                    glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+                    glb.ctx.lineTo(mid_p.x, mid_p.y);
+                    glb.ctx.stroke();
+                    // Then draw the rest
+                    glb.ctx.strokeStyle = ex_color;
+                    glb.ctx.beginPath();
+                    glb.ctx.moveTo(mid_p.x, mid_p.y);
+                    glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+                    glb.ctx.stroke();
+                    Spark.draw(mid_p);
+                }
+            } else {
+                this.drawSolidColor(wire_off_color);
+            }
+        } else {
+            this.drawSolidColor(wire_off_color);
         }
         for(let i=0; i<this.out_terminals.length; i++){
             this.out_terminals[i].draw();
         }
+    }
+
+    /** Draw this as one solid color */
+    drawSolidColor(wire_off_color: string | CanvasGradient) {
+        glb.ctx.strokeStyle = isOn(this.power_state) ? WIRE_ON_COLOR : wire_off_color;
+        glb.ctx.beginPath();
+        glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);
+        glb.ctx.lineTo(this.en_p1.x, this.en_p1.y);
+        glb.ctx.arc(0, 0, this.mid_r, this.en_arc, this.ex_arc);
+        glb.ctx.lineTo(this.ex_p0.x, this.ex_p0.y);
+        glb.ctx.stroke();
     }
 }

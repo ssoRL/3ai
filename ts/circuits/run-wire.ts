@@ -36,7 +36,7 @@ class RunWire {
         const wire = new Wire(terminal_point, terminal_point);
 
         // connect that wire to the cog
-        new CogTerminalConnector([cog, terminal], wire);
+        new CogTerminalConnector(ctp(cog, terminal), wire)
         if(!cog.etched_wire) {
             throw "3AI Error: You may not attach a terminal out from a cog with no wire!"
         }
@@ -64,9 +64,9 @@ class RunWire {
             {x: from_point.x, y: to_point.y}
         );
         const out_wire = new Wire(from_point, midpoint);
-        new CogTerminalConnector([from_cog, from_terminal], out_wire);
+        new CogTerminalConnector(ctp(from_cog, from_terminal), out_wire);
         const in_wire = out_wire.addPoweredWireToPoint(to_point);
-        new CogTerminalConnector(in_wire, [to_cog, to_terminal]);
+        new CogTerminalConnector(in_wire, ctp(to_cog, to_terminal));
     }
 
     public static betweenCogTerminalsThreeStep(
@@ -82,7 +82,7 @@ class RunWire {
         const to_terminal = {index: to_index, outer: true};
         const from_point = from_cog.getCogTerminalPoint(from_terminal);
         const to_point = to_cog.getCogTerminalPoint(to_terminal);
-        const midpoint_coord = (
+        const midpoint_coordinate = (
             ori === "horz" ?
             (from_point.x + to_point.x) / 2 :
             (from_point.y + to_point.y) / 2
@@ -90,18 +90,18 @@ class RunWire {
         // The point leading away 
         const midpoint1: Point = (
             ori === "horz" ?
-            {x: midpoint_coord, y: from_point.y} : 
-            {x: from_point.x, y: midpoint_coord}
+            {x: midpoint_coordinate, y: from_point.y} : 
+            {x: from_point.x, y: midpoint_coordinate}
         );
         // the point before going straight to the end
         const midpoint2: Point = (
             ori === "horz" ?
-            {x: midpoint_coord, y: to_point.y} : 
-            {x: to_point.x, y: midpoint_coord}
+            {x: midpoint_coordinate, y: to_point.y} : 
+            {x: to_point.x, y: midpoint_coordinate}
         )
         const out_wire = new Wire(from_point, midpoint1);
-        new CogTerminalConnector([from_cog, from_terminal], out_wire);
+        new CogTerminalConnector(ctp(from_cog, from_terminal), out_wire);
         const in_wire = out_wire.addPoweredWireToPoint(midpoint2).addPoweredWireToPoint(to_point);
-        new CogTerminalConnector(in_wire, [to_cog, to_terminal]);
+        new CogTerminalConnector(in_wire, ctp(to_cog, to_terminal));
     }
 }
