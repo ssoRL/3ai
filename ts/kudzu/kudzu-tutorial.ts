@@ -105,10 +105,10 @@ class KudzuTutorial {
             this.is_started = true;
         }
 
-        this.wire.power(true);
+        this.wire.power(true, performance.now());
 
         this.click_gem.onclick = () => {
-            this.click_gem.powerThru();
+            this.click_gem.powerThru(performance.now());
             this.gemClicked();
             this.click_gem.onclick = () => {};
         }
@@ -126,7 +126,7 @@ class KudzuTutorial {
 
     private gemClicked() {
         this.conjunction_gem.onclick = () => {
-            this.conjunction_gem.powerThru();
+            this.conjunction_gem.powerThru(performance.now());
             this.conjunctionPowered();
             this.conjunction_gem.onclick = () => {};
         }
@@ -144,7 +144,7 @@ class KudzuTutorial {
 
     private conjunctionPowered() {
         this.cog_gem.onclick = () => {
-            this.cog_gem.powerThru();
+            this.cog_gem.powerThru(performance.now());
             this.cog.activate(true);
             this.tick();
             this.prepEnd();
@@ -167,7 +167,7 @@ class KudzuTutorial {
             new Popup(
                 'popups/story-at.html',
                 () => {
-                    this.big_gem.powerThru(true);
+                    this.big_gem.powerThru(performance.now(), true);
                     glb.kudzu_story_controller.prep_end();
                 }    
             )

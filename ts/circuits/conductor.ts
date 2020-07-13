@@ -1,4 +1,4 @@
 interface Conductor {
-    power(on: boolean): void;
+    power(on: boolean, switch_time: number): void;
     draw(): void;
 }

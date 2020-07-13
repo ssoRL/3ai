@@ -108,7 +108,7 @@ class Wire implements Conductor {
         this.powering.push(terminal);
     }
 
-    power(on: boolean): void {
+    power(on: boolean, switch_time: number): void {
         if(
             on && this.power_state === Power.OFF || 
             !on && this.power_state === Power.ON
@@ -125,8 +125,10 @@ class Wire implements Conductor {
             // is this wire now on?
             const on = isOn(this.power_state)
             // send the signal to the next conductors in line
+            // The time that the wire was powered thru (can be in the past)
+            const switch_time = glb.time - (time_since_switch - this.wire_time)
             for(let conductor of this.powering){
-                conductor.power(on);
+                conductor.power(on, switch_time);
             }
             // Set power_state of this wire
             this.power_state = on ? Power.ON : Power.OFF;

@@ -122,7 +122,7 @@ class KudzuStoryController {
             await before_power;
         }
 
-        glb.wire0.power(true);
+        glb.wire0.power(true, performance.now());
 
         // Reset the badges' transition property so that they react right
         // call offsetHeight to flush css transition change

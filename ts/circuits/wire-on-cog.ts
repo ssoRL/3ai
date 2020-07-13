@@ -103,7 +103,7 @@ class WireOnCog {
                 const power_from = this.power_from === "en" ? this.exit : this.enter;
                 for(const out_terminal of this.out_terminals) {
                     if(this.terminalConnectedWith(out_terminal.getInTerminal(), power_from)){
-                        out_terminal.power(this.is_on);
+                        out_terminal.power(this.is_on, performance.now());
                     }
                 }
                 if(!this.is_on) this.power_from = "no";

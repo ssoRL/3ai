@@ -124,7 +124,7 @@ class AndGate {
 
             window.setTimeout(
                 () => {
-                    this.powering.power(this.is_on);
+                    this.powering.power(this.is_on, performance.now());
                     this.orb.power(this.is_on);
                 },
                 this.is_on ? AND_POWER_UP_TIME : AND_POWER_DOWN_TIME

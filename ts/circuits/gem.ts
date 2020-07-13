@@ -8,9 +8,9 @@ class GemTerminal implements Conductor {
         this.orientation = orientation_;
     }
 
-    power(on: boolean): void {
+    power(on: boolean, switch_time: number): void {
         this.is_on = on;
-        this.parent.power();
+        this.parent.power(switch_time);
     }
 
     draw(): void {
@@ -108,7 +108,7 @@ class Gem implements Clickable {
         }
     }
 
-    power(){
+    power(switch_time: number){
         // Turn this gem on if all terminals are powered
         this.is_on = (() => {
             for(const t of this.terminals) {
@@ -119,7 +119,7 @@ class Gem implements Clickable {
             return true;
         })();
 
-        if(!this.wait_to_power_out) this.powerOut();
+        if(!this.wait_to_power_out) this.powerOut(switch_time);
 
         // If this gem is turned on, turn on the orb
         if(this.is_on && !this.is_active) {
@@ -130,10 +130,10 @@ class Gem implements Clickable {
         }
     }
 
-    private powerOut(force_power = false) {
+    private powerOut(switch_time: number, force_power = false) {
         // power up out wires
         for(const t of this.terminals) {
-            if(t[1] instanceof Wire) t[1].power(this.is_on || force_power);
+            if(t[1] instanceof Wire) t[1].power(this.is_on || force_power, switch_time);
         }
     }
 
@@ -148,9 +148,9 @@ class Gem implements Clickable {
         this.onclick();
     }
 
-    public powerThru(force_power = false) {
+    public powerThru(switch_time: number, force_power = false) {
         this.wait_to_power_out = false;
-        if(this.is_on || force_power) this.powerOut(force_power);
+        if(this.is_on || force_power) this.powerOut(switch_time, force_power);
     }
 
     addGlow(glow: number){

@@ -62,10 +62,10 @@ class CogTerminalConnector implements Conductor, TickWatcher {
         return cog_wire.isConnectedWith(source[1]);
     }
 
-    private sendPowerIfConnected(){
+    private sendPowerIfConnected(switch_time: number){
         if(this.in_connected && this.out_connected){
             if(this.out_power instanceof Wire) {
-                this.out_power.power(this.is_on);
+                this.out_power.power(this.is_on, switch_time);
             } else {
                 const cog_wire = this.out_power[0].etched_wire;
                 cog_wire?.power(this.is_on, this.out_power[1]);
@@ -73,11 +73,11 @@ class CogTerminalConnector implements Conductor, TickWatcher {
         }
     }
 
-    public power(on: boolean): void {
+    public power(on: boolean, switch_time: number): void {
         this.in_connected = this.isConnected(this.in_power);
         this.out_connected = this.isConnected(this.out_power);
         this.is_on = on;
-        this.sendPowerIfConnected();
+        this.sendPowerIfConnected(switch_time);
     }
 
     // Break all connections when a tick starts
@@ -88,7 +88,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
             this.is_on = false;
         }
         if(this.out_power instanceof Wire) {
-            this.out_power.power(false);
+            this.out_power.power(false, glb.time);
         }else{
             this.out_power[0].etched_wire?.power(false, this.out_power[1]);
         }
@@ -96,7 +96,7 @@ class CogTerminalConnector implements Conductor, TickWatcher {
     
     endTick(): void {
         // Trigger a power call here to check connections and send power if warranted
-        this.power(this.is_on);
+        this.power(this.is_on, glb.time);
     }
     
     draw(): void {
