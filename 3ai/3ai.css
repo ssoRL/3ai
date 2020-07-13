@@ -1,6 +1,11 @@
 html body {
     margin: 0;
     background: gray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
 }
 
 #container {
@@ -8,6 +13,8 @@ html body {
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
+    width: calc(100vmin - 40px);
+    height: calc(100vmin - 40px);
 }
 
 #canvas {
@@ -376,4 +383,29 @@ a.kudzu-skip {
 
 .popup-acknowledgement {
     font-family: sans-serif;
+}
+
+#header {
+    flex: 1 20px;
+
+}
+
+#footer {
+    width: 100%;
+    flex: 1 20px;
+    align-items: end;
+    display: flex;
+    flex-direction: row;
+}
+
+#footer span {
+    flex-grow: 1;
+}
+
+#reset {
+    flex-grow: 0;
+    font-size: medium;
+    color: darkslategray;
+    cursor: pointer;
+    margin: 5px;
 }

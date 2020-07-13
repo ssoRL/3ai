@@ -10,10 +10,14 @@ class CanvasController {
     private scale = 1;
     public offset: Point = {x: 0, y: 0};
     private clickables: Clickable[] = [];
+    private reset_height: number;
+    private reset_width: number;
 
     constructor(canvas_: HTMLCanvasElement, canvas_container_: HTMLDivElement){
         this.canvas = canvas_;
         this.canvas_container = canvas_container_;
+
+        this.setupResetButton();
 
         window.addEventListener("resize", () => {
             this.updateScale();
@@ -68,13 +72,8 @@ class CanvasController {
     }
 
     private updateScale(){
-        const w = document.documentElement.clientWidth;
-        const h = document.documentElement.clientHeight;
-        const canvas_size = Math.min(w, h) - 20;
+        const canvas_size = this.canvas.clientWidth;
         this.scale = canvas_size / CANVAS_DEFINED_SIZE;
-        this.canvas_container.style.width = `${canvas_size}px`;
-        this.canvas_container.style.height = `${canvas_size}px`;
-        this.canvas_container.style.margin = `calc((100vh - ${canvas_size}px)/2) auto`;
     }
 
     public setTransform(){
@@ -90,5 +89,16 @@ class CanvasController {
         const below_frame = y_top > this.offset.y + CANVAS_DEFINED_SIZE;
         const above_frame = y_top + height < this.offset.y;
         return !(below_frame || above_frame);
+    }
+
+    private setupResetButton() {
+        const reset_button = getDocumentElementById("reset");
+        this.reset_height = reset_button.clientHeight + 5;
+        this.reset_width = reset_button.clientWidth + 10;
+        reset_button.onclick = () => {
+            Cookies.remove(ORTH_COOKIE_NAME);
+            Cookies.remove(KUDZU_COOKIE_NAME);
+            location.reload();
+        }
     }
 }
