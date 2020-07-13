@@ -14,9 +14,9 @@ class AndTerminal implements Conductor {
         return this.p;
     }
 
-    public power(on: boolean): void {
+    public power(on: boolean, switch_time: number): void {
         this.is_on = on;
-        this.to.power(on, this.is_left_terminal);
+        this.to.power(on, this.is_left_terminal, switch_time);
     }
 
     public draw(): void {
@@ -40,7 +40,7 @@ class AndGate {
     private p: Point;
     private ori: CardinalOrientation;
     private time_switched = 0;
-    private is_on = false;
+    private power_state = Power.OFF;
     private orb: GlowingOrb;
 
     /** The radius of the circle describing this AND gate */
@@ -102,7 +102,7 @@ class AndGate {
         }
     }
 
-    public power(on: boolean, from_left: boolean){
+    public power(on: boolean, from_left: boolean, switch_time: number){
         let will_be_on: boolean;
         if(!on){
             will_be_on = false;
@@ -113,27 +113,43 @@ class AndGate {
         }
 
         // check if is_on needs to be switched
-        if(this.is_on !== will_be_on) {
-            this.time_switched = performance.now();
-            this.is_on = will_be_on;
+        if(isOn(this.power_state) !== will_be_on) {
+            this.time_switched = switch_time;
+            this.power_state = will_be_on ? Power.UP : Power.DOWN;
 
-            // If this is on, turn on the orb
+            // If this is powering up turn on the orb
             if(will_be_on) {
-                this.orb.addGlow(AndGate.MAX_GLOW);
+                this.orb.power(will_be_on)
             }
-
-            window.setTimeout(
-                () => {
-                    this.powering.power(this.is_on, performance.now());
-                    this.orb.power(this.is_on);
-                },
-                this.is_on ? AND_POWER_UP_TIME : AND_POWER_DOWN_TIME
-            )
         }
     }
 
     public isOn(){
-        return this.is_on;
+        return isOn(this.power_state);
+    }
+
+    /** Call this each draw cycle to determine if this wire is done */
+    private checkPowerStatus(time_since_switch: number, time_to_switch_out: number) {
+        // is this gate moving towards the on or off state
+        const to_on = isOn(this.power_state)
+        if(time_since_switch >= time_to_switch_out) {
+            // send the signal to the next conductors in line
+            // The time that the wire was powered thru (can be in the past)
+            const switch_time = glb.time - (time_since_switch - time_to_switch_out)
+            this.powering.power(to_on, switch_time);
+            
+            // Set power_state of this wire
+            this.power_state = to_on ? Power.ON : Power.OFF;
+
+            // handle the orb
+            if(to_on) {
+                // bring it to maximum glow
+                this.orb.addGlow(AndGate.MAX_GLOW)
+            } else {
+                // turn it off
+                this.orb.power(false);
+            }
+        }
     }
 
     public draw() {
@@ -172,18 +188,19 @@ class AndGate {
             glb.ctx.stroke();
         }
 
-        // Then place an orb in the center
-        if(!this.is_on) {
-            // if the orb is turning off, having to phase down the strength
-            const power_time = glb.time - this.time_switched;
-            const charge_ratio = power_time/AND_POWER_DOWN_TIME;
-            if(charge_ratio < 1) {
-                // Then there is something happening, set a new glow strength
+        // check the status
+        if(isTransition(this.power_state)) {
+            const time_since_switch = glb.time - this.time_switched;
+            const time_to_switch_out = isOn(this.power_state) ? AND_POWER_UP_TIME : AND_POWER_DOWN_TIME;
+            this.checkPowerStatus(time_since_switch, time_to_switch_out);
+            // if still transitional, animate the orb's glow
+            if(isTransition(this.power_state)) {
+                const charge_ratio = time_since_switch/time_to_switch_out;
                 const glow_ratio = 1 - charge_ratio;
-                // Set the strength
                 this.orb.addGlow(glow_ratio*AndGate.MAX_GLOW);
             }
         }
+        // Then place an orb in the center
         this.orb.draw(p(0, -AndGate.RADIUS/2.2), glb.kudzu_story_controller.colorInOrbs(this.p.x));
     }  
 }

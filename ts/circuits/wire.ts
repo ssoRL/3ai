@@ -116,7 +116,7 @@ class Wire implements Conductor {
     }
 
     /** Call this each draw cycle to determine if this wire is done */
-    check_power_status(time_since_switch: number) {
+    private check_power_status(time_since_switch: number) {
         // If the power has had time to propagate
         if(time_since_switch >= this.wire_time) {
             // is this wire now on?
@@ -132,7 +132,7 @@ class Wire implements Conductor {
         }
     }
 
-    draw() {
+    public draw() {
         glb.canvas_controller.setTransform();
         const wire_off_color = glb.kudzu_story_controller.getWireColor();
         if(isTransition(this.power_state)){
