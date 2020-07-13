@@ -2,7 +2,7 @@
 const TICK_LENGTH = 400;
 
 /** How often to call for a new tick */
-const TICK_EVERY = 2000
+const TICK_EVERY = 1500
 
 /** The number of milliseconds needed before this gate powers up  */
 const AND_POWER_UP_TIME = 10;

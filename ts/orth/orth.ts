@@ -1,5 +1,5 @@
 /** The time taken to shift from the main screen to the kudzu story screen */
-const TICKS_AT_START = 4;
+const TICKS_AT_START = 3;
 
 class OrthStoryController {
     public done = false;

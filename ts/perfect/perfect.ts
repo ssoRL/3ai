@@ -46,14 +46,12 @@ class PerfectStoryController {
         const step_number = 30;
         this.addGlow(0, step_number, step_time, max_glow, gem);
         // transition the screen to totally white
+        this.screen.classList.add("white-out");
+
+        // wait a few seconds (1 more than the 3s transition time)
         await new Promise((resolve) => {
-            this.screen.ontransitionend = resolve;
-            this.screen.classList.add("white-out");
+            window.setTimeout(resolve, 4000);
         });
-        // wait a seconds
-        await new Promise((resolve) => {
-            window.setTimeout(resolve, 1000);
-        })
         // Remove glow
         gem.addGlow(0);
         // Add the perfect title card
