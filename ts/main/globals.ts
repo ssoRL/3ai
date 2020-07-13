@@ -40,5 +40,7 @@ class ThreeAIGlobals {
 
         this.canvas_controller = new CanvasController(canvas, canvas_container);
         this.ctx = context;
+
+        this.time = performance.now();
     }
 }

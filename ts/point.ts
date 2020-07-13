@@ -28,5 +28,9 @@ function getLengthAndUnitVector(p0: Point, p1: Point): [number, {x: number, y: n
     const xd = p1.x - p0.x;
     const yd = p1.y - p0.y;
     const l = Math.sqrt(xd*xd + yd*yd);
-    return [l, {x: xd/l, y: yd/l}];
+    if(l !== 0) {
+        return [l, {x: xd/l, y: yd/l}];
+    } else {
+        return [0, {x:0, y:0}];
+    }
 }

@@ -8,7 +8,7 @@ class Wire implements Conductor {
     /** The number of milliseconds it takes charge to pass thru this wire */
     private wire_time: number;
     /** Whether there is power running to this wire */
-    private is_on = false;
+    private power_state: Power = Power.OFF;
     /** When the last on/off signal arrived */
     private time_switched = 0;
 
@@ -109,58 +109,79 @@ class Wire implements Conductor {
     }
 
     power(on: boolean): void {
-        if(this.is_on !== on) {
-            this.time_switched = performance.now();
-            this.is_on = on;
-            window.setTimeout(
-                () => {
-                    for(let conductor of this.powering){
-                        conductor.power(this.is_on);
-                    }
-                },
-                this.wire_time
-            );
+        if(
+            on && this.power_state === Power.OFF || 
+            !on && this.power_state === Power.ON
+        ) {
+            this.time_switched = glb.time;
+            this.power_state = on ? Power.UP : Power.DOWN;
+        }
+    }
+
+    /** Call this each draw cycle to determine if this wire is done */
+    check_power_status(time_since_switch: number) {
+        // If the power has had time to propagate
+        if(time_since_switch >= this.wire_time) {
+            // is this wire now on?
+            const on = isOn(this.power_state)
+            // send the signal to the next conductors in line
+            for(let conductor of this.powering){
+                conductor.power(on);
+            }
+            // Set power_state of this wire
+            this.power_state = on ? Power.ON : Power.OFF;
         }
     }
 
     draw() {
         glb.canvas_controller.setTransform();
-        const time_powered = glb.time - this.time_switched;
         const wire_off_color = glb.kudzu_story_controller.getWireColor();
-        if(time_powered < this.wire_time){
-            // Determine which color is new, and which old
-            const newColor = this.is_on ? WIRE_ON_COLOR : wire_off_color;
-            const oldColor = !this.is_on ? WIRE_ON_COLOR : wire_off_color;
-            // If the wire is in the middle of being powered...
-            const p_half: Point = {
-                x: this.p0.x + this.vec.x * time_powered * SOL,
-                y: this.p0.y + this.vec.y * time_powered * SOL
+        if(isTransition(this.power_state)){
+            const time_since_switch = glb.time - this.time_switched;
+            this.check_power_status(time_since_switch);
+            // Then, if still in transition
+            if(isTransition(this.power_state)) {
+                // Determine which color is new, and which old
+                const newColor = this.power_state === Power.UP ? WIRE_ON_COLOR : wire_off_color;
+                const oldColor = this.power_state === Power.DOWN ? WIRE_ON_COLOR : wire_off_color;
+                // If the wire is in the middle of being powered...
+                const p_half: Point = {
+                    x: this.p0.x + this.vec.x * time_since_switch * SOL,
+                    y: this.p0.y + this.vec.y * time_since_switch * SOL
+                }
+                // ...draw this wire in white as far as the power has gotten...
+                glb.ctx.strokeStyle = newColor;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(this.p0.x, this.p0.y);
+                glb.ctx.lineTo(p_half.x, p_half.y);
+                glb.ctx.stroke();
+                // ...then the rest in wire off color
+                glb.ctx.strokeStyle = oldColor;
+                glb.ctx.beginPath();
+                glb.ctx.moveTo(p_half.x, p_half.y);
+                glb.ctx.lineTo(this.p1.x, this.p1.y);
+                glb.ctx.stroke();
+                // finally draw a spark where the interface is
+                Spark.draw(p_half);
+            } else {
+                this.draw_solid_color(wire_off_color);
             }
-            // ...draw this wire in white as far as the power has gotten...
-            glb.ctx.strokeStyle = newColor;
-            glb.ctx.beginPath();
-            glb.ctx.moveTo(this.p0.x, this.p0.y);
-            glb.ctx.lineTo(p_half.x, p_half.y);
-            glb.ctx.stroke();
-            // ...then the rest in wire off color
-            glb.ctx.strokeStyle = oldColor;
-            glb.ctx.beginPath();
-            glb.ctx.moveTo(p_half.x, p_half.y);
-            glb.ctx.lineTo(this.p1.x, this.p1.y);
-            glb.ctx.stroke();
-            // finally draw a spark where the interface is
-            Spark.draw(p_half);
         } else {
-            // If the wire is full on or off, draw with only one color
-            let color = this.is_on ? WIRE_ON_COLOR : wire_off_color;
-            glb.ctx.strokeStyle = color;
-            glb.ctx.beginPath();
-            glb.ctx.moveTo(this.p0.x, this.p0.y);
-            glb.ctx.lineTo(this.p1.x, this.p1.y);
-            glb.ctx.stroke();
+            this.draw_solid_color(wire_off_color);
         }
+
         for(let i=0; i<this.powering.length; i++) {
             this.powering[i].draw();
         }
+    }
+
+    /** Call this to draw the wire in one solid color */
+    private draw_solid_color(wire_off_color: string | CanvasGradient) {
+        let color = this.power_state === Power.ON ? WIRE_ON_COLOR : wire_off_color;
+        glb.ctx.strokeStyle = color;
+        glb.ctx.beginPath();
+        glb.ctx.moveTo(this.p0.x, this.p0.y);
+        glb.ctx.lineTo(this.p1.x, this.p1.y);
+        glb.ctx.stroke();
     }
 }
