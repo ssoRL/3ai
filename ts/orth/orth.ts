@@ -176,7 +176,6 @@ class OrthStoryController {
         orth_badge.classList.remove("big-card");
         orth_badge.classList.add("small-card");
         orth_badge.classList.add("story-done");
-        const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
         re_button.classList.add("sidelined");
 
         // wait until this transition is done

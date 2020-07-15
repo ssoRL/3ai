@@ -244,7 +244,7 @@ class KudzuStoryController {
             const html_story_paragraph = document.createElement("div");
             html_story_paragraph.classList.add("kudzu-story-paragraph");
             html_story_section.appendChild(html_story_paragraph);
-            await this.fillInString(html_story_paragraph, paragraph, 15);
+            await this.fillInString(html_story_paragraph, paragraph, 50);
         }
 
         // Add the flexible center
@@ -291,13 +291,13 @@ class KudzuStoryController {
             const fill = () => {
                 if(!ghost_typist.isDone()) {
                     // not done, add the partial string
-                    element.innerText = ghost_typist.getCurrentString();
+                    element.innerHTML = ghost_typist.getCurrentString();
                     // then set up a event for the next animation
                     window.requestAnimationFrame(fill);
 
                 } else {
                     // done, add the full string and end this loop
-                    element.innerText = content;
+                    element.innerHTML = ghost_typist.getCurrentString();
                     resolve();
                 }
             }

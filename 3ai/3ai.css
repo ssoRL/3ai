@@ -86,8 +86,11 @@ html body {
 }
 
 .kudzu-intro {
-    font-style: italic;
     text-align: center;
+}
+
+.kudzu-italics {
+    font-style: italic;
 }
 
 #kudzu-story-text.sidelined {

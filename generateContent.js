@@ -24,6 +24,6 @@ var kudzuSections = readKudzu.split('\n\nkudzusectionbreak\n\n');
 var kudzuParagraphs = [];
 for(section of kudzuSections) {
     paragraphs = section.split('\n\n');
-    kudzuParagraphs.push(paragraphs)
+    kudzuParagraphs.push(paragraphs);
 }
 fs.writeFileSync(`${storyDir}/kudzu.json`, JSON.stringify(kudzuParagraphs));
