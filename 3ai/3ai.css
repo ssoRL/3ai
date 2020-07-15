@@ -182,7 +182,7 @@ a.kudzu-skip {
     background-color: black;
     text-align: center;
     padding: 10px 0;
-    font-size: 20px;
+    font-size: 15px;
     border: 0;
     transition: all 500ms;
     cursor: pointer;
@@ -199,14 +199,26 @@ a.kudzu-skip {
     top: -100%;
 }
 
-#orth-next {
+#orth-continue {
     bottom: 5%;
-    --width: 70px;
+    --width: 90px;
     width: var(--width);
     left: calc(50% - var(--width)/2);
 }
 
-#orth-next.sidelined {
+#orth-continue.sidelined {
+    bottom: -100%;
+}
+
+#orth-end {
+    bottom: 5%;
+    --width: 60px;
+    width: var(--width);
+    left: calc(50% - var(--width)/2);
+    font-size: 20px;
+}
+
+#orth-end.sidelined {
     bottom: -100%;
 }
 

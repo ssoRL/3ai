@@ -39,7 +39,9 @@ class OrthStoryController {
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
-        const next_button = <HTMLButtonElement>getDocumentElementById("orth-next");
+        const continue_button = <HTMLButtonElement>getDocumentElementById("orth-continue");
+        const return_button = <HTMLButtonElement>getDocumentElementById("orth-return");
+        const end_button = <HTMLButtonElement>getDocumentElementById("orth-end");
         // Add the css transition
         const transition_time = TICK_EVERY*(TICKS_AT_START - 1) + TICK_LENGTH;
         const orth_transition = `all ${transition_time}ms ease-in`;
@@ -54,12 +56,24 @@ class OrthStoryController {
         orth_badge.classList.add("repositioned");
         story_container.style.top = "10%";
 
-        // Set the next button behavior
-        next_button.onclick = (async () => {
-            next_button.disabled = true;
-            await this.scrollStory();
-            next_button.disabled = false;
-        })
+        // Set the navigation button behaviors
+        continue_button.onclick = (async () => {
+            continue_button.disabled = true;
+            await this.scrollStory('down');
+            continue_button.disabled = false;
+        });
+
+        return_button.onclick = (async () => {
+            return_button.disabled = true;
+            await this.scrollStory('up');
+            return_button.disabled = false;
+        });
+
+        end_button.onclick = this.done ?
+            // If the story was already read, just return immediately
+            this.prep_end.bind(this) :
+            // Otherwise, teach the user how cogs work
+            this.scrollStory.bind(this, 'end');
 
         this.tick(TICKS_AT_START);
         this.tickLearnStop();
@@ -70,7 +84,8 @@ class OrthStoryController {
             0, OrthStoryController.TRANSLATE_DOWN, transition_time, easer.easeTickAnimation.bind(easer)
         );
 
-        next_button.classList.remove('sidelined');
+        continue_button.classList.remove('sidelined');
+        return_button.classList.remove('sidelined')
 
 
         // Set the transition on the story container to handle the shorter scroll transitions
@@ -305,7 +320,7 @@ class OrthStoryController {
         this.drivers.learn_stop_cog.startTick(time);
     }
 
-    private async scrollStory(to_end = false) {
+    private async scrollStory(to: 'up' | 'down' | 'end') {
         const main_container = getDocumentElementById("container");
         const story_container = getDocumentElementById("orth-story-container");
 
@@ -315,26 +330,42 @@ class OrthStoryController {
         const buffer_pct = 0.1;
 
         const scroll_to = (() => {
-            if(to_end) {
-                // if the user specifically asking to go to the end of the story
-                return { scroll: 1, no_more: false };
-            } else {
-                // scroll the story down by 70% of the main height
-                const scroll_h = 0.6*main_h;
-                // Otherwise, move the page up a bit, but always fill the page
-                // max scroll is the number needed to leave only a buffer at the bottom
-                const max_scroll = 1 - (1-2*buffer_pct)*main_h/story_h;
-                const added_scroll = this.scroll + scroll_h/story_h;
-                return {
-                    scroll: Math.min(added_scroll, max_scroll),
-                    no_more: added_scroll >= max_scroll
-                };
+            switch (to) {
+                case 'end':
+                    // if the user specifically asking to go to the end of the story
+                    return { scroll: 1, no_more: true };
+                case 'down':
+                    // scroll the story down by 60% of the main height
+                    const scroll_down_h = 0.6*main_h;
+                    // Otherwise, move the page up a bit, but always fill the page
+                    // max scroll is the number needed to leave only a buffer at the bottom
+                    const max_scroll_down = 1 - (1-2*buffer_pct)*main_h/story_h;
+                    const added_scroll_down = this.scroll + scroll_down_h/story_h;
+                    return {
+                        scroll: Math.min(added_scroll_down, max_scroll_down),
+                        no_more: added_scroll_down >= max_scroll_down
+                    };
+                case 'up':
+                    // scroll the story up by 50% of the main height
+                    const scroll_up_h = 0.5*main_h;
+                    return {
+                        scroll: Math.max(this.scroll - scroll_up_h/story_h, 0),
+                        no_more: false
+                    };
             }
         })();
 
+        // At the end remove the return button
+        if(to === 'end') {
+            getDocumentElementById("orth-return").classList.add("sidelined");
+            getDocumentElementById("orth-end").classList.add("sidelined");
+        }
+
         if(scroll_to.no_more) {
-            // remove the more button
-            getDocumentElementById("orth-next").classList.add("sidelined");
+            // remove the continue button
+            getDocumentElementById("orth-continue").classList.add("sidelined");
+        } else {
+            getDocumentElementById("orth-end").classList.add("sidelined");
         }
 
         this.scroll = scroll_to.scroll;
@@ -354,20 +385,13 @@ class OrthStoryController {
             0, background_offset_y, TICK_EVERY + TICK_LENGTH
         );
 
-        if(scroll_to.no_more) {
-            this.showReturnOption();
+        if(to !== 'end'){
+            // if the story hasn't been ended yet, make sure there's a button to interact with
+            if(scroll_to.no_more) {
+                getDocumentElementById("orth-end").classList.remove("sidelined");
+            } else {
+                getDocumentElementById("orth-continue").classList.remove("sidelined");
+            }
         }
-    }
-
-    private showReturnOption() {
-        const re_button = getDocumentElementById("orth-return");
-        // attach a click action to the return button
-        re_button.onclick = this.done ?
-            // If the story was already read, just return immediately
-            this.prep_end.bind(this) :
-            // Otherwise, teach the user how cogs work
-            this.scrollStory.bind(this, true);
-        // move the button into view
-        re_button.classList.remove("sidelined");
     }
 }

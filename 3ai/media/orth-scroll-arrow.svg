@@ -1,0 +1,11 @@
+<svg viewBox="0 0 50 4" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .background { fill: black; }
+    .arrow { fill: white }
+  </style>
+
+  <rect class="background" x="0" y="0" width="100" height="100"/>
+  <!-- <polygon class="arrow" points="1,1 1,2 25,3 49,2 49,1 25,2"/> -->
+    <polygon class="arrow" points="1,1 1,1.5 25,3 49,1.5 49,1 25,1.5"/>
+
+</svg>
