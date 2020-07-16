@@ -191,25 +191,28 @@ a.kudzu-skip {
     cursor: pointer;
 }
 
-#orth-return {
-    --width: 80px;
-    width: var(--width);
-    left: calc(50% - var(--width)/2);
-    top: 5%;
+.orth-nav-button {
+    width: 10%;
+    height: 5%;
+    left: 45%;
+    background-image: url(./media/orth-scroll-arrow.svg);
+    background-size: cover;
 }
 
-#orth-return.sidelined {
+#orth-up {
+    top: 0%;
+    transform: scale(-1);
+}
+
+#orth-up.sidelined {
     top: -100%;
 }
 
-#orth-continue {
-    bottom: 5%;
-    --width: 90px;
-    width: var(--width);
-    left: calc(50% - var(--width)/2);
+#orth-down {
+    bottom: 0;
 }
 
-#orth-continue.sidelined {
+#orth-down.sidelined {
     bottom: -100%;
 }
 

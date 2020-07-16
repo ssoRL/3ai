@@ -39,8 +39,8 @@ class OrthStoryController {
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
-        const continue_button = <HTMLButtonElement>getDocumentElementById("orth-continue");
-        const return_button = <HTMLButtonElement>getDocumentElementById("orth-return");
+        const continue_button = <HTMLButtonElement>getDocumentElementById("orth-down");
+        const return_button = <HTMLButtonElement>getDocumentElementById("orth-up");
         const end_button = <HTMLButtonElement>getDocumentElementById("orth-end");
         // Add the css transition
         const transition_time = TICK_EVERY*(TICKS_AT_START - 1) + TICK_LENGTH;
@@ -168,7 +168,7 @@ class OrthStoryController {
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
-        const re_button = getDocumentElementById("orth-return");
+        const re_button = getDocumentElementById("orth-up");
         // and then execute the transitions
         kudzu_badge.classList.remove("sidelined");
         story_container.style.top = "110%";
@@ -356,13 +356,13 @@ class OrthStoryController {
 
         // At the end remove the return button
         if(to === 'end') {
-            getDocumentElementById("orth-return").classList.add("sidelined");
+            getDocumentElementById("orth-up").classList.add("sidelined");
             getDocumentElementById("orth-end").classList.add("sidelined");
         }
 
         if(scroll_to.no_more) {
             // remove the continue button
-            getDocumentElementById("orth-continue").classList.add("sidelined");
+            getDocumentElementById("orth-down").classList.add("sidelined");
         } else {
             getDocumentElementById("orth-end").classList.add("sidelined");
         }
@@ -389,7 +389,7 @@ class OrthStoryController {
             if(scroll_to.no_more) {
                 getDocumentElementById("orth-end").classList.remove("sidelined");
             } else {
-                getDocumentElementById("orth-continue").classList.remove("sidelined");
+                getDocumentElementById("orth-down").classList.remove("sidelined");
             }
         }
     }

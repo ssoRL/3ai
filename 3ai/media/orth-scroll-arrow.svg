@@ -1,0 +1,9 @@
+<svg viewBox="0 0 100 50" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .background { fill: black; }
+    .arrow { fill: white }
+  </style>
+  
+  <rect y="0" x="0" height="50" width="100" class="background"/>
+  <polygon class="arrow" points="5,5 5,25 50,45 95,25 95,5 50,25"/>
+</svg>
