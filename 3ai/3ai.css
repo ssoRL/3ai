@@ -109,8 +109,14 @@ html body {
     flex: auto;
 }
 
-a.kudzu-next {
-    margin: 10px;
+.kudzu-buttons {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+a.kudzu-button {
+    margin: 20px 15%;
     padding: 10px 20px;
     color: rgb(50,50,50);
     background-color: goldenrod;

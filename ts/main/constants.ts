@@ -31,6 +31,9 @@ const CLICK_ACTION: "stop" | "change" = "stop";
 /** Hopefully this can be used to debug huge slowdowns :p */
 var TRIP_WIRE = false;
 
+/** Whether to allow fully skipping vines of kudzu */
+const KUDZU_SKIP_OPTION = false;
+
 /** Cookie names */
 const ORTH_COOKIE_NAME = "orth_cookie";
 const KUDZU_COOKIE_NAME = "kudzu_cookie";

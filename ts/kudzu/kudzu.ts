@@ -224,18 +224,18 @@ class KudzuStoryController {
         return this.done || x > CANVAS_DEFINED_SIZE
     }
 
-    private async fillInStory(next_section: number) {
+    private async fillInStory(current_section: number) {
         // get the story section and then clear out the previous text
         const story_section = getDocumentElementById("kudzu-story-text");
         if(!story_section) throw "3AI Error: There is no kudzu-story-text element";
         story_section.innerHTML = "";
 
         // Create the new element and add it to the DOM
-        const section = this.kudzu_story[next_section];
+        const section = this.kudzu_story[current_section];
         const html_story_section = document.createElement("div");
         html_story_section.classList.add("kudzu-story-section");
-        // The first sections (the intro) should be italic, add a class
-        if(next_section === 0) {
+        // The first sections (the intro) should be centered, add a class
+        if(current_section === 0) {
             html_story_section.classList.add("kudzu-intro");
         }
         story_section.appendChild(html_story_section);
@@ -252,29 +252,53 @@ class KudzuStoryController {
         flex_div.classList.add('kudzu-flex');
         story_section.appendChild(flex_div);
 
+        // Add a section to hold the buttons
+        const button_section = document.createElement('div');
+        button_section.classList.add('kudzu-buttons');
+        story_section.appendChild(button_section);
+
+        // Add the "Back" button if not the first page
+        if(current_section > 0) {
+            const back_button = document.createElement("a");
+            back_button.classList.add("kudzu-button");
+            back_button.innerText = "Back";
+            back_button.onclick = () => {
+                this.fillInStory(current_section - 1);
+            }
+            button_section.appendChild(back_button);
+        }
+
+        // Add a flexible center
+        const flex_between_buttons = document.createElement("div");
+        flex_between_buttons.classList.add('kudzu-flex');
+        button_section.appendChild(flex_between_buttons);
+
         // Add the "Next" button
         const next_button = document.createElement("a");
-        next_button.classList.add("kudzu-next");
-        next_button.innerText = "Next";
-        if(next_section + 1 >= this.kudzu_story.length) {
+        next_button.classList.add("kudzu-button");
+        if(current_section + 1 >= this.kudzu_story.length) {
+            next_button.innerText = "End";
             next_button.onclick = () => {
                 this.end_of_story();
             }
         } else {
+            next_button.innerText = "Next";
             next_button.onclick = () => {
-                this.fillInStory(next_section + 1);
+                this.fillInStory(current_section + 1);
             }
         }
-        story_section.appendChild(next_button);
+        button_section.appendChild(next_button);
 
         // Add the skip button
-        const skip_button = document.createElement("a");
-        skip_button.classList.add('kudzu-skip');
-        skip_button.innerText = "Skip to end";
-        skip_button.onclick = () => {
-            this.end_of_story();
+        if(KUDZU_SKIP_OPTION) {
+            const skip_button = document.createElement("a");
+            skip_button.classList.add('kudzu-skip');
+            skip_button.innerText = "Skip to end";
+            skip_button.onclick = () => {
+                this.end_of_story();
+            }
+            story_section.appendChild(skip_button);
         }
-        story_section.appendChild(skip_button);
     }
 
     /**
