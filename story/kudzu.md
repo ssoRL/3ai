@@ -32,7 +32,7 @@ kudzusectionbreak
 
 I showed it to Jeff that weekend. He clicked thru a few of the examples it had generated and smirked, “Well, glad this came to something. How's it work?”
 
-“It's an adversarial network like I'd been trying on the memes. This data's easier to work with though. I used social engagement as a proxy for quality and some standard pre-trained text generation and parsing neural nets.”
+“It's an adversarial network like I'd been trying on the memes. This data's easier to work with tho. I used social engagement as a proxy for quality and some standard pre-trained text generation and parsing neural nets.”
 
 He laughed at one of the articles headlines, *She Gave Her Dog to a Homeless Man and You'll Never Believe What Happens Next!* After reading the first few sentences he said, “Huh, this almost sounds like it was written by a human.”
 
