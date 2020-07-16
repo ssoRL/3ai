@@ -31,6 +31,9 @@ class ThreeAIGlobals {
     /** The current system time when the most recent draw started */
     public time: number;
 
+    /** The cog that is currently stopped (there can be only one) */
+    public stopped_cog_sn: number | null = null;
+
     // Sets up the ctx and canvas controller
     constructor() {
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');
