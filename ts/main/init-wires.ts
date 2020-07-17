@@ -19,14 +19,14 @@ function makeBlueGem(p: Point) : Gem {
     return blue_gem;
 }
 
-// function makeGreenGem(p: Point) : Gem {
-//     const green = {r:0,g:255,b:127};
-//     const green_gem = new Gem(p, 20, green);
-//     green_gem.onclick = async() => {
-//         new Popup("popups/promise-of-perfection.html");
-//     }
-//     return green_gem;
-// }
+function makeGreenGem(p: Point) : Gem {
+    const green = {r:0,g:255,b:127};
+    const green_gem = new Gem(p, 20, green);
+    green_gem.onclick = async() => {
+        new Popup("popups/promise-of-perfection.html");
+    }
+    return green_gem;
+}
 
 function makeBigGem(p: Point) : Gem {
     const white = {r:255,g:255,b:255};
@@ -184,18 +184,24 @@ function init_wires(): {wire: Wire, gems: Gem[]} {
          .getOutWire()
         .addPoweredWiresToAndTerminal(upper_left_and_gate.right_terminal, "vert");
 
-    // Hook up the big gem
-    const big_gem = makeBigGem(p(450, 580));
-    returns.gems.push(big_gem);
+    // make the final gem
+    const last_gem: Gem = (() => {
+        if(HARD_MODE) {
+        return makeGreenGem(p(450, 580));
+        } else {
+            return makeBigGem(p(450, 580));
+        }
+    })();
+
+    // Hook up the final gem
+    returns.gems.push(last_gem);
     upper_left_and_gate
         .getOutWire()
         .addStraightWireFor("horz", 7)
         .addPoweredWiresToCogTerminal(2002, "vert", ct(1));
     RunWire
         .awayFromCogTerminal(2002, 7)
-        .addPoweredWiresToGemTerminal(big_gem.getTerminal("N"), "horz");
-    // wire_out_of_1003.addPoweredWiresToGemTerminal(big_gem.addTerminal("N"), "vert");
-    // low_left_and_gate.getOutWire().addPoweredWiresToGemTerminal(big_gem.addTerminal("S"), "horz");
+        .addPoweredWiresToGemTerminal(last_gem.getTerminal("N"), "horz");
 
     return returns;
 }

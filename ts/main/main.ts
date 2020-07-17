@@ -7,6 +7,8 @@ let orth_img_loaded = false;
 function init(){
     // Set up the global object
     glb = new ThreeAIGlobals();
+    const url_params = new URLSearchParams(window.location.search);
+    HARD_MODE = url_params.get('hardMode') === "true";
     glb.driver_cogs = init_cogs();
     const wires_and_gems = init_wires();
     glb.wire0 = wires_and_gems.wire;
@@ -15,10 +17,10 @@ function init(){
     glb.orth_story_controller = new OrthStoryController();
     glb.perfect_story_controller = new PerfectStoryController();
     // Keep Progress
-    if(Cookies.get(KUDZU_COOKIE_NAME) === STORY_DONE) {
+    if(Cookies.get(KUDZU_COOKIE_NAME) === STORY_DONE || HARD_MODE) {
         glb.kudzu_story_controller.quick_end();
     }
-    if(Cookies.get(ORTH_COOKIE_NAME) === STORY_DONE) {
+    if(Cookies.get(ORTH_COOKIE_NAME) === STORY_DONE || HARD_MODE) {
         glb.orth_story_controller.quick_end();
     }
     init_words();
