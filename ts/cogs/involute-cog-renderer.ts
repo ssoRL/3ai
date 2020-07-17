@@ -160,8 +160,11 @@ class InvoluteCogRenderer {
             path.arc(0, 0, this.outer_radius, near_outer_intersect_arc, far_outer_intersect_arc);
 
             //
+            const mid_tooth_intercept_arc = (near_outer_intersect_arc + far_outer_intersect_arc)/2;
+            const tooth_mid_p = getPoint(this.outer_radius, mid_tooth_intercept_arc);
             const tooth_end_p = getPoint(this.outer_radius, far_outer_intersect_arc)
-            svg_d += `L ${tooth_end_p.x} ${tooth_end_p.y}\n`;
+            svg_d += `A ${this.outer_radius} ${this.outer_radius} 0 0 1 ${tooth_mid_p.x} ${tooth_mid_p.y}\n`;
+            svg_d += `A ${this.outer_radius} ${this.outer_radius} 0 0 1 ${tooth_end_p.x} ${tooth_end_p.y}\n`;
             //
 
             // Draw the involute back to base
@@ -180,8 +183,11 @@ class InvoluteCogRenderer {
             path.arc(0, 0, this.inner_radius, inner_intersect_arc, end_arc);
 
             //
-            const tooth_start_p = getPoint(this.inner_radius, end_arc)
-            svg_d += `L ${tooth_start_p.x} ${tooth_start_p.y}\n`;
+            const mid_base_intercept_arc = (inner_intersect_arc + end_arc)/2;
+            const base_mid_p = getPoint(this.inner_radius, mid_base_intercept_arc);
+            const base_end_p = getPoint(this.inner_radius, end_arc)
+            svg_d += `A ${this.inner_radius} ${this.inner_radius} 0 0 1 ${base_mid_p.x} ${base_mid_p.y}\n`;
+            svg_d += `A ${this.inner_radius} ${this.inner_radius} 0 0 1 ${base_end_p.x} ${base_end_p.y}\n`;
             //
         }
         svg_d += "Z";

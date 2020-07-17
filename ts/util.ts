@@ -1,5 +1,5 @@
 function getDocumentElementById(id: string) {
-    const elemenet = document.getElementById(id);
-    if(!elemenet) throw `3AI Error: could not get element ${id}`;
-    return elemenet;
+    const element = document.getElementById(id);
+    if(!element) throw `3AI Error: could not get element ${id}`;
+    return element;
 }
