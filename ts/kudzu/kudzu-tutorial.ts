@@ -163,6 +163,7 @@ class KudzuTutorial {
         this.big_gem.onclick = async() => {
             const story_at_popup = new Popup('popups/story-at.html');
             await story_at_popup.when_closed;
+            glb.kudzu_story_controller.prep_end();
             this.big_gem.onclick = async() => {}
         }
 

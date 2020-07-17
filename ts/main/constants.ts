@@ -35,7 +35,7 @@ var TRIP_WIRE = false;
 var HARD_MODE = false;
 
 /** Whether to allow fully skipping vines of kudzu */
-const KUDZU_SKIP_OPTION = false;
+const KUDZU_SKIP_OPTION = true;
 
 /** Cookie names */
 const ORTH_COOKIE_NAME = "orth_cookie";

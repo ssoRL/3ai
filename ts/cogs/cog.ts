@@ -358,27 +358,31 @@ class Cog implements Clickable{
             this.change_direction = true;
         } else {
             this.stopped = !this.stopped;
-            if(this.stopped) {
-                // if this cog was just stopped, check the global stopped cog
-                if(glb.stopped_cog_sn !== this.serial_number) {
-                    if(glb.stopped_cog_sn !== null) {
-                        // If there's already a stopped cog, start it
-                        const current_stopped_cog = Cog.getCogBySerialNumber(glb.stopped_cog_sn);
-                        current_stopped_cog.stopped = false;
-                        current_stopped_cog.setCenter();
+            this.onClick();
+
+            // In hard mode, only one cog can be stopped at a time
+            if(HARD_MODE) {
+                if(this.stopped) {
+                    // if this cog was just stopped, check the global stopped cog
+                    if(glb.stopped_cog_sn !== this.serial_number) {
+                        if(glb.stopped_cog_sn !== null) {
+                            // If there's already a stopped cog, start it
+                            const current_stopped_cog = Cog.getCogBySerialNumber(glb.stopped_cog_sn);
+                            current_stopped_cog.stopped = false;
+                            current_stopped_cog.setCenter();
+                        }
+                        // Then mark this as the stopped cog
+                        glb.stopped_cog_sn = this.serial_number;
                     }
-                    // Then mark this as the stopped cog
-                    glb.stopped_cog_sn = this.serial_number;
-                }
-            } else {
-                // If the cog has been started spinning, it is no longer the stopped cog
-                if(glb.stopped_cog_sn === this.serial_number) {
-                    glb.stopped_cog_sn = null;
+                } else {
+                    // If the cog has been started spinning, it is no longer the stopped cog
+                    if(glb.stopped_cog_sn === this.serial_number) {
+                        glb.stopped_cog_sn = null;
+                    }
                 }
             }
             this.setCenter();
         }
-        this.onClick();
     }
 
     /** Over  */

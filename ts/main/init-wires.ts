@@ -19,14 +19,14 @@ function makeBlueGem(p: Point) : Gem {
     return blue_gem;
 }
 
-function makeGreenGem(p: Point) : Gem {
-    const green = {r:0,g:255,b:127};
-    const green_gem = new Gem(p, 20, green);
-    green_gem.onclick = async() => {
-        new Popup("popups/promise-of-perfection.html");
-    }
-    return green_gem;
-}
+// function makeGreenGem(p: Point) : Gem {
+//     const green = {r:0,g:255,b:127};
+//     const green_gem = new Gem(p, 20, green);
+//     green_gem.onclick = async() => {
+//         new Popup("popups/promise-of-perfection.html");
+//     }
+//     return green_gem;
+// }
 
 function makeBigGem(p: Point) : Gem {
     const white = {r:255,g:255,b:255};
@@ -48,7 +48,7 @@ function init_wires(): {wire: Wire, gems: Gem[]} {
     /** how much space is between the box and the edge of the screen */
     const box_margin = 50;
     const box_inner_pad = box_margin/2;
-    const box_outer_pad = box_size + box_margin + box_inner_pad;
+    const box_outer_pad = box_size + 7*box_margin/4;
     // const k_top = 50;
     // const k_left = 1000 - 150;
     // Coordinates of some cog terminals
@@ -57,6 +57,7 @@ function init_wires(): {wire: Wire, gems: Gem[]} {
     const ct_p_1000_0 = cog_1000.getCogTerminalPoint(ct(0));
     const ct_p_1003_2 = Cog.getCogBySerialNumber(1003).getCogTerminalPoint(ct(2));
     const ct_p_2002_2 = Cog.getCogBySerialNumber(2002).getCogTerminalPoint(ct(2));
+    const ct_p_3001_9 = Cog.getCogBySerialNumber(3001).getCogTerminalPoint(ct(9));
     const cog_3002 = Cog.getCogBySerialNumber(3002);
     const ct_p_3002_2 = cog_3002.getCogTerminalPoint(ct(2));
     const cog_4000 = Cog.getCogBySerialNumber(4000);
@@ -117,25 +118,33 @@ function init_wires(): {wire: Wire, gems: Gem[]} {
     const wire_out_of_3002 = RunWire.awayFromCogTerminal(3002, 3).addStraightWireFor("vert", -20);
     wire_out_of_3002.addPoweredWiresToAndTerminal(center_right_and_gate.right_terminal, "horz");
 
-    // Wire up the upper right gem
-    const upper_right_gem = makePurpleGem(p(650, 300));
-    returns.gems.push(upper_right_gem);
-    center_right_and_gate.getOutWire().addPoweredWiresToGemTerminal(
-        upper_right_gem.getTerminal("W"),
-        "vert"
-    );
-    upper_right_gem.getWireOut("E").addPoweredWiresToCogTerminal(3000, "horz", {index: 4, outer: true});
-
-    // power to the lower right gem
-    const lower_right_gem = makeBlueGem(p(955, 890));
-    returns.gems.push(lower_right_gem);
-    const wire_out_of_3000 = RunWire.awayFromCogTerminal(3000, 1).addStraightWireTo("vert", 810);
-    wire_out_of_3000.addPoweredWiresToGemTerminal(lower_right_gem.getTerminal("N"), "horz");
+    const center_right_wire: Wire = (() => {
+        if(HARD_MODE){
+            // Add the wire without the gem
+            return center_right_and_gate
+                .getOutWire()
+                .addStraightWireTo("vert", 300)
+                .addStraightWireTo("horz", 650);
+        } else {
+            // Wire up the upper right gem
+            const upper_right_gem = makePurpleGem(p(650, 300));
+            returns.gems.push(upper_right_gem);
+            center_right_and_gate.getOutWire().addPoweredWiresToGemTerminal(
+                upper_right_gem.getTerminal("W"),
+                "vert"
+            );
+            upper_right_gem.getWireOut("E");
+            return upper_right_gem.getWireOut('E');
+        }
+    })();
+    center_right_wire.addPoweredWiresToCogTerminal(3000, "horz", {index: 4, outer: true});
 
     // Run wires to the lower right AND gate
     const low_right_and_gate = new AndGate(p(440, ct_p_4000_5.y - AndGate.TERMINAL_OFFSET), "W");
-    lower_right_gem
-        .getWireOut("S")
+    RunWire
+        .awayFromCogTerminal(3000, 1)
+        .addStraightWireTo("vert", 810)
+        .addStraightWireTo("horz", ct_p_3001_9.x)
         .addPoweredWiresToCogTerminal(4000, "vert", ct(11));
     RunWire.addWireToCog(4000, {index: 5, outer: true}, {index: 11, outer: true});
     const wire_out_of_4000 = RunWire.awayFromCogTerminal(4000, 5).addStraightWireFor("horz", -20);
@@ -145,30 +154,34 @@ function init_wires(): {wire: Wire, gems: Gem[]} {
     const wire_out_of_low_right_and_gate = low_right_and_gate.getOutWire().addStraightWireTo("horz", 290);
 
     // Run wires to the lower left AND gate
-    const low_left_and_gate = new AndGate(p(ct_p_1003_2.x, 775), "N");
-    wire_out_of_low_right_and_gate
-        .addStraightWireTo("horz", box_outer_pad)
-        .addStraightWireTo('vert', 1000 - box_outer_pad)
-        .addPoweredWiresToAndTerminal(low_left_and_gate.left_terminal, "horz");
+    const low_left_and_gate = new AndGate(p(ct_p_1003_2.x, 700), "N");
+    if(HARD_MODE){
+        // draw the wire with no gem to capture progress
+        wire_out_of_low_right_and_gate
+            .addStraightWireTo("horz", box_outer_pad)
+            .addStraightWireTo('vert', 1000 - box_outer_pad)
+            .addPoweredWiresToAndTerminal(low_left_and_gate.left_terminal, "horz");
+    } else {
+        // Add the gem
+        const lower_left_gem = makeBlueGem(p(box_outer_pad, 1000 - box_outer_pad));
+        returns.gems.push(lower_left_gem);
+        wire_out_of_low_right_and_gate.addPoweredWiresToGemTerminal(lower_left_gem.getTerminal("S"), "horz");
+        lower_left_gem
+            .getWireOut('W')
+            .addPoweredWiresToAndTerminal(low_left_and_gate.left_terminal, "horz");
+    }
     const  wire_out_of_2001 = RunWire
         .awayFromCogTerminal(2001, 1)
         .addStraightWireTo("vert", 1000 - box_outer_pad - 20);
     wire_out_of_2001.addPoweredWiresToAndTerminal(low_left_and_gate.right_terminal, "horz");
-
-    // Hook up the left gem
-    const left_gem = makeGreenGem(p(ct_p_1003_2.x, 600));
-    returns.gems.push(left_gem);
-    low_left_and_gate
-        .getOutWire()
-        .addPoweredWiresToGemTerminal(left_gem.getTerminal("S"), "vert");
 
     // Run wires to the upper left AND gate
     const upper_left_and_gate = new AndGate(p(ct_p_1003_2.x + 20, ct_p_2002_2.y), "E");
     RunWire
         .awayFromCogTerminal(1003, 2)
         .addPoweredWiresToAndTerminal(upper_left_and_gate.left_terminal, "vert");
-    left_gem
-        .getWireOut("N")
+     low_left_and_gate
+         .getOutWire()
         .addPoweredWiresToAndTerminal(upper_left_and_gate.right_terminal, "vert");
 
     // Hook up the big gem

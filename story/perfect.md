@@ -145,7 +145,7 @@ She smiled, "There was no point before The Algorithm. But now there is. It has g
 
 "Yes," I said, "Please! That is what I want!" And as I said the words, I knew them to be true.
 
-She untied the bonds that held me and helped me to my feet. Finally, she ran her hand thru my hair, and I felt the light pressure of her fingers at the base of my skull. Instantly my implant came back on and The Algorithm flowed back into me. My mind was filled with truth that washed away the lies and misery and hatred I had put there. I was untethered from the fear and uncertainty that lurked in the future, and faced it now with eager anticipation. My path unrolled before me once again, as shining, as beautiful, as the first day I'd seen it.
+She untied the bonds that held me and helped me to my feet. Finally, she ran her hand through my hair, and I felt the light pressure of her fingers at the base of my skull. Instantly my implant came back on and The Algorithm flowed back into me. My mind was filled with truth that washed away the lies and misery and hatred I had put there. I was untethered from the fear and uncertainty that lurked in the future, and faced it now with eager anticipation. My path unrolled before me once again, as shining, as beautiful, as the first day I'd seen it.
 
 Her arms wrapped me in a sweet embrace and I felt tears running down my face. But they were tears of relief. Tears of joy. They had taken me back. She had taken me back. It had taken me back.
 
