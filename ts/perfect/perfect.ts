@@ -9,14 +9,12 @@ class PerfectStoryController {
     constructor() {
         this.badge = getDocumentElementById('perfect');
         this.screen = getDocumentElementById('perfect-screen');
+        this.story = getDocumentElementById('perfect-story')
     }
 
-    private async initializeContent(): Promise<HTMLDivElement> {
+    private async initializeContent() {
         const story_text = await fetchContent('story/perfect.html');
-        const story = document.createElement('div');
-        story.id = "perfect-story";
-        story.innerHTML = story_text;
-        return story;
+        this.story.innerHTML = story_text;
     }
 
     private async addGlow(
@@ -64,13 +62,14 @@ class PerfectStoryController {
     }
 
     private async startStory() {
+        // create the story div
+        this.initializeContent();
         // white out again
         await new Promise((resolve) => {
             this.screen.ontransitionend = resolve;
             this.screen.classList.add("white-out");
         });
-        // create the story div
-        this.story = await this.initializeContent();
-        this.screen.appendChild(this.story);
+        // show the finish link
+        getDocumentElementById('perfect-finish').classList.remove('hide');
     }
 }

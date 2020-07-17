@@ -249,10 +249,6 @@ a.kudzu-skip {
     box-sizing: border-box;
 }
 
-#perfect.hide {
-    display: none;
-}
-
 #perfect-screen {
     position: absolute;
     width: 100%;
@@ -265,6 +261,8 @@ a.kudzu-skip {
     pointer-events: none;
     z-index: 3;
     overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
 }
 
 #perfect-screen.white-out {
@@ -275,6 +273,18 @@ a.kudzu-skip {
 @keyframes fadeIn {
     from {color:white;}
     to {color:black;}
+}
+
+#perfect-finish {
+    color: gray;
+    text-decoration: underline;
+    margin: auto;
+    padding-bottom: 50px;
+    font-size: larger;
+}
+
+#perfect-finish:hover {
+    color: darkgray;
 }
 
 #perfect-story {
@@ -432,4 +442,8 @@ a.kudzu-skip {
     color: darkslategray;
     cursor: pointer;
     margin: 5px;
+}
+
+.hide {
+    display: none;
 }
