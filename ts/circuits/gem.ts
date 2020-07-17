@@ -27,38 +27,28 @@ class Gem implements Clickable {
     private readonly size: number;
     private draw_from: CardinalOrientation | undefined = undefined;
     private readonly color: {r: number, g: number, b: number};
-    /** If true, this gem won't be powered until it's clicked */
-    private wait_to_power_out: boolean;
     // The orb in the center that glows and flickers
     private orb: GlowingOrb;
 
     /** Function will be called when the gem is clicked */
-    public onclick = () => {};
+    public onclick = async () => {};
 
     /** Function will be called when the gem is activated (powered for the first time) */
-    onactivated = () => {};
-    /** The amount the the glow jitters by */
-    private static readonly GLOW_JITTER = 0.05;
-    /** How ofter the glow jitters in milliseconds */
-    private static readonly JITTER_FREQ = 200;
+    public onactivated = () => {};
 
     /** True while there is current flowing thru the gem */
     public is_on = false;
-    /** True after there has ever been current flowing thru */
-    private is_active = false;
     /** The terminals of this gem. If input, is a GemTerminal if output is a Wire */
     private terminals: Map<CardinalOrientation, GemTerminal | Wire> = new Map();
 
     constructor(
         center_: Point, 
         size_: number, 
-        color_: {r: number, g: number, b: number},
-        wait_to_power_out_ = false
+        color_: {r: number, g: number, b: number}
     ) {
         this.center = center_;
         this.size = size_;
         this.color = color_;
-        this.wait_to_power_out = wait_to_power_out_;
 
         this.orb = new GlowingOrb(size_, color_);
 
@@ -109,6 +99,9 @@ class Gem implements Clickable {
     }
 
     power(switch_time: number){
+        // Gems can't be turned off
+        if(this.is_on) return;
+
         // Turn this gem on if all terminals are powered
         this.is_on = (() => {
             for(const t of this.terminals) {
@@ -119,38 +112,31 @@ class Gem implements Clickable {
             return true;
         })();
 
-        if(!this.wait_to_power_out) this.powerOut(switch_time);
-
-        // If this gem is turned on, turn on the orb
-        if(this.is_on && !this.is_active) {
-            this.is_active = true;
+        // If this gem is turned on, run the activate function and turn on the orb
+        if(this.is_on) {
             this.onactivated();
             this.orb.power(true);
             this.orb.addGlow(10);
         }
     }
 
-    private powerOut(switch_time: number, force_power = false) {
+    private powerOut(switch_time: number) {
         // power up out wires
         for(const t of this.terminals) {
-            if(t[1] instanceof Wire) t[1].power(this.is_on || force_power, switch_time);
+            if(t[1] instanceof Wire) t[1].power(this.is_on, switch_time);
         }
     }
 
     isClicked(p: Point): boolean {
         // If the gem's not on, it can't be clicked
-        if(!this.is_active) return false;
+        if(!this.is_on) return false;
         const length_and_unit_vector = getLengthAndUnitVector(p, this.center);
         return length_and_unit_vector[0] < this.size;
     }
 
-    click(): void {
-        this.onclick();
-    }
-
-    public powerThru(switch_time: number, force_power = false) {
-        this.wait_to_power_out = false;
-        if(this.is_on || force_power) this.powerOut(switch_time, force_power);
+    async click() {
+        await this.onclick();
+        this.powerOut(performance.now());
     }
 
     addGlow(glow: number){
@@ -168,13 +154,14 @@ class Gem implements Clickable {
 
     draw() {
         // Draw the wire around the gem
-        glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
         glb.ctx.beginPath();
         glb.ctx.arc(this.center.x, this.center.y, this.size, 0, Math.PI * 2);
         glb.ctx.strokeStyle = glb.kudzu_story_controller.getWireColor(this.center.x);
         glb.ctx.stroke();
 
         // Draw the glowing orb
-        this.orb.draw(this.center, glb.kudzu_story_controller.colorInOrbs(this.center.x));
+        if(glb.kudzu_story_controller.colorInOrbs(this.center.x)) {
+            this.orb.draw(this.center);
+        }
     }
 }

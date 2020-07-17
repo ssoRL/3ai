@@ -201,6 +201,8 @@ class AndGate {
             }
         }
         // Then place an orb in the center
-        this.orb.draw(p(0, -AndGate.RADIUS/2.2), glb.kudzu_story_controller.colorInOrbs(this.p.x));
+        if(glb.kudzu_story_controller.colorInOrbs(this.p.x)) {
+            this.orb.draw(p(0, -AndGate.RADIUS/2.2));
+        }
     }  
 }

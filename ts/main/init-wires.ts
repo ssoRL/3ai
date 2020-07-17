@@ -2,8 +2,9 @@
 function makePurpleGem(p: Point) : Gem {
     const purple = {r:238,g:130,b:238};
     const purple_gem = new Gem(p, 20, purple);
-    purple_gem.onclick = () => {
-        new Popup("popups/wheels-of-progress.html");
+    purple_gem.onclick = async() => {
+        const wheels_popup = new Popup("popups/wheels-of-progress.html");
+        await wheels_popup.when_closed;
     }
     return purple_gem;
 }
@@ -11,8 +12,9 @@ function makePurpleGem(p: Point) : Gem {
 function makeBlueGem(p: Point) : Gem {
     const blue = {r:135,g:206,b:250};
     const blue_gem = new Gem(p, 20, blue);
-    blue_gem.onclick = () => {
-        new Popup("popups/tangle-of-wires.html");
+    blue_gem.onclick = async() => {
+        const tangle_popup = new Popup("popups/tangle-of-wires.html");
+        await tangle_popup.when_closed;
     }
     return blue_gem;
 }
@@ -20,7 +22,7 @@ function makeBlueGem(p: Point) : Gem {
 function makeGreenGem(p: Point) : Gem {
     const green = {r:0,g:255,b:127};
     const green_gem = new Gem(p, 20, green);
-    green_gem.onclick = () => {
+    green_gem.onclick = async() => {
         new Popup("popups/promise-of-perfection.html");
     }
     return green_gem;
@@ -29,7 +31,7 @@ function makeGreenGem(p: Point) : Gem {
 function makeBigGem(p: Point) : Gem {
     const white = {r:255,g:255,b:255};
     const big_gem = new Gem(p, 40, white);
-    big_gem.onclick = () => {
+    big_gem.onclick = async() => {
         glb.perfect_story_controller.start(big_gem);
     }
     return big_gem;

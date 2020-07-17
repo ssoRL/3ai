@@ -35,7 +35,7 @@ class KudzuTutorial {
         const wire_into_frame_from_right = this.wire.addStraightWireTo("horz", right_down_x);
     
         // Wires to first gem
-        this.click_gem = new Gem(p(3500, this.click_gem_y), 25, {r:255, g:198, b:76}, true);
+        this.click_gem = new Gem(p(3500, this.click_gem_y), 25, {r:255, g:198, b:76});
         wire_into_frame_from_right
             .addStraightWireTo("vert", this.in_y)
             .addStraightWireTo("horz", left_down_x)
@@ -44,7 +44,7 @@ class KudzuTutorial {
         // AND gate
         const conjunction = new AndGate(p(3333, this.conjunction_y), "W");
         // wires to its right terminal
-        this.conjunction_gem = new Gem(p(3666, this.conjunction_y), 25, {r:255, g:171, b:76}, true);
+        this.conjunction_gem = new Gem(p(3666, this.conjunction_y), 25, {r:255, g:171, b:76});
         this.click_gem
             .getWireOut("E")
             .addStraightWireTo("horz", right_down_x - 50)
@@ -60,7 +60,7 @@ class KudzuTutorial {
             .addPoweredWiresToAndTerminal(conjunction.left_terminal, "vert");
 
         // wires to the cog gem
-        this.cog_gem = new Gem(p(3500, this.cogs_y), 25, {r:255, g:103, b:76}, true);
+        this.cog_gem = new Gem(p(3500, this.cogs_y), 25, {r:255, g:103, b:76});
         conjunction
             .getOutWire()
             .addStraightWireTo("horz", left_down_x)
@@ -82,7 +82,7 @@ class KudzuTutorial {
             .addPoweredWiresToAndTerminal(lower_and_gate.left_terminal, "vert")
 
         // Final gem
-        this.big_gem = new Gem(p(3333, this.out_y), 35, {r:255, g:76, b:76}, true);
+        this.big_gem = new Gem(p(3333, this.out_y), 35, {r:255, g:76, b:76});
         lower_and_gate
             .getOutWire()
             .addPoweredWiresToGemTerminal(this.big_gem.getTerminal("E"), "horz");
@@ -107,11 +107,10 @@ class KudzuTutorial {
 
         this.wire.power(true, performance.now());
 
-        this.click_gem.onclick = () => {
-            this.click_gem.powerThru(performance.now());
+        this.click_gem.onclick = async() => {
             this.gemClicked();
-            this.click_gem.onclick = () => {};
-        }
+            this.click_gem.onclick = async() => {};
+        };
 
         this.click_gem.onactivated = () => {
             const first_y = (this.in_y + this.click_gem_y)/2;
@@ -125,10 +124,9 @@ class KudzuTutorial {
     }
 
     private gemClicked() {
-        this.conjunction_gem.onclick = () => {
-            this.conjunction_gem.powerThru(performance.now());
+        this.conjunction_gem.onclick = async() => {
             this.conjunctionPowered();
-            this.conjunction_gem.onclick = () => {};
+            this.conjunction_gem.onclick = async() => {};
         }
 
         this.conjunction_gem.onactivated = () => {
@@ -143,12 +141,11 @@ class KudzuTutorial {
     }
 
     private conjunctionPowered() {
-        this.cog_gem.onclick = () => {
-            this.cog_gem.powerThru(performance.now());
+        this.cog_gem.onclick = async() => {
             this.cog.activate(true);
             this.tick();
             this.prepEnd();
-            this.cog_gem.onclick = () => {};
+            this.cog_gem.onclick = async() => {};
         }
 
         this.cog_gem.onactivated = () => {
@@ -163,14 +160,10 @@ class KudzuTutorial {
     }
 
     private prepEnd() {
-        this.big_gem.onclick = () => {
-            new Popup(
-                'popups/story-at.html',
-                () => {
-                    this.big_gem.powerThru(performance.now(), true);
-                    glb.kudzu_story_controller.prep_end();
-                }    
-            )
+        this.big_gem.onclick = async() => {
+            const story_at_popup = new Popup('popups/story-at.html');
+            await story_at_popup.when_closed;
+            this.big_gem.onclick = async() => {}
         }
 
         this.big_gem.onactivated = () => {

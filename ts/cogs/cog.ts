@@ -228,8 +228,8 @@ class Cog implements Clickable{
         this.renderer.draw(glb.ctx);
 
         // If this is a driver cog, draw its pilot light
-        if(this.pilot_light) {
-            this.pilot_light.draw(p(0, 0), this.activated);
+        if(this.pilot_light && this.activated) {
+            this.pilot_light.draw(p(0, 0));
         }
 
         if(SHOW_HELP_GRAPHICS){

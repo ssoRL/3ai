@@ -3,16 +3,19 @@ class Popup {
     private screen: HTMLDivElement;
     /** The centered box with the modal content */
     private content_box: HTMLDivElement;
-    /** A function to call when this popup is closed */
-    private callback: () => void;
+    /** a promise that is completed when the popup is closed */
+    public when_closed: Promise<void>;
+    private resolve_closed: () => void;
 
     /**
      * Creates a new popup and puts it in front of the other content
      * @param content The string of html that will be displayed
      */
-    constructor(uri: string, callback = () => {}){
+    constructor(uri: string) {
         const container = getDocumentElementById('container');
-        this.callback = callback;
+        this.when_closed = new Promise((resolve) => {
+            this.resolve_closed = resolve;
+        })
 
         this.screen = document.createElement('div');
         this.screen.classList.add('pop-up-screen');
@@ -42,14 +45,14 @@ class Popup {
     /**
      * Call this to remove the popup from view
      */
-    destroy(me: MouseEvent) {
+    private destroy(me: MouseEvent) {
         const container = getDocumentElementById('container');
         container.removeChild(this.screen);
         me.stopPropagation();
-        this.callback();
+        this.resolve_closed();
     }
 
-    async initializeContent(uri: string) {
+    private async initializeContent(uri: string) {
         const content = await fetchContent(uri);
         this.content_box.innerHTML = content;
     }

@@ -79,16 +79,7 @@ class GlowingOrb {
      * @param p This is the point to draw the orb centered at, affected by transitions
      * @param x The x coordinate of the center in global coordinates, used to determine fill style
      */
-    draw(p: Point, use_color: boolean) {
-        if(!use_color) {
-            // This is simple a black and white orb, just fill it in white
-            glb.ctx.beginPath();
-            glb.ctx.arc(p.x, p.y, this.size, 0, 2*Math.PI);
-            glb.ctx.fillStyle = 'white';
-            glb.ctx.fill();
-            return;
-        }
-
+    draw(p: Point) {
         // First draw the flat colored center
         glb.ctx.beginPath();
         glb.ctx.arc(p.x, p.y, this.size, 0, 2*Math.PI);

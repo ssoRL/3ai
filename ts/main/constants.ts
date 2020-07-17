@@ -31,6 +31,9 @@ const CLICK_ACTION: "stop" | "change" = "stop";
 /** Hopefully this can be used to debug huge slowdowns :p */
 var TRIP_WIRE = false;
 
+/** Whether the puzzle should be in hard mode */
+var HARD_MODE = false;
+
 /** Whether to allow fully skipping vines of kudzu */
 const KUDZU_SKIP_OPTION = false;
 
