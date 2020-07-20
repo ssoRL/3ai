@@ -270,11 +270,6 @@ a.kudzu-skip {
     pointer-events: auto;
 }
 
-@keyframes fadeIn {
-    from {color:white;}
-    to {color:black;}
-}
-
 #perfect-finish {
     color: gray;
     text-decoration: underline;
@@ -288,9 +283,14 @@ a.kudzu-skip {
 }
 
 #perfect-story {
+    color: black;
     margin: 10%;
     text-align: justify;
-    animation: fadeIn 2s;
+    transition: all 2s;
+}
+
+#perfect-story.white-out {
+    color:white;
 }
 
 @media (max-device-width: 600px), (max-device-height: 600px) {

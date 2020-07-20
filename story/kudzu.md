@@ -20,7 +20,7 @@ I put down the controller. “I'll help. This game sucks anyway.”
 
 kudzusectionbreak
 
-It turned out it was hard to get enough data. We hacked together a scrapper that got us plenty of content, but it was all an unlabeled mess that wouldn't neatly cluster. I tried training a GAN on image macros, but the end result was more surreal than amusing. We got bored and gave up around 7. I think Jeff more or less forgot about it then, but I kept coming back to the problem whenever I had some free time.
+It turned out it was hard to get enough data. We hacked together a scraper that got us plenty of content, but it was all an unlabeled mess that wouldn't neatly cluster. I tried training a GAN on image macros, but the end result was more surreal than amusing. We got bored and gave up around 7. I think Jeff more or less forgot about it then, but I kept coming back to the problem whenever I had some free time.
 
 Eventually I gave up on memes. The constantly changing formats and in-jokes proved hard for a neural net. As soon as I thought I could get a handle on some variant, it was stale and the models I'd built didn't generalize to the fresh new thing.
 

@@ -197,10 +197,9 @@ function init_wires(): {wire: Wire, gems: Gem[]} {
     returns.gems.push(last_gem);
     upper_left_and_gate
         .getOutWire()
-        .addStraightWireFor("horz", 7)
-        .addPoweredWiresToCogTerminal(2002, "vert", ct(1));
+        .addPoweredWiresToCogTerminal(2002, "horz", ct(2));
     RunWire
-        .awayFromCogTerminal(2002, 7)
+        .awayFromCogTerminal(2002, 8)
         .addPoweredWiresToGemTerminal(last_gem.getTerminal("N"), "horz");
 
     return returns;

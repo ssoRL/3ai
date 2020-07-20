@@ -244,7 +244,7 @@ class KudzuStoryController {
             const html_story_paragraph = document.createElement("div");
             html_story_paragraph.classList.add("kudzu-story-paragraph");
             html_story_section.appendChild(html_story_paragraph);
-            await this.fillInString(html_story_paragraph, paragraph, 50);
+            await this.fillInString(html_story_paragraph, paragraph, 60);
         }
 
         // Add the flexible center

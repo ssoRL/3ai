@@ -62,13 +62,14 @@ class PerfectStoryController {
     }
 
     private async startStory() {
-        // create the story div
-        this.initializeContent();
         // white out again
         await new Promise((resolve) => {
             this.screen.ontransitionend = resolve;
             this.screen.classList.add("white-out");
         });
+        // load the 
+        await this.initializeContent();
+        this.story.classList.remove('white-out');
         // show the finish link
         getDocumentElementById('perfect-finish').classList.remove('hide');
     }

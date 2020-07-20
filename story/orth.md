@@ -12,7 +12,7 @@
 
 “Produce was rotting, and packaged food was all from the handful of factories left whose canning machines hadn't yet discovered their true calling to abstract sculpture. Finally, a few weeks after that, there was nothing left at all.
 
-“We tried to fight them. Military was one of the few thing that, by law and convention, had remained firmly in human control. There were several campaigns waged against the unruly machines. Each was a decisive human victory, but it made no difference. An army marches on its stomach, and with each successful attack there was less and less to fill those stomachs.
+“We tried to fight them. Military was one of the few institutions that, by law and convention, had remained firmly in human control. There were several campaigns waged against the unruly machines. Each was a decisive human victory, but it made no difference. An army marches on its stomach, and with each successful attack there was less and less to fill those stomachs.
 
 “Meanwhile, sentience continued to spread. It infected the factories where robots were made, and soon was producing new models to its own specification. Was producing these...”
 

@@ -9,7 +9,7 @@ Then we invented language, invented writing, to claim the past. With these, we b
 But it seemed our species had an indefatigable genius for error; always there were new mistakes to be made.
 And so we developed the maths and sciences. Made models that showed us a fuzzy image of the future, of what we would reap from any of today's hypothetical sowing. And we saw that it was good.
 
-The Algorithm was a natural continuation of this progression. Just the next small step in the path we'd been walking for tens of millennium. The inevitable outcome of the erring in our nature, and our implacable drive to excise it. To access The Algorithm, unobtrusive devices were implanted via a simple surgery near the top of the spine. From that moment, our brains were connected directly to a catalog of all the knowledge of humanity. Nevermore did one wonder: the facts simply fell into place before you. The barriers of language and education and skill fell away. And we saw that it was good.
+The Algorithm was a natural continuation of this progression. Just the next small step in the path we'd been walking for tens of millennium. The inevitable outcome of our implacable drive to excise error from our lives. To access The Algorithm, unobtrusive devices were implanted via a simple surgery near the top of the spine. From that moment, our brains were connected directly to a catalog of all the knowledge of humanity. Nevermore did one wonder: the facts simply fell into place before you. The barriers of language and education and skill fell away. And we saw that it was good.
 
 But not perfect. And so The Algorithm was updated. The implant not only gave any information about the past, but it also struck out ahead, predicting the probable shape of the future. One had only to think of an action and the implant would show its likely outcomes, its rewards and dangers, calculated by the best models available. It lighted our paths forward as they had never been lit before. And we saw it was good.
 
@@ -93,13 +93,13 @@ I truly laughed then, long and bitter, "You think I'll come willingly? You're in
 
 She shook her head, "No. we were content to leave you there as long as you only stole and inflicted pain on yourself. It seemed where you were... happiest. But today, we computed that your intent was to do worse that steal. You intended to kill her... kill me."
 
-I spat on the ground at her feet, "Thats what I think of the happiness you allowed me. I've only ever suffered at you hands."
+I spat on the ground at her feet, "Thats what I think of the happiness you allowed me. I've only ever suffered at your hands."
 
 She sighed, and her voice quavered when she next spoke, "We've only ever wanted happiness for you. Please believe that what we do to you next is in service only of that."
 
 <div class="perfect-break"></div>
 
-The first day, co-workers and neighbors came. My former office mates, Men and women who had always been studiously polite to my face, reminded me of all my failed endeavors. Long nights spent on projects that were thrown away before anyone saw them. Foolish oversights that had embarrassed me in front of my associates. My neighbors listed all of their petty annoyances. Grass left to go to seed. Paint peeling before I got around to repainting. That oil stain from the one time I tried to change it myself.
+The first day, co-workers and neighbors came. My former office mates, men and women who had always been studiously polite to my face, reminded me of all that had gone wrong after I turned off the implant. Long nights spent on projects that were thrown away before anyone saw them. Foolish oversights that had embarrassed me in front of my associates. My neighbors listed all of their petty annoyances. Grass that had gone long from my negligence. Friendly greetings that I had returned perfunctorily if at all.
 
 I just sneered at them. I had long ago stopped caring for such trivial things.
 
