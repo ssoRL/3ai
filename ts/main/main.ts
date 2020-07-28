@@ -61,6 +61,7 @@ function draw() {
     if(TRIP_WIRE) {
         debugger;
     }
+    glb.tick_master.checkTickStatus();
     glb.kudzu_story_controller.draw();
     glb.orth_story_controller.draw();
     for(const cog of glb.driver_cogs){

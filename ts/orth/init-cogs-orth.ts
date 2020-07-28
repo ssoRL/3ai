@@ -21,5 +21,8 @@ function init_cogs_orth(): {learn_stop_cog: Cog, learn_start_cog: Cog} {
     const learn_stop_cog = new Cog(375, 2125, 8, SpinDirection.CLOCKWISE, 0, 6000);
     learn_stop_cog.addDrivenCog(7, 6);
 
+    // attach the learn start cogs to the global tick master
+    glb.tick_master.addControlledCogs([learn_start_cog]);
+
     return {learn_stop_cog: learn_stop_cog, learn_start_cog: learn_start_cog};
 }

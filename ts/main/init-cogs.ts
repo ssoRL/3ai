@@ -32,5 +32,7 @@ function init_cogs(): Cog[]{
     out_of_sight.addDrivenCog(4, 6);
     out_of_sight.addDrivenCog(7, 8).addDrivenCog(5, 10);
 
+    // set these to be controlled by the global tick master
+    glb.tick_master.addControlledCogs(driver_cogs);
     return driver_cogs;
 }

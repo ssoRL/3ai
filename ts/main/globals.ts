@@ -24,6 +24,9 @@ class ThreeAIGlobals {
     /** A class used to calculate the easing progress of the cogs on the ticks */
     public tick_easer: TickEaser;
 
+    /** The object that controls the ticking of the main page cogs */
+    public tick_master: TickMaster;
+
     /** The canvas Context to draw on */
     public readonly ctx: CanvasRenderingContext2D;
 
@@ -45,5 +48,6 @@ class ThreeAIGlobals {
         this.ctx = context;
 
         this.time = performance.now();
+        this.tick_master = new TickMaster();
     }
 }
