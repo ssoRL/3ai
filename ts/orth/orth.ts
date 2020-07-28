@@ -4,18 +4,10 @@ const TICKS_AT_START = 3;
 class OrthStoryController {
     public done = false;
     /** A pair of cogs, one the reader will stop, the other they will start */
+    private learn_stop_cog_tick_master: TickMaster;
     private drivers: {learn_stop_cog: Cog, learn_start_cog: Cog};
     /** A number between 0 and 1 that represents the fraction of the story passed */
     private scroll: number;
-    // Things to control the glowing centers of the cogs
-    /** The glow amount, between 0 and 1 */
-    private glow = 0;
-    /** The amount the the glow jitters by */
-    private static readonly GLOW_JITTER = 0.05;
-    /** How ofter the glow jitters in milliseconds */
-    private static readonly JITTER_FREQ = 200;
-    private static readonly STOP_COLOR = "255,8,0";
-    private static readonly GO_COLOR = "102,255,0";
 
     /** The amount to translate the canvas down before starting the story  */
     static readonly TRANSLATE_DOWN = 1500;
@@ -24,6 +16,8 @@ class OrthStoryController {
 
     constructor(){
         this.drivers = init_cogs_orth();
+        this.learn_stop_cog_tick_master = new TickMaster();
+        this.learn_stop_cog_tick_master.addControlledCogs([this.drivers.learn_stop_cog]);
         const orth_badge = getDocumentElementById("orth");
         orth_badge.onclick = this.start.bind(this);
         this.initializeContent();
@@ -70,17 +64,21 @@ class OrthStoryController {
             return_button.disabled = false;
         });
 
-        end_button.onclick = this.done ?
-            // If the story was already read, just return immediately
-            this.prep_end.bind(this) :
-            // Otherwise, teach the user how cogs work
-            this.scrollStory.bind(this, 'end');
+        end_button.onclick = () => {
+            if(this.done) {
+                // If the story was already read, just return immediately
+                getDocumentElementById("orth-end").classList.add("sidelined");
+                this.prep_end();
+            } else {
+                this.scrollStory('end');
+            }
+        }
 
         // Stop the global ticking and wait for the cog to stop
         glb.tick_master.stopUntilNextMissedTick().then(() => {
             // then, tick the cogs TICKS_AT_START more times
             glb.tick_master.start(TICKS_AT_START);
-            this.tickLearnStop();
+            this.learn_stop_cog_tick_master.start();
         });
 
         // Move the story into view
@@ -139,6 +137,8 @@ class OrthStoryController {
         await glb.canvas_controller.animateTranslate(
             0, 0, transition_time, glb.tick_easer.easeTickAnimation.bind(glb.tick_easer)
         );
+
+        this.learn_stop_cog_tick_master.stop();
 
         // Make the story readable again
         orth_badge.onclick = this.start.bind(this);
@@ -199,6 +199,7 @@ class OrthStoryController {
     }
 
     public draw() {
+        this.learn_stop_cog_tick_master.checkTickStatus();
         this.drivers.learn_start_cog.draw();
         this.drivers.learn_stop_cog.draw();
     }
@@ -266,16 +267,6 @@ class OrthStoryController {
                     lines: "slateGray"
                 }
         }
-    }
-
-    /**
-     * This controls the ticking of the cog that teaches the reader to stop cogs
-     * It starts out ticking constantly from the start
-     */
-    private tickLearnStop() {
-        let time = performance.now();
-        window.setTimeout(this.tickLearnStop.bind(this), TICK_EVERY);
-        this.drivers.learn_stop_cog.startTick(time);
     }
 
     private async scrollStory(to: 'up' | 'down' | 'end') {
