@@ -43,11 +43,12 @@ class OrthStoryController {
         const return_button = <HTMLButtonElement>getDocumentElementById("orth-up");
         const end_button = <HTMLButtonElement>getDocumentElementById("orth-end");
         // Add the css transition
-        const transition_time = TICK_EVERY*(TICKS_AT_START - 1) + TICK_LENGTH;
+        const transition_time = TICK_EVERY*(TICKS_AT_START - 1) + TICK_LENGTH + glb.tick_master.time_until_next_tick();
         const orth_transition = `all ${transition_time}ms ease-in`;
         kudzu_badge.style.transition = orth_transition;
         orth_badge.style.transition = orth_transition;
         story_container.style.transition = orth_transition;
+
         // and then execute the transitions
         kudzu_badge.classList.add("sidelined");
         orth_badge.classList.remove("story-done");
@@ -75,8 +76,12 @@ class OrthStoryController {
             // Otherwise, teach the user how cogs work
             this.scrollStory.bind(this, 'end');
 
-        glb.tick_master.start(TICKS_AT_START);
-        this.tickLearnStop();
+        // Stop the global ticking and wait for the cog to stop
+        glb.tick_master.stopUntilNextMissedTick().then(() => {
+            // then, tick the cogs TICKS_AT_START more times
+            glb.tick_master.start(TICKS_AT_START);
+            this.tickLearnStop();
+        });
 
         // Move the story into view
         const easer = glb.tick_easer
