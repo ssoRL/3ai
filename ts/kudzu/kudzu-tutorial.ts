@@ -16,6 +16,7 @@ class KudzuTutorial {
     private conjunction_gem: Gem;
     private cog_gem: Gem;
     private big_gem: Gem;
+    private tick_master: TickMaster;
 
     // state
     is_initialized = false;
@@ -27,6 +28,10 @@ class KudzuTutorial {
         this.cog = new Cog(4150, 830, 12, SpinDirection.COUNTER_CLOCKWISE, Math.PI/12, 4500);
         const wired_cog = this.cog.addDrivenCog(6, 6);
         RunWire.addWireToCog(4501, ct(2), ct(4));
+
+        // Create a tick master for it
+        this.tick_master = new TickMaster;
+        this.tick_master.addControlledCogs([this.cog]);
 
         // lay the initial wires
         this.wire = new Wire({x: 4200, y: 300}, {x: 4100, y: 300});
@@ -143,7 +148,7 @@ class KudzuTutorial {
     private conjunctionPowered() {
         this.cog_gem.onclick = async() => {
             this.cog.activate(true);
-            this.tick();
+            this.tick_master.start(60);
             this.prepEnd();
             this.cog_gem.onclick = async() => {};
         }
@@ -179,12 +184,8 @@ class KudzuTutorial {
 
     }
 
-    private tick() {
-        this.cog.startTick(performance.now());
-        window.setTimeout(this.tick.bind(this), TICK_EVERY);
-    }
-
     draw() {
+        this.tick_master.checkTickStatus();
         this.wire.draw();
         if(this.is_initialized) {
             glb.canvas_controller.setTransform();

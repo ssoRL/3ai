@@ -114,7 +114,6 @@ class KudzuStoryController {
         kudzu_badge.classList.remove("big-card");
         kudzu_badge.classList.add("small-card");
         kudzu_badge.classList.add("story-done");
-        orth_badge.classList.remove("sidelined");
         story_section.classList.add("sidelined");
 
         if(before_power) {
@@ -122,6 +121,7 @@ class KudzuStoryController {
             await before_power;
         }
 
+        orth_badge.classList.remove("sidelined");
         glb.wire0.power(true, performance.now());
 
         // Reset the badges' transition property so that they react right
