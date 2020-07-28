@@ -358,6 +358,7 @@ a.kudzu-skip {
 .illustration {
     margin-bottom: 5%;
     width: 100%;
+    max-height: 100%;
     border: 2px solid;
     border-radius: 3%;
     box-sizing: border-box;
