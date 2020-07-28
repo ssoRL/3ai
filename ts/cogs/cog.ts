@@ -201,7 +201,9 @@ class Cog implements Clickable{
             for(let i=0; i<this.driven_cogs.length; i++){
                 this.driven_cogs[i].draw();
             }
-            this.etched_wire?.draw();
+            // only bother drawing the wires running out (the etched wire itself won't be visible)
+            this.etched_wire?.draw_wires_out();
+            return;
         }
         glb.canvas_controller.setTransform();
         glb.ctx.translate(this.x, this.y);

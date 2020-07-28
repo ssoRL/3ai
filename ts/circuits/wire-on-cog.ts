@@ -258,13 +258,18 @@ class WireOnCog {
         } else {
             this.drawSolidColor(wire_off_color);
         }
+        this.draw_wires_out();
+    }
+
+    /** Draw the wires connected to this wire on cog */
+    public draw_wires_out() {
         for(let i=0; i<this.out_terminals.length; i++){
             this.out_terminals[i].draw();
         }
     }
 
     /** Draw this as one solid color */
-    drawSolidColor(wire_off_color: string | CanvasGradient) {
+    private drawSolidColor(wire_off_color: string | CanvasGradient) {
         glb.ctx.strokeStyle = isOn(this.power_state) ? WIRE_ON_COLOR : wire_off_color;
         glb.ctx.beginPath();
         glb.ctx.moveTo(this.en_p0.x, this.en_p0.y);

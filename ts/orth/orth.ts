@@ -1,4 +1,4 @@
-/** The time taken to shift from the main screen to the kudzu story screen */
+/** The number of ticks it take to shift between the main and orth screen */
 const TICKS_AT_START = 3;
 
 class OrthStoryController {
@@ -75,7 +75,7 @@ class OrthStoryController {
             // Otherwise, teach the user how cogs work
             this.scrollStory.bind(this, 'end');
 
-        this.tick(TICKS_AT_START);
+        glb.tick_master.start(TICKS_AT_START);
         this.tickLearnStop();
 
         // Move the story into view
@@ -153,9 +153,7 @@ class OrthStoryController {
      */
     private async end() {
         // start everything ticking
-        // if the story is already marked as 'done' don't restart the main cogs
-        if(!this.done) this.tickForever();
-        this.tick(TICKS_AT_START);
+        glb.tick_master.start();
 
         this.done = true;
 
@@ -266,50 +264,6 @@ class OrthStoryController {
     }
 
     /**
-     * Starts the cogs ticking
-     * @param n How many times to tick
-     */
-    public async tick(n: number) {
-        // Base case
-        if(n <= 0) return;
-        let time = performance.now();
-        let next_tick_promise = new Promise((resolve) => {
-            window.setTimeout(
-                () => {
-                    this.tick(n-1);
-                    resolve();
-                },
-                TICK_EVERY);
-        });
-        if(!this.done) {
-            // don't have to tick the main screen cogs after the story is over
-            // they're already ticking forever
-            for(const cog of glb.driver_cogs) {
-                cog.startTick(time);
-            }
-        }
-        this.drivers.learn_start_cog.startTick(time);
-
-        await next_tick_promise;
-    }
-
-    /**
-     * Starts the main screen cogs turning for good.
-     */
-    public tickForever() {
-        window.setTimeout(
-            () => {
-                this.tickForever();
-            },
-            TICK_EVERY
-        );
-        let time = performance.now();
-        for(const cog of glb.driver_cogs) {
-            cog.startTick(time);
-        }
-    }
-
-    /**
      * This controls the ticking of the cog that teaches the reader to stop cogs
      * It starts out ticking constantly from the start
      */
@@ -378,7 +332,7 @@ class OrthStoryController {
         let background_offset_y = OrthStoryController.TRANSLATE_DOWN + this.scroll*OrthStoryController.FURTHER_TRANSLATE_DOWN;
 
         // Then do the moving
-        this.tick(2);
+        glb.tick_master.start(2);
         story_container.style.top = `${top_offset + top_buffer}px`
         await glb.canvas_controller.animateTranslate(
             0, background_offset_y, TICK_EVERY + TICK_LENGTH
