@@ -19,6 +19,9 @@ const GAP_WIDTH = 40;
 /** The color to draw wires that are on */
 const WIRE_ON_COLOR = 'rgb(250,196,196)';
 
+/** The transition to set on the title cards when they're on the main page */
+const TITLE_CARD_TRANSITION = 'all 300ms';
+
 /** Show graphics that are helpful for debugging, but not in final */
 const SHOW_HELP_GRAPHICS = false;
 

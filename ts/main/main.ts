@@ -3,6 +3,7 @@ let glb: ThreeAIGlobals;
 /** Keeps track of the images loaded */
 let kudzu_img_loaded = false;
 let orth_img_loaded = false;
+let styles_set = false;
 
 function init(){
     // Set up the global object
@@ -16,13 +17,6 @@ function init(){
     glb.kudzu_story_controller = new KudzuStoryController();
     glb.orth_story_controller = new OrthStoryController();
     glb.perfect_story_controller = new PerfectStoryController();
-    // Keep Progress
-    if(Cookies.get(KUDZU_COOKIE_NAME) === STORY_DONE || HARD_MODE) {
-        glb.kudzu_story_controller.quick_end();
-    }
-    if(Cookies.get(ORTH_COOKIE_NAME) === STORY_DONE || HARD_MODE) {
-        glb.orth_story_controller.quick_end();
-    }
     init_words();
     glb.tick_easer = new TickEaser(1.15, 0.85);
     glb.time = performance.now();
@@ -30,21 +24,61 @@ function init(){
     window.requestAnimationFrame(draw.bind(this));
 
     // Set the actions on the READ badges
+    setupTitleCards();
     const kudzu = getDocumentElementById("kudzu");
     kudzu.onclick = () => {glb.kudzu_story_controller.start()};
 }
 
-function img_loaded(img: "kudzu" | "orth") {
+/** Sets the starting size and transition rules of the "Read:" cards */
+function setupTitleCards() {
+    // Set up the transitions to happen instantly at the start
+    const kudzu_badge = getDocumentElementById("kudzu");
+    kudzu_badge.style.transition = "none";
+    // Keep Progress
+    if(Cookies.get(KUDZU_COOKIE_NAME) === STORY_DONE || HARD_MODE) {
+        // Set the kudzu badge to be small
+        kudzu_badge.classList.add('small-card');
+        kudzu_badge.classList.add('story-done');
+        glb.kudzu_story_controller.end();
+    } else {
+        kudzu_badge.classList.add('big-card')
+    }
+    // call offsetHeight to flush css transition change
+    kudzu_badge.offsetHeight;
+    kudzu_badge.style.transition = TITLE_CARD_TRANSITION;
+
+
+    const orth_badge = getDocumentElementById("orth");
+    orth_badge.style.transition = "none";
+    if(Cookies.get(ORTH_COOKIE_NAME) === STORY_DONE || HARD_MODE) {
+        // Set the kudzu badge to be small
+        orth_badge.classList.add('small-card');
+        orth_badge.classList.add('story-done');
+        glb.orth_story_controller.end();
+    } else {
+        orth_badge.classList.add('big-card')
+    }
+    // call offsetHeight to flush css transition change
+    orth_badge.offsetHeight;
+    orth_badge.style.transition = TITLE_CARD_TRANSITION;
+
+    // call imgLoaded styles set
+    imgLoaded("styles_set");
+}
+
+function imgLoaded(img: "kudzu" | "orth" | "styles_set") {
     if(img === "kudzu") {
         // kudzu is loaded
         kudzu_img_loaded = true;
-    } else {
+    } else if(img === "orth") {
         // orth is loaded
         orth_img_loaded = true;
+    } else {
+        styles_set = true;
     }
 
-    // if both are loaded, slide them in
-    if (kudzu_img_loaded && orth_img_loaded) {
+    // if both are loaded and styles are set, slide them in
+    if (kudzu_img_loaded && orth_img_loaded && styles_set) {
         const kudzu_badge = getDocumentElementById("kudzu");
         const orth_badge = getDocumentElementById("orth");
 

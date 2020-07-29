@@ -79,36 +79,6 @@ class KudzuStoryController {
         kudzu_badge.style.transition = kudzu_transition;
         orth_badge.style.transition = kudzu_transition;
         story_section.style.transition = kudzu_transition;
-
-        // set the cookie so that if the reader leaves and comes back
-        Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
-        
-        const transform_promise =  glb.canvas_controller.animateTranslate(
-            0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
-        );
-
-        this.end(transform_promise);
-    }
-
-    /** called when the story was already completed in a previous session */
-    public async quick_end() {
-        // transitions should be instant in this case
-        const kudzu_badge = getDocumentElementById("kudzu");
-        kudzu_badge.style.transition = "none";
-        this.end();
-    }
-
-    /**
-     * Sets the story as if read, either in this session or in a previous one
-     * @param before_power a promise that must resolve before the main wires are powered
-     */
-    private async end(before_power?: Promise<any>){
-        this.done = true;
-
-        // Get the elements
-        const kudzu_badge = getDocumentElementById("kudzu");
-        const orth_badge = getDocumentElementById("orth");
-        const story_section = getDocumentElementById("kudzu-story-text");
         // Reposition the elements
         kudzu_badge.classList.remove("repositioned");
         kudzu_badge.classList.remove("big-card");
@@ -116,19 +86,28 @@ class KudzuStoryController {
         kudzu_badge.classList.add("story-done");
         story_section.classList.add("sidelined");
 
-        if(before_power) {
-            // if passed a promise, wait until it resolves to power up the wires
-            await before_power;
-        }
+        // set the cookie so that if the reader leaves and comes back
+        Cookies.set(KUDZU_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
+        
+        await glb.canvas_controller.animateTranslate(
+            0, 0, KudzuStoryController.SHIFT_TO_KUDZU_TIME
+        );
 
+        this.end();
         orth_badge.classList.remove("sidelined");
-        glb.wire0.power(true, performance.now());
 
-        // Reset the badges' transition property so that they react right
-        // call offsetHeight to flush css transition change
-        kudzu_badge.offsetHeight;
-        kudzu_badge.style.transition = '';
-        orth_badge.style.transition = '';
+        kudzu_badge.style.transition = TITLE_CARD_TRANSITION;
+        orth_badge.style.transition = TITLE_CARD_TRANSITION;
+    }
+
+    /**
+     * Sets the story as if read, either in this session or in a previous one
+     * @param before_power a promise that must resolve before the main wires are powered
+     */
+    public end(){
+        this.done = true;
+
+        glb.wire0.power(true, performance.now());
     }
 
     /** The size of the gradient's inner radius */

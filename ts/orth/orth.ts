@@ -38,7 +38,7 @@ class OrthStoryController {
         const end_button = <HTMLButtonElement>getDocumentElementById("orth-end");
         // Add the css transition
         const transition_time = TICK_EVERY*(TICKS_AT_START - 1) + TICK_LENGTH + glb.tick_master.time_until_next_tick();
-        const orth_transition = `all ${transition_time}ms ease-in`;
+        const orth_transition = `all ${transition_time}ms cubic-bezier(1,0,.9,.85)`;
         kudzu_badge.style.transition = orth_transition;
         orth_badge.style.transition = orth_transition;
         story_container.style.transition = orth_transition;
@@ -68,7 +68,7 @@ class OrthStoryController {
             if(this.done) {
                 // If the story was already read, just return immediately
                 getDocumentElementById("orth-end").classList.add("sidelined");
-                this.prep_end();
+                this.EndFromStory();
             } else {
                 this.scrollStory('end');
             }
@@ -107,28 +107,39 @@ class OrthStoryController {
         this.drivers.learn_stop_cog.onClick = () => {
             init_orth_words_starting();
             this.drivers.learn_start_cog.activate(false);
+            this.drivers.learn_stop_cog.onClick = () => {};
         }
 
         this.drivers.learn_start_cog.onClick = () => {
-            this.prep_end();
+            this.EndFromStory();
         }
     }
 
     /**
      * The actions to take to prepare moving back to the main screen
      */
-    private async prep_end() {
+    private async EndFromStory() {
         const transition_time = TICK_EVERY*(TICKS_AT_START) + TICK_LENGTH;
-        const orth_transition = `all ${transition_time}ms ease-in`;
+        // cubic-bezier(1,0,.9,.85)
+        const orth_transition = `all ${transition_time}ms cubic-bezier(.64,.4,1,.64)`;
 
         // Move the badges and canvas to be in position for the orth story
         const orth_badge = getDocumentElementById("orth");
         const kudzu_badge = getDocumentElementById("kudzu");
         const story_container = getDocumentElementById("orth-story-container");
+        const up_button = getDocumentElementById("orth-up");
         // Add the css transition
         kudzu_badge.style.transition = orth_transition;
         orth_badge.style.transition = orth_transition;
         story_container.style.transition = orth_transition;
+        // and then execute the transitions
+        kudzu_badge.classList.remove("sidelined");
+        story_container.style.top = "110%";
+        orth_badge.classList.remove("repositioned");
+        orth_badge.classList.remove("big-card");
+        orth_badge.classList.add("small-card");
+        orth_badge.classList.add("story-done");
+        up_button.classList.add("sidelined");
 
         // Then execute the ending sequence
         Cookies.set(ORTH_COOKIE_NAME, STORY_DONE, {sameSite: "Strict"});
@@ -138,25 +149,21 @@ class OrthStoryController {
             0, 0, transition_time, glb.tick_easer.easeTickAnimation.bind(glb.tick_easer)
         );
 
+        // then remove the custom transitions
+        kudzu_badge.style.transition = TITLE_CARD_TRANSITION;
+        orth_badge.style.transition = TITLE_CARD_TRANSITION;
+
         this.learn_stop_cog_tick_master.stop();
 
         // Make the story readable again
         orth_badge.onclick = this.start.bind(this);
     }
 
-    /** called when the story was already completed in a previous session */
-    public async quick_end() {
-        // transitions should be instant in this case
-        const orth_badge = getDocumentElementById("orth");
-        orth_badge.style.transition = "all 0s";
-        this.end();
-    }
-
     /**
      * Sets everything like this story is done, either from the user reading in this session
      * or having a cookie marking orth as read previously
      */
-    private async end() {
+    public async end() {
         // start everything ticking
         glb.tick_master.start();
 
@@ -166,31 +173,6 @@ class OrthStoryController {
         for(const cog of glb.driver_cogs) {
             cog.activate(true);
         }
-
-        // Move the badges and canvas to be in position for the kudzu story
-        const orth_badge = getDocumentElementById("orth");
-        const kudzu_badge = getDocumentElementById("kudzu");
-        const story_container = getDocumentElementById("orth-story-container");
-        const re_button = getDocumentElementById("orth-up");
-        // and then execute the transitions
-        kudzu_badge.classList.remove("sidelined");
-        story_container.style.top = "110%";
-        orth_badge.classList.remove("repositioned");
-        orth_badge.classList.remove("big-card");
-        orth_badge.classList.add("small-card");
-        orth_badge.classList.add("story-done");
-        re_button.classList.add("sidelined");
-
-        // wait until this transition is done
-        await new Promise((resolve) => {
-            orth_badge.ontransitionend = resolve;
-        })
-
-        // then remove the custom transitions
-        // call offsetHeight to flush css transition change
-        orth_badge.offsetHeight;
-        kudzu_badge.style.transition = '';
-        orth_badge.style.transition = '';
     }
 
     private async initializeContent() {
