@@ -24,6 +24,7 @@ function init(){
     window.requestAnimationFrame(draw.bind(this));
 
     // Set the actions on the READ badges
+    setupResetButton();
     setupTitleCards();
     const kudzu = getDocumentElementById("kudzu");
     kudzu.onclick = () => {glb.kudzu_story_controller.start()};
@@ -84,6 +85,15 @@ function imgLoaded(img: "kudzu" | "orth" | "styles_set") {
 
         kudzu_badge.classList.remove("sidelined");
         orth_badge.classList.remove("sidelined");
+    }
+}
+
+function setupResetButton() {
+    const reset_button = getDocumentElementById("reset");
+    reset_button.onclick = () => {
+        Cookies.remove(ORTH_COOKIE_NAME);
+        Cookies.remove(KUDZU_COOKIE_NAME);
+        location.reload();
     }
 }
 

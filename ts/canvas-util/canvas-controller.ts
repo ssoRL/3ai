@@ -10,9 +10,6 @@ class CanvasController {
     private scale = 1;
     public offset: Point = {x: 0, y: 0};
     private clickables: Clickable[] = [];
-    /** postion the reset button in the lower right hand corner */
-    private reset_height: number;
-    private reset_width: number;
     /** When the current animation started */
     private animation_start_time: number;
     /** When the current animation ends */
@@ -32,8 +29,6 @@ class CanvasController {
     constructor(canvas_: HTMLCanvasElement, canvas_container_: HTMLDivElement){
         this.canvas = canvas_;
         this.canvas_container = canvas_container_;
-
-        this.setupResetButton();
 
         window.addEventListener("resize", () => {
             this.updateScale();
@@ -118,16 +113,5 @@ class CanvasController {
         const below_frame = y_top > this.offset.y + CANVAS_DEFINED_SIZE;
         const above_frame = y_top + height < this.offset.y;
         return !(below_frame || above_frame);
-    }
-
-    private setupResetButton() {
-        const reset_button = getDocumentElementById("reset");
-        this.reset_height = reset_button.clientHeight + 5;
-        this.reset_width = reset_button.clientWidth + 10;
-        reset_button.onclick = () => {
-            Cookies.remove(ORTH_COOKIE_NAME);
-            Cookies.remove(KUDZU_COOKIE_NAME);
-            location.reload();
-        }
     }
 }
