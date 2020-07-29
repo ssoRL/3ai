@@ -80,6 +80,13 @@ class TickMaster {
             // Set the time of the next tick
             const start_time = this.next_tick;
             this.next_tick = start_time + TICK_EVERY;
+            if(this.next_tick < glb.time) {
+                // When a users browser is not open, request animation frame stops being called
+                // So performance.now increases such that many ticks will happen in rapid 
+                // succession until next_tick catches up. To remedy that, skip ahead here
+                // If next_tick has fallen behind
+                this.next_tick = glb.time + TICK_EVERY;
+            }
             // Send a tick signal to all of the controlled cogs
             for(const cog of this.controlled_cogs) {
                 cog.startTick(start_time);
