@@ -13,6 +13,30 @@ class KudzuStoryController {
     private static readonly TYPING_SPEED = 100;
 
     public words: Word[] = [];
+    // Words of the title that might change
+    private the_a_word: Word;
+    /** The index of the a word used right now */
+    private current_a_word: number = 0;
+    private the_i_word: Word;
+    private current_i_word: number = 0;
+
+    private a_words: [string, number][] = [
+        ["Artificial", 32],
+	    ["Analytic", 32],
+	    ["Automated", 32],
+	    ["Abstracted", 32],
+	    ["Anti-anthropic", 25],
+	    ["Algorithmic", 32]
+    ]
+
+    private i_words: [string, number][] = [
+        ["Intelligence", 36],
+	    ["Invasion", 36],
+	    ["Imperium", 36],
+	    ["Intrusion", 36],
+	    ["Insurrection", 36],
+	    ["Imposition", 36]
+    ]
 
     constructor() {
         this.tutorial = new KudzuTutorial;
@@ -107,6 +131,8 @@ class KudzuStoryController {
     public end(){
         this.done = true;
 
+        glb.kudzu_story_controller.setIWord(undefined, false);
+
         glb.wire0.power(true, performance.now());
     }
 
@@ -160,6 +186,8 @@ class KudzuStoryController {
         for(const word of this.words) {
             word.draw();
         }
+        this.the_a_word.draw();
+        this.the_i_word.draw();
 
         this.tutorial.draw();
     }
@@ -174,6 +202,44 @@ class KudzuStoryController {
             return <string[][]>json_content
         } catch {
             throw `3AI Error: Could not load ${uri}`;
+        }
+    }
+
+    public setAWord(i?: number, ghost_typist = true) {
+        // how much to shift the current word by
+        if(i === undefined) {
+            const increment = Math.floor(Math.random()*(this.a_words.length-1)) + 1;
+            this.current_a_word = (this.current_a_word + increment)%this.a_words.length;
+        } else {
+            this.current_a_word = i;
+        }
+        this.the_a_word = new Word(
+            this.a_words[this.current_a_word][0],
+            p(275, 235), "bold",
+            this.a_words[this.current_a_word][1],
+            "monospace"
+        );
+        if(ghost_typist){
+            this.the_a_word.addGhostTypist(25, 1);
+        }
+    }
+
+    public setIWord(i?: number, ghost_typist = true) {
+        if(i === undefined) {
+            // how much to shift the current word by
+            const increment = Math.floor(Math.random()*(this.i_words.length-1)) + 1;
+            this.current_i_word = (this.current_i_word + increment)%this.i_words.length;
+        } else {
+            this.current_i_word = i;
+        }
+        this.the_i_word = new Word(
+            this.i_words[this.current_i_word][0],
+            p(305, 275), "bold",
+            this.i_words[this.current_i_word][1],
+            "math"
+        );
+        if(ghost_typist) {
+            this.the_i_word.addGhostTypist(25, 1);
         }
     }
 

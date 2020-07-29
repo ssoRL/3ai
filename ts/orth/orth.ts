@@ -169,6 +169,8 @@ class OrthStoryController {
 
         this.done = true;
 
+        glb.kudzu_story_controller.setAWord(undefined, false);
+
         // activate all the cogs
         for(const cog of glb.driver_cogs) {
             cog.activate(true);

@@ -28,6 +28,9 @@ function init(){
     setupTitleCards();
     const kudzu = getDocumentElementById("kudzu");
     kudzu.onclick = () => {glb.kudzu_story_controller.start()};
+
+    // get the change title interval firing
+    changeTitleLoop();
 }
 
 /** Sets the starting size and transition rules of the "Read:" cards */
@@ -117,6 +120,26 @@ function draw() {
         gem.draw();
     }
     window.requestAnimationFrame(draw.bind(this));
+}
+
+function changeTitleLoop() {
+    // This loop goes constantly
+    window.setInterval(
+        () => {
+            if(glb.orth_story_controller.done && glb.kudzu_story_controller.isDone()) {
+                // only do this once both stories are finished
+                const random_number = Math.random();
+                if(random_number < .1) {
+                    // reset the A word
+                    glb.kudzu_story_controller.setAWord();
+                } else if(random_number > .9) {
+                    // reset the I word
+                    glb.kudzu_story_controller.setIWord();
+                }
+            }
+        },
+        TICK_EVERY * 1.324   
+    )
 }
 
 async function fetchContent(uri: string): Promise<string> {
