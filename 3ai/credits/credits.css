@@ -21,3 +21,10 @@ body {
     flex-basis: 40px;
     flex-shrink: 0;
 }
+
+@media (max-device-width: 600px) {
+    body {
+        font-size: 30px;
+        padding-bottom: 100px;
+    }
+}
