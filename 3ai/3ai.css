@@ -116,6 +116,7 @@ html body {
 }
 
 a.kudzu-button {
+    height: intrinsic;
     margin: 20px 15%;
     padding: 10px 20px;
     color: rgb(50,50,50);
