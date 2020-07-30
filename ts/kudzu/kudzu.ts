@@ -31,9 +31,9 @@ class KudzuStoryController {
     private i_words: string[] = [
         "Intelligence",
 	    "Invasion",
-	    "Imperium",
+        "Imperium",
+        "Interlope",
 	    "Insurrection",
-	    "Imposition",
     ]
 
     constructor() {
