@@ -25,6 +25,6 @@ body {
 @media (max-device-width: 600px) {
     body {
         font-size: 30px;
-        padding-bottom: 100px;
+        padding-bottom: 350px;
     }
 }

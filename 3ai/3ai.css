@@ -184,6 +184,11 @@ a.kudzu-skip {
     #orth-story {
         font-size: 30px;
     }
+
+    #orth-end.orth-button {
+        --width: 90px;
+        font-size: 30px;
+    }
 }
 
 .orth-button {
@@ -402,6 +407,16 @@ a.kudzu-skip {
     width: max-content;
     margin: 20px auto 0;
     cursor: pointer;    
+}
+
+@media (max-device-width: 600px), (max-device-height: 600px) {
+    .pop-up-content {
+        font-size: 30px;
+    }
+
+    .popup-close {
+        font-size: 30px;
+    }
 }
 
 .popup-flavor {
