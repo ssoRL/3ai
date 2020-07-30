@@ -20,22 +20,20 @@ class KudzuStoryController {
     private the_i_word: Word;
     private current_i_word: number = 0;
 
-    private a_words: [string, number][] = [
-        ["Artificial", 32],
-	    ["Analytic", 32],
-	    ["Automated", 32],
-	    ["Abstracted", 32],
-	    ["Anti-anthropic", 25],
-	    ["Algorithmic", 32]
+    private a_words: string[] = [
+        "Artificial",
+	    "Analytic",
+	    "Automated",
+	    "Abstracted",
+	    "Algorithmic",
     ]
 
-    private i_words: [string, number][] = [
-        ["Intelligence", 36],
-	    ["Invasion", 36],
-	    ["Imperium", 36],
-	    ["Intrusion", 36],
-	    ["Insurrection", 36],
-	    ["Imposition", 36]
+    private i_words: string[] = [
+        "Intelligence",
+	    "Invasion",
+	    "Imperium",
+	    "Insurrection",
+	    "Imposition",
     ]
 
     constructor() {
@@ -214,9 +212,8 @@ class KudzuStoryController {
             this.current_a_word = i;
         }
         this.the_a_word = new Word(
-            this.a_words[this.current_a_word][0],
-            p(275, 235), "bold",
-            this.a_words[this.current_a_word][1],
+            this.a_words[this.current_a_word],
+            p(275, 235), "bold", 32,
             "monospace"
         );
         if(ghost_typist){
@@ -233,9 +230,8 @@ class KudzuStoryController {
             this.current_i_word = i;
         }
         this.the_i_word = new Word(
-            this.i_words[this.current_i_word][0],
-            p(305, 275), "bold",
-            this.i_words[this.current_i_word][1],
+            this.i_words[this.current_i_word],
+            p(305, 275), "bold", 36,
             "math"
         );
         if(ghost_typist) {
