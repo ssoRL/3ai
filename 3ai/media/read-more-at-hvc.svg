@@ -1,0 +1,84 @@
+<svg viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .common { 
+      text-anchor: left; 
+      fill: rgb(30,30,30); 
+      font-size: 27px;
+      font-family: sans-serif;
+      font-variant-caps: small-caps;
+    }
+    .high-clouds {
+      font-style: italic;
+    }
+    .voltage  {
+      font-style: italic;
+      font-weight: bold;
+    }
+    .read-more {
+      font-size: 20px;
+      font-family: serif;
+      text-anchor: middle;
+      fill: rgb(30,30,30); 
+    }
+    .arrow {
+      fill: rgb(30,30,30);
+    }
+    .cloud {
+      stroke:rgb(50,50,50);
+      fill:none;
+      stroke-width: 1.5;
+    }
+    .lightning {
+      stroke-width: 1.5;
+      stroke:rgb(60,60,20);
+      fill:none;
+    }
+  </style>
+
+  <!-- Arrow -->
+  <path  class="arrow" d="
+    M 149 77
+    l -20 -50
+    l -15 0
+    l 20 50
+    l -20 50
+    l 15  0
+    z"
+  />
+
+
+<!-- Lightning -->
+  <path  class="lightning" d="
+    M 32 104
+    l -5 20
+    l 6 -2
+    l -5 20
+    l 18 -30
+    l -6  2
+    l 5 -10"
+  />
+
+
+<!-- Cloud -->
+  <path class="cloud" d="
+    M 92 104
+    a 27 25 -20 1 0 0 -50
+    a 31 22 6 1 0 -60 0
+    a 27 25 20 1 0 0 50
+    Z" 
+  />
+
+  <text x="75" y="20" textLength="110" class="read-more">
+    Read More @
+  </text>
+
+  <text x="34" y="57" textLength="50" class="common high-clouds">
+    High
+  </text>
+  <text x="13" y="77" textLength="90" class="common voltage">
+    Voltage
+  </text>
+  <text x="16" y="98.5" textLength="85" class="common high-clouds">
+    Clouds
+  </text>
+</svg>
