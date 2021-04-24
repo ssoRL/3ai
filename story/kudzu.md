@@ -1,6 +1,6 @@
 *Kudzu, is a vine native to the temperate regions of Asia. It is a structural parasite, relying on trees to reach favorable sunlit positions. However, once it is established, it will often smother the trees with its dense growth and weight. Left unchecked, Kudzu can grow faster than almost any other plant, up to a foot per day in the peak of its season.*
 
-kudzusectionbreak
+---
 
 It started when Jeff and I were hanging out one day. I was playing video games while he was clicking around reddit or something. Suddenly he looks up and says, “God. Like, 99% of everything that gets upvoted is total shit. It's like what you'd get if you trained a neural network on last weeks memes and whatever's trending on twitter.”
 
@@ -18,7 +18,7 @@ I asked, “So why don't you do it then?”
 
 I put down the controller. “I'll help. This game sucks anyway.”
 
-kudzusectionbreak
+---
 
 It turned out it was hard to get enough data. We hacked together a scraper that got us plenty of content, but it was all an unlabeled mess that wouldn't neatly cluster. I tried training a GAN on image macros, but the end result was more surreal than amusing. We got bored and gave up around 7. I think Jeff more or less forgot about it then, but I kept coming back to the problem whenever I had some free time.
 
@@ -28,7 +28,7 @@ But then, one day I had to go to Facebook for some reason. I think my mom posted
 
 A couple hours later and I had it. My very own clickbait bullshit generator.
 
-kudzusectionbreak
+---
 
 I showed it to Jeff that weekend. He clicked thru a few of the examples it had generated and smirked, “Well, glad this came to something. How's it work?”
 
@@ -50,7 +50,7 @@ After looking at a few more articles he asked, “You planning on doing anything
 
 “Go for it. I'll send you the training data too. Save you some scraping.”
 
-kudzusectionbreak
+---
 
 The next I heard from Jeff was a month later. He sent me a text. It was just a link and the message, *check this out.*
 
@@ -66,7 +66,7 @@ I asked, *what's your plan?*
 
 *monetize. u in?*
 
-kudzusectionbreak
+---
 
 We met up over coffee the next day. Jeff was excited, “There's so much potential here. People come. They read the shit your algorithm spits out. They click thru to the next article. They share this shit on Facebook.”
 
@@ -96,7 +96,7 @@ We met up over coffee the next day. Jeff was excited, “There's so much potenti
 
 “I don't know. Let me get back to you.”
 
-kudzusectionbreak
+---
 
 Turned out I was interested. That night I tried to study a bit, but then I got to thinking about the shit-bot. Figuring out how to make it better. Soon I was back to coding on it, and soon after that, the sun was coming up.
 
@@ -108,7 +108,7 @@ I texted Jeff, *Hey man, think I got a V2 for you*
 
 *Yeah I'm in*
 
-kudzusectionbreak
+---
 
 Things went fast after that. We were each working fourteen, sixteen hour days. Me hacking away, and Jeff promoting us thru every channel he could find. It turned out his original estimate for what our profits would be like had been a bit inflated. Still, for every dollar we spent on hosting and training the nets, we were easily getting a dollar and a half out.
 
@@ -118,7 +118,7 @@ Pretty soon Jeff had set up a system to automate even that. It would register a 
 
 Things slowed down a bit. There were a few moving parts we had to keep attending to: updating the scrapers when their target sites changed format, trying out new processing layers when the inspiration struck. But for the most part, the system kept itself growing. As long as we fed it enough money to buy hosting time for the sites and the bots, and a bit for adverts, it kept growing. Getting better. Getting bigger.
 
-kudzusectionbreak
+---
 
 With not a lot else to do, I decided to make a plug-in just for fun. It pulled all the domains we owned and would highlight any link to them. I browsed a few minutes and it was disconcerting. A full 20% of what I saw was highlighted. Owned by us.
 
@@ -136,13 +136,13 @@ I clicked on one of the articles and read it, “But it's still shit-bot.”
 
 “No. I just said it seemed a bit weird.”
 
-kudzusectionbreak
+---
 
 For a while we just sort of coasted. We bought some cars. Rented out a sweet house with a swimming pool and tiki bar. I think Jeff must have thrown a party just about every night for a month.
 
 Our constellation of sites kept growing.
 
-kudzusectionbreak
+---
 
 Then, one day I got a message from Jeff, *u seen this?*
 
@@ -158,7 +158,7 @@ As well as giving themselves negative press, the shit-bots ran articles claiming
 
 All in all, it turned out to be a pretty good day.
 
-kudzusectionbreak
+---
 
 But things fell apart quickly after that. At first we thought what we needed to fear was a government crackdown. There was talk of passing a law that would require any site with automatically written stories to show disclaimers. Europe looked like they were going to move in that direction in a matter of months.
 
@@ -174,7 +174,7 @@ Finally, I threw in the towel. I told Jeff I'd had enough. I was quitting effect
 
 That was the last time I talked to him.
 
-kudzusectionbreak
+---
 
 In some ways it was a golden age of content. There was more media generated every second than I could consume in a year. Maybe in a life time. But it all felt empty.
 

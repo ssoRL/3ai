@@ -19,8 +19,8 @@ fs.writeFileSync(`${storyDir}/perfect.html`, perfectContent);
 
 // Generate "Vines of Kudzu"
 var readKudzu = fs.readFileSync('story/kudzu.md', 'utf-8');
-// Split the ensuing file by kudzusectionbreak
-var kudzuSections = readKudzu.split('\n\nkudzusectionbreak\n\n');
+// Split the ensuing file by ---
+var kudzuSections = readKudzu.split(/\n\n----*\n\n/);
 var kudzuParagraphs = [];
 for(section of kudzuSections) {
     paragraphs = section.split('\n\n');
