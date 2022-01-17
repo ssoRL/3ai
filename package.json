@@ -3,19 +3,23 @@
   "version": "1.0.0",
   "description": "Three Visions of Artificial Apocalypse",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "minify": "terser ./out/3ai.js -c -m -o ./3ai/3ai.js",
     "watch-ts": "tsc --watch --sourceMap --outFile 3ai/3ai.js",
+    "start": "node generateContent.js && tsc --sourceMap --outFile 3ai/3ai.js && http-server ./3ai",
     "build-prod": "node generateContent.js && tsc && npm run minify"
   },
   "author": "highvoltageclouds",
   "license": "ISC",
   "dependencies": {
-    "js-cookie": "^2.2.1",
-    "typescript": "^3.8.3",
+    "js-cookie": "^2.2.1"
+  },
+  "devDependencies": {
     "@types/js-cookie": "^2.2.6",
     "http-server": "^0.12.3",
-    "marked": "^1.0.0",
-    "terser": "^4.8.0"
+    "marked": "^4.0.10",
+    "terser": "^4.8.0",
+    "typescript": "^3.8.3"
   }
 }

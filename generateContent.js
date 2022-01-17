@@ -1,29 +1,29 @@
-var marked = require('marked');
-var fs = require('fs');
+import { marked } from 'marked';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 var storyDir = "./3ai/story";
 
 // Create story directory if it doesn't exist
-if(!fs.existsSync(storyDir)) {
-    fs.mkdirSync(storyDir);
+if(!existsSync(storyDir)) {
+    mkdirSync(storyDir);
 }
 
 // Generate "The Orthogonal Machines"
-var readOrth = fs.readFileSync('story/orth.md', 'utf-8');
-var orthContent = marked(readOrth);
-fs.writeFileSync(`${storyDir}/orth.html`, orthContent);
+var readOrth = readFileSync('story/orth.md', 'utf-8');
+var orthContent = marked.parse(readOrth);
+writeFileSync(`${storyDir}/orth.html`, orthContent);
 
 // Generate "Vessels of Perfection"
-var readPerfect = fs.readFileSync('story/perfect.md', 'utf-8');
+var readPerfect = readFileSync('story/perfect.md', 'utf-8');
 var perfectContent = marked(readPerfect);
-fs.writeFileSync(`${storyDir}/perfect.html`, perfectContent);
+writeFileSync(`${storyDir}/perfect.html`, perfectContent);
 
 // Generate "Vines of Kudzu"
-var readKudzu = fs.readFileSync('story/kudzu.md', 'utf-8');
+var readKudzu = readFileSync('story/kudzu.md', 'utf-8');
 // Split the ensuing file by ---
 var kudzuSections = readKudzu.split(/\n\n----*\n\n/);
 var kudzuParagraphs = [];
-for(section of kudzuSections) {
-    paragraphs = section.split('\n\n');
+for(const section of kudzuSections) {
+    const paragraphs = section.split('\n\n');
     kudzuParagraphs.push(paragraphs);
 }
-fs.writeFileSync(`${storyDir}/kudzu.json`, JSON.stringify(kudzuParagraphs));
+writeFileSync(`${storyDir}/kudzu.json`, JSON.stringify(kudzuParagraphs));
